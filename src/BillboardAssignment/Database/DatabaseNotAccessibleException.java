@@ -6,7 +6,7 @@ package BillboardAssignment.Database;
 public class DatabaseNotAccessibleException extends Exception{
 
     /**
-     * Constructor of the Exception, supply the ID that you want the error message to shout about.
+     * Constructor of the Exception, supply the Database name that you want the error message to shout about.
      * @param DatabaseName The name of the database that cannot be accessed
      */
     public DatabaseNotAccessibleException(String DatabaseName){
@@ -14,7 +14,7 @@ public class DatabaseNotAccessibleException extends Exception{
     }
 
     /**
-     * Constructor of the Exception, supply the ID that you want the error message to shout about.
+     * Constructor of the Exception, supply the Database name that you want the error message to shout about.
      * @param DatabaseName The name of the database that cannot be accessed
      * @param Reason The reason why the database can't be accessed.
      */

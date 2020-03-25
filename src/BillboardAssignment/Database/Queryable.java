@@ -8,6 +8,7 @@ package BillboardAssignment.Database;
  * @see Identifiable
  * @see DatabaseObjectNotFoundException
  * @see DatabaseNotAccessibleException
+ * @see DatabaseLogicException
  * @author Sebastian Muir-Smith
  */
 public interface Queryable<E extends Identifiable> {
@@ -18,8 +19,9 @@ public interface Queryable<E extends Identifiable> {
      * @return A boolean indication whether or not the object was added successfully
      * @throws DatabaseNotAccessibleException Throws an exception if we can't access the database.
      *         Can be inherited to provide more reason about the error (I.E. Database connection failed)
+     * @throws DatabaseLogicException Throws an error if you make an invalid operation (Adding a object that allready exists)
      */
-    public boolean addObject(E object) throws DatabaseNotAccessibleException;
+    public boolean addObject(E object) throws DatabaseNotAccessibleException, DatabaseLogicException;
 
     /**
      * Remove the given object with the given ID from the database
@@ -42,12 +44,12 @@ public interface Queryable<E extends Identifiable> {
 
     /**
      * Check if an object with the given ID is in the database
-     * @param ID The unique integer identifier of the object that we want to check exists
+     * @param object The object that we want to check exists
      * @return A boolean that is True iff there exists an object in the database with the given ID
      * @throws DatabaseNotAccessibleException Throws an exception if we can't access the database.
      *         Can be inherited to provide more reason about the error (I.E. Database connection failed)
      */
-    public boolean objectInDatabase(int ID) throws DatabaseNotAccessibleException;
+    public boolean objectInDatabase(E object ) throws DatabaseNotAccessibleException;
 
     /**
      * Run any necessary setup to get the database ready for storage and querying
