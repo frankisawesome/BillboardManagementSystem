@@ -16,7 +16,7 @@ class DatabaseArrayTest {
     void init() throws DatabaseNotAccessibleException {
 
         database = new DatabaseArray<DummyDatabaseObject>();
-        database.InitialiseDatabase();
+        database.initialiseDatabase();
     }
 
     @org.junit.jupiter.api.Test

@@ -52,8 +52,9 @@ public interface Queryable<E extends Identifiable> {
     public boolean objectInDatabase(E object ) throws DatabaseNotAccessibleException;
 
     /**
-     * Run any necessary setup to get the database ready for storage and querying
+     * Run any necessary setup to get the database ready for storage and querying. The database will be created depended on
+     * the getEntityName value of the object being stored. I.E. If the entity name is a sessionToken, then the sessionToken database will be created/accessed.
      * @throws DatabaseNotAccessibleException Errors out if the database didn't get created successfully
      */
-    public void InitialiseDatabase() throws DatabaseNotAccessibleException;
+    public void initialiseDatabase() throws DatabaseNotAccessibleException;
 }
