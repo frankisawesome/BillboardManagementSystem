@@ -45,7 +45,7 @@ class UserManagerTest {
     }
 
     @Test
-    void login() throws IncorrectPasswordException{
+    void login() throws IncorrectPasswordException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException, DatabaseLogicException {
 
         String sessionKey = userManager.login(userCreds);
 
@@ -54,7 +54,6 @@ class UserManagerTest {
         UserAuthDataInput badCreds = new UserAuthDataInput(1, "the_wrong_password".getBytes());
 
         assertThrows(IncorrectPasswordException.class, ()->{userManager.login(badCreds);});
-
 
     }
 
