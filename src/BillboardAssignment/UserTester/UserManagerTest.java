@@ -2,6 +2,7 @@ package BillboardAssignment.UserTester;
 
 import BillboardAssignment.Authentication.*;
 import BillboardAssignment.Database.*;
+import BillboardAssignment.User.PrivilegedUser;
 import BillboardAssignment.User.UserManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -36,4 +36,7 @@ public class UserManager {
 
         return sessionKey.sessionKey;
     }
+
+    public PrivilegedUser createUser(PrivilegedUser user) {
+    }
 }
