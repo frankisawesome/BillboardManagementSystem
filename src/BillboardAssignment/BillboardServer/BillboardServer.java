@@ -1,7 +1,7 @@
 package BillboardAssignment.BillboardServer;
 
-import BillboardAssignment.BillboardServerControllers.AdminControllers;
-import com.sun.net.httpserver.HttpHandler;
+import BillboardAssignment.BillboardServerControllers.BillboardController;
+import BillboardAssignment.BillboardServerControllers.GetBillboard;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class BillboardServer {
     HttpServer server;
 
-    HttpHandler adminControllers = new AdminControllers();
+    BillboardController[] controllers;
 
     /**
      * Spin up the server on given port
@@ -20,7 +20,13 @@ public class BillboardServer {
      */
     public BillboardServer(int port) throws IOException  {
         server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
-        server.createContext("/test", adminControllers);
+        controllers = new BillboardController[] { new GetBillboard() };
+    }
+
+    public void start() {
+        for (BillboardController controller: controllers) {
+            server.createContext(controller.path(), controller);
+        }
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         server.setExecutor(threadPoolExecutor);
         server.start();
