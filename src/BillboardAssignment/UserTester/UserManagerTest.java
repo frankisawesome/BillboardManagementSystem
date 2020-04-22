@@ -17,7 +17,6 @@ class UserManagerTest {
 
     UserAuthDataInput userCreds;
 
-    UserAuthDataOutput userCredsHashed;
 
     UserManager userManager;
 
@@ -31,11 +30,9 @@ class UserManagerTest {
         database.initialiseDatabase();
         keyManager = new SessionKeyManager(database2);
 
-        userCreds = new UserAuthDataInput(1, "123".getBytes());
+        userCreds = new UserAuthDataInput(100, "123".getBytes());
 
         passwords.addPasswordData(userCreds);
-
-        userCredsHashed = passwords.passwordDatabase.getObject(1);
 
         userManager = new UserManager(passwords, keyManager);
     }
@@ -54,7 +51,21 @@ class UserManagerTest {
         UserAuthDataInput badCreds = new UserAuthDataInput(1, "the_wrong_password".getBytes());
 
         assertThrows(IncorrectPasswordException.class, ()->{userManager.login(badCreds);});
+    }
 
+    @Test
+    void createUser() throws OutOfDateSessionKeyException, IncorrectSessionKeyException, IncorrectPasswordException, DatabaseLogicException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
+        PrivilegedUser user = new PrivilegedUser(1, "This_is_the_hashed_password".getBytes(), new String[]{"Edit Users", "Edit All Billboards", "Schedule Billboards", "Create Billboards"});
+
+        userManager.createUser(user);
+
+        UserAuthDataInput userIn = new UserAuthDataInput(1, "This_is_the_hashed_password".getBytes());
+        String sessionKey = userManager.login(userIn);
+
+        assertTrue(sessionKey instanceof String);
+
+        assertThrows(IncorrectPasswordException.class, ()->{userManager.login(new UserAuthDataInput(1, "This_is_the_wrong_hashed_password".getBytes()));});
+        assertThrows(IncorrectPasswordException.class, ()->{userManager.login(new UserAuthDataInput(2, "This_is_the_hashed_password".getBytes()));});
     }
 
 }
