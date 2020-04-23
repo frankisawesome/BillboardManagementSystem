@@ -12,7 +12,7 @@ public class SessionKeyDataOutput implements Identifiable {
 
     private int userID;
     /**
-     * Just creating a basic object to store user ID, just for consistency of the API this class inherits UserAuthDataInput
+     * Just creating a basic object to store user ID, just for consistency of the API this class inherits UserDataInput
      * @param userID
      */
     public SessionKeyDataOutput(int userID, String sessionKey, LocalDateTime expiryDateTime) {

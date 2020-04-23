@@ -1,12 +1,6 @@
-package BillboardAssignment.Authentication;
+package BillboardAssignment.User;
 
-/**
- * A class to group together data that will be stored in the passwords database, after hashing.
- * Namely the user ID, salt and twice hashed password. Consumed by PasswordManager
- * @see PasswordManager
- * @see UserAuthDataInput
- */
-public class UserAuthDataOutput extends UserAuthDataInput {
+public class User extends UserDataInput {
 
     public byte[] twiceHashedPassword;
 
@@ -21,8 +15,8 @@ public class UserAuthDataOutput extends UserAuthDataInput {
      * @return A descriptor of the entity that is being stored.
      */
     public static String getEntityName(){
-        return "UserAuthDataOutput";
-
+        return "User";
+        // TODO: Fix the whole automatic database name thingo
     }
 
     /**
@@ -31,13 +25,13 @@ public class UserAuthDataOutput extends UserAuthDataInput {
      * @param salt
      * @param ID
      */
-    public UserAuthDataOutput(byte[] twiceHashedPassword, byte[] salt, int ID){
-        super(ID);
+    public User(int ID, byte[] twiceHashedPassword, byte[] salt, UserPrivilege[] privileges){
+        /** We don't ever store the once hashed password **/
+        super(ID, "".getBytes(), privileges);
 
         this.twiceHashedPassword = twiceHashedPassword;
 
         this.salt = salt;
-
     }
 
 }

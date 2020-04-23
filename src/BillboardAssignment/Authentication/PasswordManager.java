@@ -4,6 +4,8 @@ import BillboardAssignment.Database.DatabaseLogicException;
 import BillboardAssignment.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.Database.Queryable;
+import BillboardAssignment.User.User;
+import BillboardAssignment.User.UserDataInput;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,14 +17,14 @@ import java.util.Arrays;
  */
 public class PasswordManager {
 
-    public Queryable<UserAuthDataOutput> passwordDatabase;
+    public Queryable<User> passwordDatabase;
 
     /**
      * Generates a random salt, hashes the input byte array, and then returns a new object with the new hashed password
-     * @param user A UserAuthDataInput object that contains an ID and onceHashedPassword
-     * @return An object with ID, salt and the twiceHashedPassword, ready for storage.
+     * @param user A UserDataInput object that contains an ID and onceHashedPassword
+     * @return Input object plus the new fields salt and the twiceHashedPassword, ready for storage. The once hashed password is not in the output object
      */
-    private UserAuthDataOutput hashNewPassword(UserAuthDataInput user){
+    public User hashNewPassword(UserDataInput user){
 
         /* Create a new random salt generator and use it to generate a salt for the given user */
         SecureRandom randomNumGenerator = new SecureRandom();
@@ -32,7 +34,7 @@ public class PasswordManager {
         /* Hash the password */
         byte[] twiceHashedPassword = hashPassword(user.getOnceHashedPassword(), passwordSalt);
 
-        return new UserAuthDataOutput(twiceHashedPassword, passwordSalt, user.getID());
+        return new User(user.getID(), twiceHashedPassword, passwordSalt, user.getPrivileges());
     }
 
     /**
@@ -43,8 +45,8 @@ public class PasswordManager {
      * @throws DatabaseNotAccessibleException
      * @throws IncorrectPasswordException
      */
-    public boolean checkPasswordMatch(UserAuthDataInput user) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectPasswordException {
-        UserAuthDataOutput userData = passwordDatabase.getObject(user.getID());
+    public boolean checkPasswordMatch(UserDataInput user) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectPasswordException {
+        User userData = passwordDatabase.getObject(user.getID());
 
         /* Hash the input password using the user's salt */
         byte[] hashedInputPassword = hashPassword(user.getOnceHashedPassword(), userData.salt);
@@ -85,24 +87,12 @@ public class PasswordManager {
     /**
      * Constructor for the password manager class
      * @param passwordDatabase Takes an input of the database that we wish to link to the password manager. Stores objects
-     *                         of type UserAuthDataOutput (Essentially just UserID + salt + twicehashedpassword)
+     *                         of type User (Essentially just UserID + salt + twicehashedpassword, + some other things we don't need)
      */
-    public PasswordManager(Queryable<UserAuthDataOutput> passwordDatabase){
+    public PasswordManager(Queryable<User> passwordDatabase){
         this.passwordDatabase = passwordDatabase;
     }
 
-    /**
-     * Generates the salt and twice hashed password for the input object, and adds this info to the database
-     * Use changePassword if the user already has an ID in the database
-     * @param inputUser The input data needed to record the password (User ID and hashed password)
-     * @throws DatabaseNotAccessibleException
-     * @throws DatabaseLogicException
-     */
-    public void addPasswordData(UserAuthDataInput inputUser) throws DatabaseNotAccessibleException, DatabaseLogicException {
-        UserAuthDataOutput hashedUserData = hashNewPassword(inputUser);
-
-        passwordDatabase.addObject(hashedUserData);
-    }
 
     /**
      * Change the password of a given user
@@ -113,11 +103,13 @@ public class PasswordManager {
      * @throws IncorrectPasswordException
      * @throws DatabaseLogicException
      */
-    public void changePassword(UserAuthDataInput inputUser, byte[] onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException {
+    public void changePassword(UserDataInput inputUser, byte[] onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException {
         if (checkPasswordMatch(inputUser)){
+            User oldUserData = passwordDatabase.getObject(inputUser.getID());
             passwordDatabase.removeObject(inputUser.getID());
-            inputUser.setOnceHashedPassword(onceHashedNewPassword);
-            addPasswordData(inputUser);
+            oldUserData.setOnceHashedPassword(onceHashedNewPassword);
+            User newPasswordData = hashNewPassword(oldUserData);
+            passwordDatabase.addObject(newPasswordData);
         }
     }
 

@@ -2,8 +2,10 @@ package BillboardAssignment.UserTester;
 
 import BillboardAssignment.Authentication.*;
 import BillboardAssignment.Database.*;
-import BillboardAssignment.User.PrivilegedUser;
+import BillboardAssignment.User.User;
+import BillboardAssignment.User.UserDataInput;
 import BillboardAssignment.User.UserManager;
+import BillboardAssignment.User.UserPrivilege;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.*;
@@ -16,26 +18,25 @@ class UserManagerTest {
 
     SessionKeyManager keyManager;
 
-    UserAuthDataInput userCreds;
-
+    UserDataInput userCreds;
 
     UserManager userManager;
 
     @BeforeEach
     void setUp() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException {
-        Queryable<UserAuthDataOutput> database = new DatabaseArray<UserAuthDataOutput>();
-        database.initialiseDatabase();
-        passwords = new PasswordManager(database);
+        Queryable<User> userDatabase = new DatabaseArray<User>();
+        userDatabase.initialiseDatabase();
+        passwords = new PasswordManager(userDatabase);
 
         Queryable<SessionKeyDataOutput> database2 = new DatabaseArray<SessionKeyDataOutput>();
-        database.initialiseDatabase();
+        database2.initialiseDatabase();
         keyManager = new SessionKeyManager(database2);
 
-        userCreds = new UserAuthDataInput(100, "123".getBytes());
+        userCreds = new UserDataInput(100, "123".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards});
 
-        passwords.addPasswordData(userCreds);
+        userManager = new UserManager(passwords, keyManager, userDatabase);
 
-        userManager = new UserManager(passwords, keyManager);
+        userManager.createUser(userCreds);
     }
 
     @AfterEach
@@ -49,24 +50,24 @@ class UserManagerTest {
 
         assertTrue(sessionKey instanceof String);
 
-        UserAuthDataInput badCreds = new UserAuthDataInput(1, "the_wrong_password".getBytes());
+        UserDataInput badCreds = new UserDataInput(100, "the_wrong_password".getBytes());
 
         assertThrows(IncorrectPasswordException.class, ()->{userManager.login(badCreds);});
     }
 
     @Test
     void createUser() throws OutOfDateSessionKeyException, IncorrectSessionKeyException, IncorrectPasswordException, DatabaseLogicException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
-        PrivilegedUser user = new PrivilegedUser(1, "This_is_the_hashed_password".getBytes(), new String[]{"Edit Users", "Edit All Billboards", "Schedule Billboards", "Create Billboards"});
+        UserDataInput user = new UserDataInput(1, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards});
 
         userManager.createUser(user);
 
-        UserAuthDataInput userIn = new UserAuthDataInput(1, "This_is_the_hashed_password".getBytes());
+        UserDataInput userIn = new UserDataInput(1, "This_is_the_hashed_password".getBytes());
         String sessionKey = userManager.login(userIn);
 
         assertTrue(sessionKey instanceof String);
 
-        assertThrows(IncorrectPasswordException.class, ()->{userManager.login(new UserAuthDataInput(1, "This_is_the_wrong_hashed_password".getBytes()));});
-        assertThrows(IncorrectPasswordException.class, ()->{userManager.login(new UserAuthDataInput(2, "This_is_the_hashed_password".getBytes()));});
+        assertThrows(IncorrectPasswordException.class, ()->{userManager.login(new UserDataInput(1, "This_is_the_wrong_hashed_password".getBytes()));});
+        assertThrows(DatabaseObjectNotFoundException.class, ()->{userManager.login(new UserDataInput(2, "This_is_the_hashed_password".getBytes()));});
     }
 
 }
