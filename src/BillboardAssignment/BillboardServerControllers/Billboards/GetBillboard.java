@@ -1,5 +1,6 @@
-package BillboardAssignment.BillboardServerControllers;
+package BillboardAssignment.BillboardServerControllers.Billboards;
 
+import BillboardAssignment.BillboardServerControllers.BillboardController;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
