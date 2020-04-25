@@ -1,14 +1,14 @@
-package BillboardAssignment.DatabaseTester;
+package BillboardAssignment.Database;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 
-import BillboardAssignment.Database.*;
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Testing class for the in-memory "Database" array.
  */
-class DatabaseArrayTest {
+class TestDatabaseArray {
 
     Queryable<DummyDatabaseObject> database;
 
@@ -23,9 +23,11 @@ class DatabaseArrayTest {
     void addObject() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException {
         database.addObject(new DummyDatabaseObject(1));
         database.addObject(new DummyDatabaseObject(2));
-        assertEquals( 1, database.getObject(1).getID()); /* Make sure it exists*/
+        assertEquals(1, database.getObject(1).getID()); /* Make sure it exists*/
 
-        assertThrows(DatabaseLogicException.class, () -> {database.addObject(new DummyDatabaseObject(1));}); /* Make sure this errors out */
+        assertThrows(DatabaseLogicException.class, () -> {
+            database.addObject(new DummyDatabaseObject(1));
+        }); /* Make sure this errors out */
     }
 
     @org.junit.jupiter.api.Test
@@ -33,14 +35,18 @@ class DatabaseArrayTest {
         database.addObject(new DummyDatabaseObject(1));
         database.removeObject(1);
 
-        assertThrows(DatabaseObjectNotFoundException.class, () -> {database.getObject(1);}); /* Make sure this errors out */
+        assertThrows(DatabaseObjectNotFoundException.class, () -> {
+            database.getObject(1);
+        }); /* Make sure this errors out */
     }
 
     @org.junit.jupiter.api.Test
     void getObject() throws DatabaseNotAccessibleException, DatabaseLogicException {
         database.addObject(new DummyDatabaseObject(1));
         database.addObject(new DummyDatabaseObject(2));
-        assertThrows(DatabaseObjectNotFoundException.class, () -> {database.getObject(3);}); /* Make sure this errors out */
+        assertThrows(DatabaseObjectNotFoundException.class, () -> {
+            database.getObject(3);
+        }); /* Make sure this errors out */
     }
 
     @org.junit.jupiter.api.Test

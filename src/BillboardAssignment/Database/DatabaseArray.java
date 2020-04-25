@@ -13,19 +13,20 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
 
     /**
      * Do a simple linear search to figure out the index of the object with the given ID, if it exists
+     *
      * @param ID The integer ID of the object we want to search for.
      * @return The index of the object if we found it, -1 if we didn't.
      */
-    private int linearIDSearch(int ID){
-        for (int i = 0; i < data.size(); i++){
-            if (data.get(i).getID() == ID){
+    private int linearIDSearch(int ID) {
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getID() == ID) {
                 return i;
             }
         }
         return -1;
     }
 
-    private boolean contains(int ID){
+    private boolean contains(int ID) {
         return linearIDSearch(ID) != -1;
     }
 
@@ -37,15 +38,15 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
      * @return A boolean indication whether or not the object was added successfully
      * @throws DatabaseNotAccessibleException Throws an exception if we can't access the database.
      *                                        Can be inherited to provide more reason about the error (I.E. Database connection failed)
-     * @throws DatabaseLogicException Throws an exception if we try to do an illegal operation
+     * @throws DatabaseLogicException         Throws an exception if we try to do an illegal operation
      */
     @Override
     public boolean addObject(E object) throws DatabaseNotAccessibleException, DatabaseLogicException {
-        if (!arrayInitialised){
+        if (!arrayInitialised) {
             throw new DatabaseNotAccessibleException(E.getEntityName(), "The database array hasn't been initialised yet.");
         }
 
-        if (contains(object.getID())){
+        if (contains(object.getID())) {
             throw new DatabaseLogicException(E.getEntityName(), "The primary-key constraint of the object's ID was violated");
         }
 
@@ -62,11 +63,11 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
      */
     @Override
     public boolean removeObject(int ID) throws DatabaseNotAccessibleException {
-        if (!arrayInitialised){
+        if (!arrayInitialised) {
             throw new DatabaseNotAccessibleException(E.getEntityName(), "The database array hasn't been initialised yet!");
         }
 
-        if (!contains(ID)){
+        if (!contains(ID)) {
             return false; /* The object was never in the database */
         }
 
@@ -87,11 +88,11 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
      */
     @Override
     public E getObject(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
-        if (!arrayInitialised){
+        if (!arrayInitialised) {
             throw new DatabaseNotAccessibleException(E.getEntityName(), "The database array hasn't been initialised yet!");
         }
 
-        if (!contains(ID)){
+        if (!contains(ID)) {
             throw new DatabaseObjectNotFoundException(E.getEntityName(), ID);
         }
 
@@ -111,7 +112,7 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
      */
     @Override
     public boolean objectInDatabase(E object) throws DatabaseNotAccessibleException {
-        if (!arrayInitialised){
+        if (!arrayInitialised) {
             throw new DatabaseNotAccessibleException(E.getEntityName(), "The database array hasn't been initialised yet!");
         }
         return linearIDSearch(object.getID()) != -1;

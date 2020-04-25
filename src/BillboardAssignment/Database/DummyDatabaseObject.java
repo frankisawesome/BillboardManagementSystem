@@ -1,4 +1,4 @@
-package BillboardAssignment.DatabaseTester;
+package BillboardAssignment.Database;
 
 import BillboardAssignment.Database.Identifiable;
 
@@ -9,6 +9,11 @@ import BillboardAssignment.Database.Identifiable;
 public class DummyDatabaseObject implements Identifiable {
 
     private int ID;
+
+    public DummyDatabaseObject(int ID) {
+        this.ID = ID;
+    }
+
     /**
      * Get the unique identifier of the Identifiable object
      *
@@ -28,10 +33,6 @@ public class DummyDatabaseObject implements Identifiable {
     @Override
     public void changeID(int newID) {
         ID = newID;
-    }
-
-    public DummyDatabaseObject(int ID){
-        this.ID = ID;
     }
 
 }

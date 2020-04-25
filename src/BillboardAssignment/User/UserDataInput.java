@@ -17,28 +17,58 @@ public class UserDataInput implements Identifiable {
      * Enum of privileges for each years
      */
     private UserPrivilege[] privileges;
+    /**
+     * We don't want this stored in the database, the input password that was hashed by the frontend
+     */
+    private byte[] onceHashedPassword;
 
+    public UserDataInput(int userID, byte[] onceHashedPassword, UserPrivilege[] privileges) {
+        this.userID = userID;
+
+        this.onceHashedPassword = onceHashedPassword;
+
+        this.privileges = privileges;
+    }
+
+    /**
+     * For when we don't care about the original password (Just going to store the double hashed version only)
+     *
+     * @param userID
+     */
+    public UserDataInput(int userID) {
+        this.userID = userID;
+        this.privileges = new UserPrivilege[]{};
+        this.onceHashedPassword = "".getBytes();
+    }
+
+    /**
+     * For when we don't care about the original priviledges (Just going to store the double hashed version only)
+     *
+     * @param userID
+     */
+    public UserDataInput(int userID, byte[] onceHashedPassword) {
+        this.userID = userID;
+        this.privileges = new UserPrivilege[]{};
+        this.onceHashedPassword = onceHashedPassword;
+    }
 
     public UserPrivilege[] getPrivileges() {
         return privileges;
     }
 
     /**
-     *  We don't want this stored in the database, the input password that was hashed by the frontend
-     */
-    private byte[] onceHashedPassword;
-
-    /**
      * Make sure to overwrite this in any sub-class as it contains senstive data that shouldn't be stored/accessed except for hashing
+     *
      * @return
      */
-    public byte[] getOnceHashedPassword(){
+    public byte[] getOnceHashedPassword() {
         return onceHashedPassword;
     }
 
-    public void setOnceHashedPassword(byte[] onceHashedPassword){
+    public void setOnceHashedPassword(byte[] onceHashedPassword) {
         this.onceHashedPassword = onceHashedPassword;
     }
+
     /**
      * Get the unique identifier of the Identifiable object
      *
@@ -58,35 +88,6 @@ public class UserDataInput implements Identifiable {
     public void changeID(int newID) {
         userID = newID;
     }
-
-    public UserDataInput(int userID, byte[] onceHashedPassword, UserPrivilege[] privileges){
-        this.userID = userID;
-
-        this.onceHashedPassword = onceHashedPassword;
-
-        this.privileges = privileges;
-    }
-
-    /**
-     * For when we don't care about the original password (Just going to store the double hashed version only)
-     * @param userID
-     */
-    public UserDataInput(int userID){
-        this.userID = userID;
-        this.privileges = new UserPrivilege[]{};
-        this.onceHashedPassword = "".getBytes();
-    }
-
-    /**
-     * For when we don't care about the original priviledges (Just going to store the double hashed version only)
-     * @param userID
-     */
-    public UserDataInput(int userID, byte[] onceHashedPassword){
-        this.userID = userID;
-        this.privileges = new UserPrivilege[]{};
-        this.onceHashedPassword = onceHashedPassword;
-    }
-
 
 
 }

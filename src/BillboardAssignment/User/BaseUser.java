@@ -8,6 +8,11 @@ import BillboardAssignment.Database.Identifiable;
 public class BaseUser implements Identifiable {
 
     private int userID;
+
+    public BaseUser(int userID) {
+        this.userID = userID;
+    }
+
     /**
      * Get the unique identifier of the Identifiable object
      *
@@ -26,9 +31,5 @@ public class BaseUser implements Identifiable {
     @Override
     public void changeID(int newID) {
         this.userID = newID;
-    }
-
-    public BaseUser(int userID){
-        this.userID = userID;
     }
 }

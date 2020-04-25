@@ -8,9 +8,9 @@ import BillboardAssignment.Database.Queryable;
 
 public class UserManager {
 
+    public Queryable<User> userDatabase;
     private PasswordManager passwords;
     private SessionKeyManager sessionKeys;
-    public Queryable<User> userDatabase;
 
     public UserManager(PasswordManager passwords, SessionKeyManager keyManager, Queryable<User> userDatabase) {
         this.passwords = passwords;
@@ -20,6 +20,7 @@ public class UserManager {
 
     /**
      * Testing only, if we don't care about session keys
+     *
      * @param passwords
      */
     public UserManager(PasswordManager passwords, Queryable<User> userDatabase) {
@@ -30,6 +31,7 @@ public class UserManager {
 
     /**
      * Tries to login the given user, using their user ID and once hashed password
+     *
      * @param userCreds
      * @return Session key in string form
      * @throws IncorrectPasswordException
@@ -37,7 +39,7 @@ public class UserManager {
      * @throws DatabaseNotAccessibleException
      * @throws DatabaseLogicException
      */
-    public String login(UserDataInput userCreds) throws IncorrectPasswordException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
+    public UserSessionKey login(UserDataInput userCreds) throws IncorrectPasswordException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
         passwords.checkPasswordMatch(userCreds);
 
         // We only get to this section if the password is correct, will throw error above if it isn't
@@ -45,17 +47,66 @@ public class UserManager {
         // Remove old session key, if it exists
         sessionKeys.removeSessionKey(userCreds);
 
-        SessionKeyDataOutput sessionKey = sessionKeys.addSessionKeyData(userCreds);
+        UserSessionKey sessionKey = sessionKeys.addSessionKeyData(userCreds);
 
-        return sessionKey.sessionKey;
+        return sessionKey;
     }
 
-    public User createUser(UserDataInput user) throws DatabaseNotAccessibleException, DatabaseLogicException {
+    /**
+     * Creates a user, if the second argument user has correct password and permissions
+     *
+     * @param userToAdd      The user we want to add, with password, ID and permissions
+     * @param adminUserPerms The user with edit user permissions, needs
+     * @return The user that was just added to the database
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseLogicException
+     * @throws DatabaseObjectNotFoundException
+     * @throws IncorrectPasswordException
+     * @throws InsufficentPrivilegeException
+     */
+    public User createUser(UserDataInput userToAdd, UserSessionKey adminUserPerms) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
 
-        User userWithNewPassword = passwords.hashNewPassword(user);
+        User adminUser = null;
+
+        if (sessionKeys.checkSessionKeyStatus(adminUserPerms)) {
+            adminUser = getUser(adminUserPerms.getID());
+        }
+
+        adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
+
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+
+        User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
         userDatabase.addObject(userWithNewPassword);
 
         return userWithNewPassword;
+    }
+
+
+    /**
+     * Creates the first, default admin user, with ID 69420, and password "pwd". This default password will likely have to change.
+     * @return User that was just added
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseLogicException
+     * @throws DatabaseObjectNotFoundException
+     * @throws IncorrectPasswordException
+     * @throws InsufficentPrivilegeException
+     * @throws OutOfDateSessionKeyException
+     * @throws IncorrectSessionKeyException
+     */
+    public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+        UserDataInput userToAdd = new UserDataInput(69420, "pwd".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers});
+        User userWithNewPassword = passwords.hashNewPassword(userToAdd);
+
+        userDatabase.addObject(userWithNewPassword);
+
+        return userWithNewPassword;
+    }
+
+    private User getUser(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
+        return userDatabase.getObject(ID);
     }
 }

@@ -1,9 +1,9 @@
-package BillboardAssignment.AuthenticationTester;
+package BillboardAssignment.Authentication;
 
 import BillboardAssignment.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.Authentication.OutOfDateSessionKeyException;
-import BillboardAssignment.Authentication.SessionKeyDataOutput;
 import BillboardAssignment.Authentication.SessionKeyManager;
+import BillboardAssignment.Authentication.UserSessionKey;
 import BillboardAssignment.Database.*;
 import BillboardAssignment.User.BaseUser;
 import org.junit.jupiter.api.AfterEach;
@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SessionKeyManagerTest {
+class TestSessionKeyManager {
 
     private SessionKeyManager keyManager;
 
     @BeforeEach
     void setUp() throws DatabaseNotAccessibleException {
-        Queryable<SessionKeyDataOutput> database = new DatabaseArray<SessionKeyDataOutput>();
+        Queryable<UserSessionKey> database = new DatabaseArray<UserSessionKey>();
         keyManager = new SessionKeyManager(database);
     }
 
@@ -34,22 +34,28 @@ class SessionKeyManagerTest {
 
         keyManager.addSessionKeyData(newUser);
 
-        assertThrows(DatabaseLogicException.class, () -> {keyManager.addSessionKeyData(newUser);}); /* no dups */
+        assertThrows(DatabaseLogicException.class, () -> {
+            keyManager.addSessionKeyData(newUser);
+        }); /* no dups */
     }
 
     @Test
     void checkSessionKeyStatus() throws DatabaseNotAccessibleException, DatabaseLogicException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, IncorrectSessionKeyException {
         BaseUser newUser = new BaseUser(1);
 
-        SessionKeyDataOutput goodUser = keyManager.addSessionKeyData(newUser);
+        UserSessionKey goodUser = keyManager.addSessionKeyData(newUser);
 
         assertTrue(keyManager.checkSessionKeyStatus(goodUser));
 
-        SessionKeyDataOutput badUser = new SessionKeyDataOutput(goodUser.getID(), "This is the incorrect session key, jaslkdfjalskdjfasdlkfjadslfkasjdflaksjfaslkfjaslkfjasdf!", goodUser.expiryDateTime);
+        UserSessionKey badUser = new UserSessionKey(goodUser.getID(), "This is the incorrect session key, jaslkdfjalskdjfasdlkfjadslfkasjdflaksjfaslkfjaslkfjasdf!", goodUser.expiryDateTime);
 
-        assertThrows(IncorrectSessionKeyException.class, () -> {keyManager.checkSessionKeyStatus(badUser);});
+        assertThrows(IncorrectSessionKeyException.class, () -> {
+            keyManager.checkSessionKeyStatus(badUser);
+        });
 
-        assertThrows(OutOfDateSessionKeyException.class, () -> {keyManager.checkSessionKeyStatus(goodUser, LocalDateTime.now().plusHours(24));});
+        assertThrows(OutOfDateSessionKeyException.class, () -> {
+            keyManager.checkSessionKeyStatus(goodUser, LocalDateTime.now().plusHours(24));
+        });
 
         assertTrue(keyManager.checkSessionKeyStatus(goodUser, LocalDateTime.now().plusHours(23)));
 
@@ -60,7 +66,7 @@ class SessionKeyManagerTest {
         BaseUser newUser = new BaseUser(1);
         BaseUser otherUser = new BaseUser(2);
 
-        SessionKeyDataOutput goodUser = keyManager.addSessionKeyData(newUser);
+        UserSessionKey goodUser = keyManager.addSessionKeyData(newUser);
 
         assertTrue(keyManager.checkSessionKeyStatus(goodUser));
 
@@ -68,7 +74,9 @@ class SessionKeyManagerTest {
 
         keyManager.removeSessionKey(newUser);
 
-        assertThrows(DatabaseObjectNotFoundException.class, ()->{keyManager.checkSessionKeyStatus(goodUser);});
+        assertThrows(DatabaseObjectNotFoundException.class, () -> {
+            keyManager.checkSessionKeyStatus(goodUser);
+        });
 
         keyManager.addSessionKeyData(newUser);
     }
