@@ -90,7 +90,7 @@ class TestUserManager extends FatherTester {
 
     @Test
     void getPermissions() throws Exception, InsufficentPrivilegeException {
-        UserPrivilege[] adminPerms = userManager.getPermissions(69420, adminKey);
+        UserPrivilege[] adminPerms = userManager.getPermissions(adminUser, adminKey);
 
         assertSetEquals(new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, adminPerms);
 
@@ -98,13 +98,13 @@ class TestUserManager extends FatherTester {
         userManager.createUser(user1, adminKey);
         UserSessionKey user1Key = userManager.login(user1);
 
-        UserPrivilege[] noPerms = userManager.getPermissions(1, user1Key);
-        UserPrivilege[] noPerms2 = userManager.getPermissions(1, adminKey);
+        UserPrivilege[] noPerms = userManager.getPermissions(user1, user1Key);
+        UserPrivilege[] noPerms2 = userManager.getPermissions(adminUser, adminKey);
         assertSetEquals(new UserPrivilege[]{}, noPerms);
         assertSetEquals(new UserPrivilege[]{}, noPerms2);
 
         assertThrows(InsufficentPrivilegeException.class, () -> {
-            userManager.getPermissions(69420, user1Key);
+            userManager.getPermissions(adminUser, user1Key);
         });
 
     }
@@ -127,9 +127,9 @@ class TestUserManager extends FatherTester {
         });
 
         userManager.setPermissions(user1, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey);
-        assertArrayEquals(new UserPrivilege[]{UserPrivilege.EditUsers}, userManager.getPermissions(user1.getID(), adminKey));
+        assertArrayEquals(new UserPrivilege[]{UserPrivilege.EditUsers}, userManager.getPermissions(user1, adminKey));
         userManager.setPermissions(user1, new UserPrivilege[]{}, adminKey);
-        assertArrayEquals(new UserPrivilege[]{}, userManager.getPermissions(user1.getID(), adminKey));
+        assertArrayEquals(new UserPrivilege[]{}, userManager.getPermissions(user1, adminKey));
     }
 
     @Test

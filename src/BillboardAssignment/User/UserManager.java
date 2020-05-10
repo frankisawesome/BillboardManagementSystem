@@ -128,7 +128,7 @@ public class UserManager {
 
     /**
      * Get the permissions of a user. If you're grabbing permissions for yourself you need no perms, but for others you need edit users.
-     * @param userID
+     * @param userToGet
      * @param userSessionKey
      * @return List of privledges
      * @throws InsufficentPrivilegeException
@@ -137,7 +137,7 @@ public class UserManager {
      * @throws IncorrectSessionKeyException
      * @throws DatabaseObjectNotFoundException
      */
-    public UserPrivilege[] getPermissions(int userID, UserSessionKey userSessionKey) throws InsufficentPrivilegeException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
+    public UserPrivilege[] getPermissions(UserDataInput userToGet, UserSessionKey userSessionKey) throws InsufficentPrivilegeException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
         User adminUser = null;
 
         if (sessionKeys.checkSessionKeyStatus(userSessionKey)) {
@@ -145,13 +145,13 @@ public class UserManager {
         }
         // We only get to this section if the password and permissions are correct, will throw error above if they aren't
 
-        if (adminUser.getID() == userID){
-            return userDatabase.getObject(userID).getPrivileges();
+        if (adminUser.getID() == userToGet.getID()){
+            return userDatabase.getObject(userToGet.getID()).getPrivileges();
         }
 
         adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
 
-        return userDatabase.getObject(userID).getPrivileges();
+        return userDatabase.getObject(userToGet.getID()).getPrivileges();
     }
 
     /**
@@ -191,6 +191,35 @@ public class UserManager {
 
     }
 
+    /**
+     * Sets the password, given the input object (only really need user ID), new password, and a session key.
+     * @param userToChange
+     * @param newPassword
+     * @param userSessionKey
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseLogicException
+     * @throws InsufficentPrivilegeException
+     */
+    public void setPassword(UserDataInput userToChange, byte[] newPassword, UserSessionKey userSessionKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException, InsufficentPrivilegeException {
+        User adminUser = null;
+
+        if (sessionKeys.checkSessionKeyStatus(userSessionKey)) {
+            adminUser = getUser(userSessionKey.getID());
+        }
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+
+        if (adminUser.getID() == userToChange.getID()){
+            passwords.changePassword(userToChange, newPassword);
+        }
+        else{
+            adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
+            passwords.changePassword(userToChange, newPassword);
+        }
+    }
+
     private User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         User adminUser = null;
 
@@ -202,4 +231,6 @@ public class UserManager {
         // We only get to this section if the password and permissions are correct, will throw error above if they aren't
         return adminUser;
     }
+
+
 }
