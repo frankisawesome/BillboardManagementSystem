@@ -89,23 +89,46 @@ class TestUserManager extends FatherTester {
     }
 
     @Test
-    void getPermissions() throws IncorrectPasswordException, DatabaseLogicException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
+    void getPermissions() throws Exception, InsufficentPrivilegeException {
         UserPrivilege[] adminPerms = userManager.getPermissions(69420, adminKey);
 
-        assertArrayEquals(new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, adminPerms);
+        assertSetEquals(new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, adminPerms);
 
         UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{}, "");
+        userManager.createUser(user1, adminKey);
         UserSessionKey user1Key = userManager.login(user1);
 
         UserPrivilege[] noPerms = userManager.getPermissions(1, user1Key);
         UserPrivilege[] noPerms2 = userManager.getPermissions(1, adminKey);
-        assertArrayEquals(new UserPrivilege[]{}, noPerms);
-        assertArrayEquals(new UserPrivilege[]{}, noPerms2);
+        assertSetEquals(new UserPrivilege[]{}, noPerms);
+        assertSetEquals(new UserPrivilege[]{}, noPerms2);
 
         assertThrows(InsufficentPrivilegeException.class, () -> {
             userManager.getPermissions(69420, user1Key);
         });
 
+    }
+
+    /**
+     * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
+     * @param set1
+     * @param set2
+     * @throws Exception
+     */
+    void assertSetEquals(UserPrivilege[] set1, UserPrivilege[] set2) throws Exception {
+        boolean match;
+        for (int i = 0; i < set1.length; i ++){
+            match = false;
+            for (int j = 0; j < set2.length; j++){
+                if (set1[i] == set2[j]){
+                    match = true;
+                }
+            }
+            if (!match){
+                throw new Exception("The two enums aren't the same!");
+            }
+
+        }
     }
 
 }

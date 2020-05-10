@@ -142,4 +142,21 @@ public class UserManager {
 
         return userDatabase.getAllObjects().toArray(new User[0]);
     }
+
+    public UserPrivilege[] getPermissions(int userID, UserSessionKey userSessionKey) throws InsufficentPrivilegeException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
+        User adminUser = null;
+
+        if (sessionKeys.checkSessionKeyStatus(userSessionKey)) {
+            adminUser = getUser(userSessionKey.getID());
+        }
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+
+        if (adminUser.getID() == userID){
+            return userDatabase.getObject(userID).getPrivileges();
+        }
+
+        adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
+
+        return userDatabase.getObject(userID).getPrivileges();
+    }
 }
