@@ -1,11 +1,7 @@
 package BillboardAssignment.Authentication;
 
-import BillboardAssignment.Authentication.IncorrectSessionKeyException;
-import BillboardAssignment.Authentication.OutOfDateSessionKeyException;
-import BillboardAssignment.Authentication.SessionKeyManager;
-import BillboardAssignment.Authentication.UserSessionKey;
 import BillboardAssignment.Database.*;
-import BillboardAssignment.User.BaseUser;
+import BillboardAssignment.User.UserDataInput;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +26,7 @@ class TestSessionKeyManager {
 
     @Test
     void addSessionKeyData() throws DatabaseNotAccessibleException, DatabaseLogicException {
-        BaseUser newUser = new BaseUser(1);
+        UserDataInput newUser = new UserDataInput(1);
 
         keyManager.addSessionKeyData(newUser);
 
@@ -41,7 +37,7 @@ class TestSessionKeyManager {
 
     @Test
     void checkSessionKeyStatus() throws DatabaseNotAccessibleException, DatabaseLogicException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, IncorrectSessionKeyException {
-        BaseUser newUser = new BaseUser(1);
+        UserDataInput newUser = new UserDataInput(1);
 
         UserSessionKey goodUser = keyManager.addSessionKeyData(newUser);
 
@@ -63,8 +59,8 @@ class TestSessionKeyManager {
 
     @Test
     void removeSessionKey() throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException {
-        BaseUser newUser = new BaseUser(1);
-        BaseUser otherUser = new BaseUser(2);
+        UserDataInput newUser = new UserDataInput(1);
+        UserDataInput otherUser = new UserDataInput(2);
 
         UserSessionKey goodUser = keyManager.addSessionKeyData(newUser);
 

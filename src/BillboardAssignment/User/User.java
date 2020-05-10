@@ -16,9 +16,9 @@ public class User extends UserDataInput {
      * @param salt
      * @param ID
      */
-    public User(int ID, byte[] twiceHashedPassword, byte[] salt, UserPrivilege[] privileges) {
+    public User(int ID, byte[] twiceHashedPassword, byte[] salt, UserPrivilege[] privileges, String username) {
         /** We don't ever store the once hashed password **/
-        super(ID, "".getBytes(), privileges);
+        super(ID, "".getBytes(), privileges, username);
 
         this.twiceHashedPassword = twiceHashedPassword;
 

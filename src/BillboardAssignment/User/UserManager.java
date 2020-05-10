@@ -106,7 +106,7 @@ public class UserManager {
         return userWithNewPassword;
     }
 
-    private User getUser(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
+    protected User getUser(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
         return userDatabase.getObject(ID);
     }
 }

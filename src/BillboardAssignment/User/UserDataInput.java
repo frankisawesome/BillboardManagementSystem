@@ -11,7 +11,7 @@ public class UserDataInput implements Identifiable {
     /**
      * ID for each user
      */
-    public int userID;
+    private int userID;
 
     /**
      * Enum of privileges for each years
@@ -22,12 +22,19 @@ public class UserDataInput implements Identifiable {
      */
     private byte[] onceHashedPassword;
 
-    public UserDataInput(int userID, byte[] onceHashedPassword, UserPrivilege[] privileges) {
+    /**
+     *  The username of the user, unique, but we don't use it as the primary key as that would be inefficient.
+     */
+    private String username;
+
+    public UserDataInput(int userID, byte[] onceHashedPassword, UserPrivilege[] privileges, String username) {
         this.userID = userID;
 
         this.onceHashedPassword = onceHashedPassword;
 
         this.privileges = privileges;
+
+        this.username = username;
     }
 
     /**
@@ -39,6 +46,7 @@ public class UserDataInput implements Identifiable {
         this.userID = userID;
         this.privileges = new UserPrivilege[]{};
         this.onceHashedPassword = "".getBytes();
+        this.username = null;
     }
 
     /**
@@ -50,6 +58,7 @@ public class UserDataInput implements Identifiable {
         this.userID = userID;
         this.privileges = new UserPrivilege[]{};
         this.onceHashedPassword = onceHashedPassword;
+        this.username = null;
     }
 
     public UserPrivilege[] getPrivileges() {
