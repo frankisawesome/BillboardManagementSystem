@@ -23,7 +23,7 @@ public class UserManager {
      *
      * @param passwords
      */
-    public UserManager(PasswordManager passwords, Queryable<User> userDatabase) {
+    protected UserManager(PasswordManager passwords, Queryable<User> userDatabase) {
         this.passwords = passwords;
         this.sessionKeys = null;
         this.userDatabase = userDatabase;
@@ -56,7 +56,7 @@ public class UserManager {
      * Creates a user, if the second argument user has correct password and permissions
      *
      * @param userToAdd      The user we want to add, with password, ID and permissions
-     * @param adminUserPerms The user with edit user permissions, needs
+     * @param adminUserPerms The user session key with edit user permissions
      * @return The user that was just added to the database
      * @throws DatabaseNotAccessibleException
      * @throws DatabaseLogicException
@@ -106,11 +106,40 @@ public class UserManager {
         return userWithNewPassword;
     }
 
+
+    /**
+     * Not for the API, just used interally and for debugging
+     * @param ID
+     * @return
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseNotAccessibleException
+     */
     protected User getUser(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
         return userDatabase.getObject(ID);
     }
 
-    public User[] listUsers() throws DatabaseNotAccessibleException {
+    /**
+     * List all users, given a session key with the edit users perms. Can get any data from these objects you need.
+     * @param adminUserPerms The admin user session key.
+     * @return An array of Users that the database holds.
+     * @throws DatabaseNotAccessibleException
+     * @throws InsufficentPrivilegeException
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     * @throws IncorrectSessionKeyException
+     */
+    public User[] listUsers(UserSessionKey adminUserPerms) throws DatabaseNotAccessibleException, InsufficentPrivilegeException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, IncorrectSessionKeyException {
+
+        User adminUser = null;
+
+        if (sessionKeys.checkSessionKeyStatus(adminUserPerms)) {
+            adminUser = getUser(adminUserPerms.getID());
+        }
+
+        adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
+
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+
         return userDatabase.getAllObjects().toArray(new User[0]);
     }
 }
