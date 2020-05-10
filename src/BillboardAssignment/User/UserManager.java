@@ -220,6 +220,28 @@ public class UserManager {
         }
     }
 
+    /**
+     * Remove a user from both user and session key databases. Requires edit users perm
+     * @param userToDelete
+     * @param adminKey
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws InsufficentPrivilegeException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     * @throws RemoveOwnEditUsersPrivilegeException
+     * @throws RemoveOwnUserException
+     */
+    public void deleteUser(UserDataInput userToDelete, UserSessionKey adminKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, RemoveOwnEditUsersPrivilegeException, RemoveOwnUserException {
+        User admin = checkSessionKeyPrivileges(adminKey, new UserPrivilege[]{UserPrivilege.EditUsers});
+
+        if (userToDelete.getID() == admin.getID()){
+            throw new RemoveOwnUserException();
+        }
+        userDatabase.removeObject(userToDelete.getID());
+        sessionKeys.removeSessionKey(userToDelete);
+    }
+
     private User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         User adminUser = null;
 
@@ -231,6 +253,7 @@ public class UserManager {
         // We only get to this section if the password and permissions are correct, will throw error above if they aren't
         return adminUser;
     }
+
 
 
 }

@@ -154,7 +154,7 @@ class TestUserManager extends FatherTester {
     }
 
     @Test
-    void deleteUser() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException {
+    void deleteUser() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, RemoveOwnEditUsersPrivilegeException, RemoveOwnUserException {
         assertThrows(RemoveOwnUserException.class, () -> {
             userManager.deleteUser(adminUser, adminKey);
         });
@@ -166,7 +166,7 @@ class TestUserManager extends FatherTester {
         assertThrows(InsufficentPrivilegeException.class, () -> {
             userManager.deleteUser(adminUser, user1Key);
         });
-        assertThrows(RemoveOwnUserException.class, () -> {
+        assertThrows(InsufficentPrivilegeException.class, () -> {
             userManager.deleteUser(user1, user1Key);
         });
         userManager.deleteUser(user1, adminKey);
