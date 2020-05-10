@@ -1,13 +1,19 @@
-package BillboardAssignment.User;
+package BillboardAssignment.Database;
 
 import BillboardAssignment.Database.Identifiable;
 
 /**
- * Utility class essentially so we can have instances of the Identifiable class for testing. Don't try to store this in a database in production please.
+ * A fake object just for testing if the database methods work
  */
-public class BaseUser implements Identifiable {
 
-    private int userID;
+public class DummyDatabaseObject implements Identifiable {
+
+    private int ID;
+
+    public DummyDatabaseObject(int ID) {
+        this.ID = ID;
+    }
+
     /**
      * Get the unique identifier of the Identifiable object
      *
@@ -15,20 +21,18 @@ public class BaseUser implements Identifiable {
      */
     @Override
     public int getID() {
-        return userID;
+        return ID;
     }
 
     /**
      * Change the given Identifiable object's ID to the supplied Integer ID
      *
      * @param newID The integer ID that we want to replace the old ID with
+     * @return
      */
     @Override
     public void changeID(int newID) {
-        this.userID = newID;
+        ID = newID;
     }
 
-    public BaseUser(int userID){
-        this.userID = userID;
-    }
 }
