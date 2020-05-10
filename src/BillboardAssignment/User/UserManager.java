@@ -81,13 +81,8 @@ public class UserManager {
      * @return User that was just added
      * @throws DatabaseNotAccessibleException
      * @throws DatabaseLogicException
-     * @throws DatabaseObjectNotFoundException
-     * @throws IncorrectPasswordException
-     * @throws InsufficentPrivilegeException
-     * @throws OutOfDateSessionKeyException
-     * @throws IncorrectSessionKeyException
      */
-    public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException {
 
         UserDataInput userToAdd = new UserDataInput(69420, "pwd".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "");
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
@@ -229,10 +224,9 @@ public class UserManager {
      * @throws InsufficentPrivilegeException
      * @throws IncorrectSessionKeyException
      * @throws DatabaseObjectNotFoundException
-     * @throws RemoveOwnEditUsersPrivilegeException
      * @throws RemoveOwnUserException
      */
-    public void deleteUser(UserDataInput userToDelete, UserSessionKey adminKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, RemoveOwnEditUsersPrivilegeException, RemoveOwnUserException {
+    public void deleteUser(UserDataInput userToDelete, UserSessionKey adminKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, RemoveOwnUserException {
         User admin = checkSessionKeyPrivileges(adminKey, new UserPrivilege[]{UserPrivilege.EditUsers});
 
         if (userToDelete.getID() == admin.getID()){
@@ -258,12 +252,9 @@ public class UserManager {
      * Log out the given user, essentially just delete their session key from the database. Returns true iff session key was in the database in the first place
      * @param key
      * @return
-     * @throws OutOfDateSessionKeyException
      * @throws DatabaseNotAccessibleException
-     * @throws IncorrectSessionKeyException
-     * @throws DatabaseObjectNotFoundException
      */
-    public boolean logout(UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
+    public boolean logout(UserSessionKey key) throws DatabaseNotAccessibleException {
 
        return sessionKeys.removeSessionKey(new UserDataInput(key.getID()));
 

@@ -122,7 +122,7 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
      * Simply initialise the array
      */
     @Override
-    public void initialiseDatabase() throws DatabaseNotAccessibleException {
+    public void initialiseDatabase() {
         data = new ArrayList<E>();
         arrayInitialised = true;
     }
