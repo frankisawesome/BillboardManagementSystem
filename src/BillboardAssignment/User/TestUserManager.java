@@ -88,4 +88,24 @@ class TestUserManager extends FatherTester {
 
     }
 
+    @Test
+    void getPermissions() throws IncorrectPasswordException, DatabaseLogicException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
+        UserPrivilege[] adminPerms = userManager.getPermissions(69420, adminKey);
+
+        assertArrayEquals(new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, adminPerms);
+
+        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{}, "");
+        UserSessionKey user1Key = userManager.login(user1);
+
+        UserPrivilege[] noPerms = userManager.getPermissions(1, user1Key);
+        UserPrivilege[] noPerms2 = userManager.getPermissions(1, adminKey);
+        assertArrayEquals(new UserPrivilege[]{}, noPerms);
+        assertArrayEquals(new UserPrivilege[]{}, noPerms2);
+
+        assertThrows(InsufficentPrivilegeException.class, () -> {
+            userManager.getPermissions(69420, user1Key);
+        });
+
+    }
+
 }
