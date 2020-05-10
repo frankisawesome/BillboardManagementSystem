@@ -99,16 +99,13 @@ public class PasswordManager {
     /**
      * Change the password of a given user
      *
-     * @param inputUser             The data of the user that we want to change the password of, must have correct original password
+     * @param inputUser             The data of the user that we want to change the password of
      * @param onceHashedNewPassword The new password that we want to re-salt and hash and store
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseNotAccessibleException
-     * @throws IncorrectPasswordException
      * @throws DatabaseLogicException
      */
-    public void changePassword(UserDataInput inputUser, byte[] onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException {
-        checkPasswordMatch(inputUser);
-
+    public void changePassword(UserDataInput inputUser, byte[] onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
         User oldUserData = passwordDatabase.getObject(inputUser.getID());
         passwordDatabase.removeObject(inputUser.getID());
         oldUserData.setOnceHashedPassword(onceHashedNewPassword);

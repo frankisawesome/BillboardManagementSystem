@@ -132,6 +132,27 @@ class TestUserManager extends FatherTester {
         assertArrayEquals(new UserPrivilege[]{}, userManager.getPermissions(user1.getID(), adminKey));
     }
 
+    @Test
+    void setPassword() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException {
+        userManager.setPassword(adminUser, "pwd123".getBytes(), adminKey); /* Nothrow */
+
+        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{}, "");
+        userManager.createUser(user1, adminKey);
+        UserSessionKey user1Key = userManager.login(user1);
+
+        assertThrows(InsufficentPrivilegeException.class, () -> {
+            userManager.setPassword(adminUser, "asdf".getBytes(), user1Key);
+        });
+
+        userManager.setPassword(user1, "asdf".getBytes(), user1Key);
+        userManager.login(new UserDataInput(user1.getID(), "asdf".getBytes())); /* no throw */
+        userManager.setPassword(user1, "asdf123".getBytes(), adminKey);
+        userManager.login(new UserDataInput(user1.getID(), "asdf123".getBytes())); /* no throw */
+        assertThrows(IncorrectPasswordException.class, () -> {
+            userManager.login(new UserDataInput(user1.getID(), "asdf".getBytes())); /* no throw */
+        });
+    }
+
     /**
      * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
      * @param set1
