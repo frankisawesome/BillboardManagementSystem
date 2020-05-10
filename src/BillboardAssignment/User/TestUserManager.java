@@ -178,6 +178,15 @@ class TestUserManager extends FatherTester {
         });
     }
 
+    @Test
+    void logout(){
+        userManager.logout(adminKey);
+        assertThrows(IncorrectSessionKeyException.class,() -> {
+            userManager.listUsers(adminKey);
+        });
+        userManager.logout(adminKey); /* No throw? */
+    }
+
     /**
      * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
      * @param set1
