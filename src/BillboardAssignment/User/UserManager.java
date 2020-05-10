@@ -254,6 +254,18 @@ public class UserManager {
         return adminUser;
     }
 
+    /**
+     * Log out the given user, essentially just delete their session key from the database. Returns true iff session key was in the database in the first place
+     * @param key
+     * @return
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     */
+    public boolean logout(UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
 
+       return sessionKeys.removeSessionKey(new UserDataInput(key.getID()));
 
+    }
 }

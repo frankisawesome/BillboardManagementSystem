@@ -179,12 +179,12 @@ class TestUserManager extends FatherTester {
     }
 
     @Test
-    void logout(){
-        userManager.logout(adminKey);
-        assertThrows(IncorrectSessionKeyException.class,() -> {
+    void logout() throws IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
+        assertTrue(userManager.logout(adminKey));
+        assertThrows(DatabaseObjectNotFoundException.class,() -> {
             userManager.listUsers(adminKey);
         });
-        userManager.logout(adminKey); /* No throw? */
+        assertFalse(userManager.logout(adminKey)); /* No throw? */
     }
 
     /**
