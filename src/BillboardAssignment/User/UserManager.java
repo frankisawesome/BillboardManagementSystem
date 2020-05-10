@@ -64,17 +64,9 @@ public class UserManager {
      * @throws IncorrectPasswordException
      * @throws InsufficentPrivilegeException
      */
-    public User createUser(UserDataInput userToAdd, UserSessionKey adminUserPerms) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public User createUser(UserDataInput userToAdd, UserSessionKey adminUserPerms) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
 
-        User adminUser = null;
-
-        if (sessionKeys.checkSessionKeyStatus(adminUserPerms)) {
-            adminUser = getUser(adminUserPerms.getID());
-        }
-
-        adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
-
-        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+        checkSessionKeyPrivileges(adminUserPerms, new UserPrivilege[]{UserPrivilege.EditUsers});
 
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
@@ -97,7 +89,6 @@ public class UserManager {
      */
     public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
 
-        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
         UserDataInput userToAdd = new UserDataInput(69420, "pwd".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "");
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
@@ -130,19 +121,22 @@ public class UserManager {
      */
     public User[] listUsers(UserSessionKey adminUserPerms) throws DatabaseNotAccessibleException, InsufficentPrivilegeException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, IncorrectSessionKeyException {
 
-        User adminUser = null;
-
-        if (sessionKeys.checkSessionKeyStatus(adminUserPerms)) {
-            adminUser = getUser(adminUserPerms.getID());
-        }
-
-        adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
-
-        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+        checkSessionKeyPrivileges(adminUserPerms, new UserPrivilege[]{UserPrivilege.EditUsers});
 
         return userDatabase.getAllObjects().toArray(new User[0]);
     }
 
+    /**
+     * Get the permissions of a user. If you're grabbing permissions for yourself you need no perms, but for others you need edit users.
+     * @param userID
+     * @param userSessionKey
+     * @return List of privledges
+     * @throws InsufficentPrivilegeException
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     */
     public UserPrivilege[] getPermissions(int userID, UserSessionKey userSessionKey) throws InsufficentPrivilegeException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
         User adminUser = null;
 
@@ -158,5 +152,54 @@ public class UserManager {
         adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
 
         return userDatabase.getObject(userID).getPrivileges();
+    }
+
+    /**
+     * Set the privileges of a user. Needs edit users permission
+     * @param userToChange
+     * @param privilegesToSet
+     * @param adminKey
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws InsufficentPrivilegeException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     * @throws RemoveOwnEditUsersPrivilegeException Throws if you try to remove your own admin privileges
+     * @throws DatabaseLogicException
+     */
+    public void setPermissions(UserDataInput userToChange, UserPrivilege[] privilegesToSet, UserSessionKey adminKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, RemoveOwnEditUsersPrivilegeException, DatabaseLogicException {
+
+        User adminUser = checkSessionKeyPrivileges(adminKey, new UserPrivilege[]{UserPrivilege.EditUsers});
+
+        if (adminKey.getID() == userToChange.getID()){
+            boolean gettingRidOfEditUsers = true;
+            for (int i =0; i < privilegesToSet.length; i++){
+                if (privilegesToSet[i] == UserPrivilege.EditUsers){
+                    gettingRidOfEditUsers = false;
+                }
+            }
+            if (gettingRidOfEditUsers){
+                throw new RemoveOwnEditUsersPrivilegeException();
+            }
+        }
+
+        User userToChangeInDatabase = userDatabase.getObject(userToChange.getID());
+
+        userDatabase.removeObject(userToChange.getID());
+
+        userDatabase.addObject(new User(userToChangeInDatabase.getID(), userToChangeInDatabase.twiceHashedPassword, userToChangeInDatabase.salt, privilegesToSet, userToChangeInDatabase.getUsername()));
+
+    }
+
+    private User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+        User adminUser = null;
+
+        if (sessionKeys.checkSessionKeyStatus(key)) {
+            adminUser = getUser(key.getID());
+        }
+
+        adminUser.checkUserHasPriv(privileges);
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+        return adminUser;
     }
 }

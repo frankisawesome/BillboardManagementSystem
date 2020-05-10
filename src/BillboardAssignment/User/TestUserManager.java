@@ -110,7 +110,7 @@ class TestUserManager extends FatherTester {
     }
 
     @Test
-    void setPermissions() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException, DatabaseObjectNotFoundException {
+    void setPermissions() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException, DatabaseObjectNotFoundException, RemoveOwnEditUsersPrivilegeException {
         assertThrows(RemoveOwnEditUsersPrivilegeException.class, () -> {
             userManager.setPermissions(adminUser, new UserPrivilege[]{}, adminKey);
         });
@@ -127,7 +127,9 @@ class TestUserManager extends FatherTester {
         });
 
         userManager.setPermissions(user1, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey);
+        assertArrayEquals(new UserPrivilege[]{UserPrivilege.EditUsers}, userManager.getPermissions(user1.getID(), adminKey));
         userManager.setPermissions(user1, new UserPrivilege[]{}, adminKey);
+        assertArrayEquals(new UserPrivilege[]{}, userManager.getPermissions(user1.getID(), adminKey));
     }
 
     /**
