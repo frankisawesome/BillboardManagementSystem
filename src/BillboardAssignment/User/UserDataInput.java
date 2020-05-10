@@ -98,5 +98,12 @@ public class UserDataInput implements Identifiable {
         userID = newID;
     }
 
+    /**
+     * Username getter
+     * @return user's username
+     */
+    public String getUsername(){return username;}
+
+
 
 }

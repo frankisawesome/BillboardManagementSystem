@@ -45,7 +45,7 @@ public class PasswordManager {
         /* Hash the password */
         byte[] twiceHashedPassword = hashPassword(user.getOnceHashedPassword(), passwordSalt);
 
-        return new User(user.getID(), twiceHashedPassword, passwordSalt, user.getPrivileges());
+        return new User(user.getID(), twiceHashedPassword, passwordSalt, user.getPrivileges(), user.getUsername());
     }
 
     /**

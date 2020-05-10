@@ -98,7 +98,7 @@ public class UserManager {
     public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
 
         // We only get to this section if the password and permissions are correct, will throw error above if they aren't
-        UserDataInput userToAdd = new UserDataInput(69420, "pwd".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers});
+        UserDataInput userToAdd = new UserDataInput(69420, "pwd".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "");
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
         userDatabase.addObject(userWithNewPassword);
@@ -108,5 +108,9 @@ public class UserManager {
 
     protected User getUser(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
         return userDatabase.getObject(ID);
+    }
+
+    public User[] listUsers() throws DatabaseNotAccessibleException {
+        return userDatabase.getAllObjects().toArray(new User[0]);
     }
 }

@@ -61,21 +61,25 @@ class TestUserManager extends FatherTester {
 
     @Test
     void listUsers() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException, DatabaseObjectNotFoundException {
-        assertEquals(new User[0], userManager.listUsers());
+        User adminUser = userManager.getUser(69420);
+        assertArrayEquals(new User[]{ adminUser}, userManager.listUsers());
+
         UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
         UserDataInput user2 = new UserDataInput(2, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
         UserDataInput user3 = new UserDataInput(3, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
 
         UserDataInput[] userArray = new UserDataInput[]{user1, user2, user3};
-        User[] userOut = new User[3];
-        for (int i = 0; i < userArray.length; i++) {
-            userManager.createUser(userArray[i],adminKey);
-            userOut[i] = userManager.getUser(i + 1);
+        User[] userOut = new User[4];
+        userOut[0] = adminUser;
+
+        for (int i = 1; i < userArray.length +1; i++) {
+            userManager.createUser(userArray[i-1],adminKey);
+            userOut[i] = userManager.getUser(i );
         }
 
         User[] outputUsers = userManager.listUsers();
 
-        assertEquals(outputUsers, userArray);
+        assertArrayEquals(userOut, outputUsers);
 
     }
 

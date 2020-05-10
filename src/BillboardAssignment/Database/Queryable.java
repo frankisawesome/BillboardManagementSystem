@@ -1,5 +1,7 @@
 package BillboardAssignment.Database;
 
+import java.util.ArrayList;
+
 /**
  * This generic interface is used as a parent class for any sort of data storage method (Anything that can be queried using an unique ID).
  * It exists mainly so that code can be re-used whether the underlying storage is simply an array or an actual database (Useful for unit tests)
@@ -63,4 +65,18 @@ public interface Queryable<E extends Identifiable> {
      * @throws DatabaseNotAccessibleException Errors out if the database didn't get created successfully
      */
     void initialiseDatabase() throws DatabaseNotAccessibleException;
+
+    /**
+     * Return an array of every single object in the database.
+     * @return A list of the database generic type, containing every entry in the database
+     * @throws DatabaseNotAccessibleException Throws an exception if we can't access the database.
+     */
+    ArrayList<E> getAllObjects() throws DatabaseNotAccessibleException;
+
+    /**
+     * Get the maximum ID of any object in the database
+     * @return An integer of the maximum ID. Returns 0 if no records in database
+     * @throws DatabaseNotAccessibleException
+     */
+    int getMaxID() throws DatabaseNotAccessibleException;
 }

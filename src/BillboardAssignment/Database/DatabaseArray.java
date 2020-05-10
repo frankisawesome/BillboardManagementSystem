@@ -126,4 +126,28 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
         data = new ArrayList<E>();
         arrayInitialised = true;
     }
+
+    @Override
+    public ArrayList<E> getAllObjects() throws DatabaseNotAccessibleException {
+        if (!arrayInitialised) {
+            throw new DatabaseNotAccessibleException(E.getEntityName(), "The database array hasn't been initialised yet!");
+        }
+
+        return data;
+    }
+
+
+    @Override
+    public int getMaxID() throws DatabaseNotAccessibleException {
+        if (!arrayInitialised) {
+            throw new DatabaseNotAccessibleException(E.getEntityName(), "The database array hasn't been initialised yet!");
+        }
+        int max = 0;
+
+        for (int i = 0; i < data.size(); i++ ){
+            max = Math.max(max, data.get(i).getID());
+        }
+
+        return max;
+    }
 }
