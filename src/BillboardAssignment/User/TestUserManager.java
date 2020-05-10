@@ -110,24 +110,24 @@ class TestUserManager extends FatherTester {
     }
 
     @Test
-    void setPermissions(){
-        assertThrows(RemoveEditUsersPermissionsException.class, () -> {
-            setPermissions(adminUser, new UserPrivilege[]{}, adminKey);
+    void setPermissions() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException, DatabaseObjectNotFoundException {
+        assertThrows(RemoveOwnEditUsersPrivilegeException.class, () -> {
+            userManager.setPermissions(adminUser, new UserPrivilege[]{}, adminKey);
         });
 
-        setPermissions(adminUser, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey); /* Nothrow */
-        setPermissions(adminUser, new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards}, adminKey); /* Nothrow */
+        userManager.setPermissions(adminUser, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey); /* Nothrow */
+        userManager.setPermissions(adminUser, new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards}, adminKey); /* Nothrow */
 
         UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password".getBytes(), new UserPrivilege[]{}, "");
         userManager.createUser(user1, adminKey);
         UserSessionKey user1Key = userManager.login(user1);
 
         assertThrows(InsufficentPrivilegeException.class, () -> {
-            setPermissions(user1, new UserPrivilege[]{}, user1Key);
+            userManager.setPermissions(user1, new UserPrivilege[]{}, user1Key);
         });
 
-        setPermissions(user1, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey);
-        setPermissions(user1, new UserPrivilege[]{}, adminKey);
+        userManager.setPermissions(user1, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey);
+        userManager.setPermissions(user1, new UserPrivilege[]{}, adminKey);
     }
 
     /**
