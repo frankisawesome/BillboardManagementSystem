@@ -53,4 +53,23 @@ public class User extends UserDataInput {
         }
     }
 
+    /**
+     * Just checks only a specific Privilege, and doesn't throw errors
+     * @param privilege
+     * @return boolean iff user has Privilege
+     * @throws InsufficentPrivilegeException
+     */
+    public boolean checkUserHasPriv(UserPrivilege privilege) {
+        boolean foundPerm;
+            foundPerm = false;
+            for (int j = 0; j < this.getPrivileges().length; j++) {
+                if (privilege == this.getPrivileges()[j]) {
+                    foundPerm = true;
+                    break;
+                }
+            }
+
+            return foundPerm;
+    }
+
 }

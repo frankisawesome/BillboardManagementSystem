@@ -1,9 +1,6 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public abstract class SQLiteDatabase<E extends Identifiable> implements Queryable<E> {
@@ -26,7 +23,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             throw new DatabaseNotAccessibleException(getEntityName());
         }
 
-        String stringifiedNames = mapObjectToAttributeNames(object);
+        String stringifiedNames = getAttributeNames();
 
         try {
             PreparedStatement add = connection.prepareStatement(String.format("INSERT INTO %s (%s) VALUES (?, ?) ", getEntityName(), stringifiedNames));
@@ -142,6 +139,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             createDatabase.execute(getDBCreationString());
             createDatabase.close();
             databaseInitialised = true;
+            this.entityName = entityName;
         } catch (java.sql.SQLException e) {
             throw new DatabaseNotAccessibleException(entityName);
         }
@@ -228,7 +226,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
      *
      * @return said string
      */
-    public abstract String mapObjectToAttributeNames(E object);
+    public abstract String getAttributeNames();
 
     /**
      * Map the object to a string that is the primary key of the database e.g. User -> 'userID'
@@ -240,7 +238,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
     /**
      * Add the values to a preparedStatement e.g statement.setInt(1, 20), statement.setString(2, "The UserName")
      */
-    public abstract void addValues(PreparedStatement statement, E object);
+    public abstract void addValues(PreparedStatement statement, E object) throws SQLException;
 
     /**
      * Map the result of a sql query to the generic object
@@ -248,5 +246,5 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
      * @param results a single row of the results
      * @return the object constructed from the results
      */
-    public abstract E mapResultSetToObject(ResultSet results);
+    public abstract E mapResultSetToObject(ResultSet results) throws SQLException;
 }
