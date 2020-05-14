@@ -85,4 +85,10 @@ public interface Queryable<E extends Identifiable> {
      * Get name of database, for debugging
      */
     String getEntityName() throws DatabaseNotAccessibleException;
+
+    /**
+     * Remove all observations in dataset
+     * @throws DatabaseNotAccessibleException
+     */
+    void removeAllData() throws DatabaseNotAccessibleException;
 }

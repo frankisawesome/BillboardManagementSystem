@@ -1,5 +1,6 @@
 package BillboardAssignment.BillboardServer.Database;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
@@ -157,5 +158,20 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
     @Override
     public String getEntityName(){
         return this.entityName;
-    };
+    }
+
+    /**
+     * Remove all observations in dataset
+     *
+     * @throws DatabaseNotAccessibleException
+     */
+    @Override
+    public void removeAllData() throws DatabaseNotAccessibleException {
+        if (!arrayInitialised) {
+            throw new DatabaseNotAccessibleException(entityName, "The database array hasn't been initialised yet!");
+        }
+        data = new ArrayList<E>();
+    }
+
+    ;
 }

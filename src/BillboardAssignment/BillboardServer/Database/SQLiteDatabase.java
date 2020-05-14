@@ -1,5 +1,6 @@
 package BillboardAssignment.BillboardServer.Database;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -26,11 +27,12 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
         String stringifiedNames = getAttributeNames();
 
         try {
-            PreparedStatement add = connection.prepareStatement(String.format("INSERT INTO %s (%s) VALUES (?, ?) ", getEntityName(), stringifiedNames));
+            PreparedStatement add = connection.prepareStatement(String.format("INSERT INTO %s (%s) VALUES (%s);", getEntityName(), stringifiedNames, getQuestionMarks()));
             addValues(add, object);
             add.executeUpdate();
             add.close();
         } catch (java.sql.SQLException e) {
+            e.printStackTrace();
             throw new DatabaseLogicException(getEntityName());
         }
 
@@ -57,6 +59,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             remove.close();
         } catch (java.sql.SQLException e) {
             /* This should never happen, deleting a record should never error if the database is set up correctly. */
+            e.printStackTrace();
             System.err.println("ERROR, A DELETE OPERATION FAILED! SOMETHING IS WRONG!");
             throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
         }
@@ -88,6 +91,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             outputObject = mapResultSetToObject(singleRow);
             get.close();
         } catch (java.sql.SQLException e) {
+            e.printStackTrace();
             throw new DatabaseObjectNotFoundException(getEntityName(), ID);
         }
 
@@ -117,6 +121,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             get.close();
         } catch (java.sql.SQLException e) {
             /* This should never happen, deleting a record should never error if the database is set up correctly. */
+            e.printStackTrace();
             System.err.println("ERROR, A DELETE OPERATION FAILED! SOMETHING IS WRONG!");
             throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
         }
@@ -141,6 +146,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             databaseInitialised = true;
             this.entityName = entityName;
         } catch (java.sql.SQLException e) {
+            e.printStackTrace();
             throw new DatabaseNotAccessibleException(entityName);
         }
 
@@ -169,6 +175,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             get.close();
         } catch (java.sql.SQLException e) {
             /* This should never happen, deleting a record should never error if the database is set up correctly. */
+            e.printStackTrace();
             System.err.println("ERROR, A DELETE OPERATION FAILED! SOMETHING IS WRONG!");
             throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
         }
@@ -198,11 +205,34 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             get.close();
         } catch (java.sql.SQLException e) {
             /* This should never happen, deleting a record should never error if the database is set up correctly. */
+            e.printStackTrace();
             System.err.println("ERROR, A DELETE OPERATION FAILED! SOMETHING IS WRONG!");
             throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
         }
 
         return maxID;
+    }
+
+    /**
+     * Remove all observations in dataset
+     *
+     * @throws DatabaseNotAccessibleException
+     */
+    @Override
+    public void removeAllData() throws DatabaseNotAccessibleException {
+        if (!databaseInitialised) {
+            throw new DatabaseNotAccessibleException(getEntityName());
+        }
+
+        try {
+            PreparedStatement del = connection.prepareStatement(String.format("DELETE FROM %s", getEntityName())); /* No need for sql injection projection when just using ID */
+            del.executeUpdate(); /* Yes I'm aware that I could just use a select max here, but this is simpler and produces more consistent errors imo*/
+            del.close();
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseNotAccessibleException(getEntityName());
+        }
+
     }
 
     /**
@@ -247,4 +277,10 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
      * @return the object constructed from the results
      */
     public abstract E mapResultSetToObject(ResultSet results) throws SQLException;
+
+    /**
+     * Get the question mark string needed to insert parameters. E.G. if we want to add UserID and username, return "?, ?"
+     * @return
+     */
+    public abstract String getQuestionMarks();
 }

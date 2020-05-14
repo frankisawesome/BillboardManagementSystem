@@ -20,14 +20,14 @@ public class UserDataInput implements Identifiable {
     /**
      * We don't want this stored in the database, the input password that was hashed by the frontend
      */
-    private byte[] onceHashedPassword;
+    private String onceHashedPassword;
 
     /**
      *  The username of the user, unique, but we don't use it as the primary key as that would be inefficient.
      */
     private String username;
 
-    public UserDataInput(int userID, byte[] onceHashedPassword, UserPrivilege[] privileges, String username) {
+    public UserDataInput(int userID, String onceHashedPassword, UserPrivilege[] privileges, String username) {
         this.userID = userID;
 
         this.onceHashedPassword = onceHashedPassword;
@@ -45,7 +45,7 @@ public class UserDataInput implements Identifiable {
     public UserDataInput(int userID) {
         this.userID = userID;
         this.privileges = new UserPrivilege[]{};
-        this.onceHashedPassword = "".getBytes();
+        this.onceHashedPassword = "";
         this.username = null;
     }
 
@@ -54,7 +54,7 @@ public class UserDataInput implements Identifiable {
      *
      * @param userID
      */
-    public UserDataInput(int userID, byte[] onceHashedPassword) {
+    public UserDataInput(int userID, String onceHashedPassword) {
         this.userID = userID;
         this.privileges = new UserPrivilege[]{};
         this.onceHashedPassword = onceHashedPassword;
@@ -70,11 +70,11 @@ public class UserDataInput implements Identifiable {
      *
      * @return
      */
-    public byte[] getOnceHashedPassword() {
+    public String getOnceHashedPassword() {
         return onceHashedPassword;
     }
 
-    public void setOnceHashedPassword(byte[] onceHashedPassword) {
+    public void setOnceHashedPassword(String onceHashedPassword) {
         this.onceHashedPassword = onceHashedPassword;
     }
 

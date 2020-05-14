@@ -84,7 +84,7 @@ public class UserManager {
      */
     public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException {
 
-        UserDataInput userToAdd = new UserDataInput(69420, "pwd".getBytes(), new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "");
+        UserDataInput userToAdd = new UserDataInput(69420, "pwd", new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
         userDatabase.addObject(userWithNewPassword);
@@ -198,7 +198,7 @@ public class UserManager {
      * @throws DatabaseLogicException
      * @throws InsufficentPrivilegeException
      */
-    public void setPassword(UserDataInput userToChange, byte[] newPassword, UserSessionKey userSessionKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException, InsufficentPrivilegeException {
+    public void setPassword(UserDataInput userToChange, String newPassword, UserSessionKey userSessionKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException, InsufficentPrivilegeException {
         User adminUser = null;
 
         if (sessionKeys.checkSessionKeyStatus(userSessionKey)) {

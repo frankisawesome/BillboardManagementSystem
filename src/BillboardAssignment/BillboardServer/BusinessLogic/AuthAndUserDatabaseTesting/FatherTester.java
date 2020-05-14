@@ -16,7 +16,7 @@ public class FatherTester {
 
         protected UserSessionKey adminKey;
 
-        protected UserDataInput adminUser = new UserDataInput(69420, "pwd".getBytes());
+        protected UserDataInput adminUser = new UserDataInput(69420, "pwd");
 
         protected SessionKeyManager sessionKeyManager;
 
@@ -33,7 +33,7 @@ public class FatherTester {
             userManager = new UserManager(passwordManager, sessionKeyManager, database);
             userManager.createFirstUser();
 
-            String sessionKey = userManager.login(new UserDataInput(69420, "pwd".getBytes())).sessionKey;
+            String sessionKey = userManager.login(new UserDataInput(69420, "pwd")).sessionKey;
             adminKey = new UserSessionKey(69420, sessionKey);
         }
 }

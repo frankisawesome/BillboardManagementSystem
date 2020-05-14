@@ -12,15 +12,15 @@ class TestPasswordManager extends FatherTester {
 
     @Test
     void checkPasswordMatch() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException, OutOfDateSessionKeyException, InsufficentPrivilegeException, IncorrectSessionKeyException {
-        byte[] realPassword = {1, 2, 3, 4};
+        String realPassword = "nice";
 
-        byte[] fakePassword = {1, 2, 3, 4, 5};
+        String fakePassword = "meme";
 
         UserDataInput input1 = new UserDataInput(1, realPassword);
 
         userManager.createUser(input1, adminKey);
 
-        byte[] realP = input1.getOnceHashedPassword();
+        String realP = input1.getOnceHashedPassword();
 
         passwordManager.checkPasswordMatch(input1); /* This shouldn't error */
 
@@ -34,9 +34,9 @@ class TestPasswordManager extends FatherTester {
 
     @Test
     void changePassword() throws DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseObjectNotFoundException, DatabaseLogicException, OutOfDateSessionKeyException, InsufficentPrivilegeException, IncorrectSessionKeyException {
-        byte[] realPassword = {1, 2, 3, 4};
+        String realPassword = "nice";
 
-        byte[] fakePassword = {1, 2, 3, 4, 5};
+        String fakePassword = "meme";
 
         UserDataInput input1 = new UserDataInput(1, realPassword);
 

@@ -57,4 +57,17 @@ class TestDatabaseArray {
         assertEquals(false, database.objectInDatabase(new DummyDatabaseObject(3)));
     }
 
+    @org.junit.jupiter.api.Test
+    void removeAllData() throws DatabaseNotAccessibleException, DatabaseLogicException {
+        database.addObject(new DummyDatabaseObject(1));
+
+        database.removeAllData();
+
+
+        assertThrows(DatabaseObjectNotFoundException.class, () -> {
+            database.getObject(1);
+        }); /* Make sure this errors out */
+
+    }
+
 }

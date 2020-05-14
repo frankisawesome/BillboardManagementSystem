@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardServer.Database;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,12 +18,12 @@ public class UserSQLiteDatabase extends SQLiteDatabase<User> {
     public String getDBCreationString() {
         return "CREATE TABLE IF NOT EXISTS Users (" +
                 "userID INTEGER PRIMARY KEY," +
-                "username TEXT NOT NULL," +
-                "twiceHashedPassword TEXT NOT NULL" +
-                "salt TEXT NOT NULL" +
-                "editUsers TEXT NOT NULL" +
-                "editAllBillboards TEXT NOT NULL" +
-                "scheduleBillboards TEXT NOT NULL" +
+                "username TEXT UNIQUE NOT NULL," +
+                "twiceHashedPassword TEXT NOT NULL," +
+                "salt TEXT NOT NULL," +
+                "editUsers TEXT NOT NULL," +
+                "editAllBillboards TEXT NOT NULL," +
+                "scheduleBillboards TEXT NOT NULL," +
                 "createBillboards TEXT NOT NULL);";
     }
 
@@ -60,8 +61,10 @@ public class UserSQLiteDatabase extends SQLiteDatabase<User> {
                 object.checkUserHasPriv(UserPrivilege.CreateBillboards))  <- old code that may be useful later, TODO: REMOVE*/
         statement.setInt(1, object.getID());
         statement.setString(2, object.getUsername());
-        statement.setString(3, object.twiceHashedPassword.toString());
-        statement.setString(4, object.salt.toString());
+
+        statement.setString(3, object.twiceHashedPassword);
+        statement.setString(4, object.salt);
+
         statement.setString(5, Boolean.toString(object.checkUserHasPriv(UserPrivilege.EditUsers)));
         statement.setString(6, Boolean.toString(object.checkUserHasPriv(UserPrivilege.EditAllBillboards)));
         statement.setString(7, Boolean.toString(object.checkUserHasPriv(UserPrivilege.ScheduleBillboards)));
@@ -77,24 +80,51 @@ public class UserSQLiteDatabase extends SQLiteDatabase<User> {
     @Override
     public User mapResultSetToObject(ResultSet results) throws SQLException {
         int ID = results.getInt(1);
-        String username = results.getString(2);
-        byte[] twiceHashedPwd = results.getString(3).getBytes();
-        byte[] salt = results.getString(4).getBytes();
+        String username = results.getString(2).toString();
+        String twiceHashedPwd = results.getString(3);
+        String salt = results.getString(4);
         UserPrivilege[] priv = new UserPrivilege[4];
+        int privCounter = 0;
 
-        if (results.getString(5) == "true"){
+        if (results.getString(5).toString().equals("true")){
             priv[0] = UserPrivilege.EditUsers;
+            privCounter++;
         }
-        if (results.getString(6) == "true"){
+        if (results.getString(6).toString().equals("true")){
             priv[1] = UserPrivilege.EditAllBillboards;
+            privCounter++;
         }
-        if (results.getString(7) == "true"){
+        if (results.getString(7).toString().equals("true")){
             priv[2] = UserPrivilege.ScheduleBillboards;
+            privCounter++;
         }
-        if (results.getString(8) == "true"){
-            priv[4] = UserPrivilege.CreateBillboards;
+        if (results.getString(8).toString().equals("true")){
+            priv[3] = UserPrivilege.CreateBillboards;
+            privCounter++;
         }
 
-        return new User(ID, twiceHashedPwd, salt, priv, username);
+        UserPrivilege[] privilegesNoNulls =  new UserPrivilege[privCounter];
+
+        for (UserPrivilege p:
+             priv) {
+            if (p != null){
+                privilegesNoNulls[privCounter-1] = p;
+                privCounter--;
+            }
+
+        }
+        return new User(ID, twiceHashedPwd, salt, privilegesNoNulls, username);
     }
+
+    /**
+     * Get the question mark string needed to insert parameters. E.G. if we want to add UserID and username, return "?, ?"
+     *
+     * @return
+     */
+    @Override
+    public String getQuestionMarks() {
+        return "?, ?, ?, ?, ?, ?, ?, ?";
+    }
+
+
 }

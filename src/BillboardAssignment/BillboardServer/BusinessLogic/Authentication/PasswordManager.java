@@ -7,6 +7,7 @@ import BillboardAssignment.BillboardServer.Database.Queryable;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -41,11 +42,17 @@ public class PasswordManager {
         SecureRandom randomNumGenerator = new SecureRandom();
         byte[] passwordSalt = new byte[16];
         randomNumGenerator.nextBytes(passwordSalt);
+        String passwordSaltString = null;
+        try {
+            passwordSaltString = new String(passwordSalt, "ISO-8859-1");
+        } catch (UnsupportedEncodingException e){
+            e.printStackTrace(); /* Will never happen */
+        }
 
         /* Hash the password */
-        byte[] twiceHashedPassword = hashPassword(user.getOnceHashedPassword(), passwordSalt);
+        String twiceHashedPassword = hashPassword(user.getOnceHashedPassword(), passwordSaltString);
 
-        return new User(user.getID(), twiceHashedPassword, passwordSalt, user.getPrivileges(), user.getUsername());
+        return new User(user.getID(), twiceHashedPassword, passwordSaltString, user.getPrivileges(), user.getUsername());
     }
 
     /**
@@ -61,10 +68,10 @@ public class PasswordManager {
         User userData = passwordDatabase.getObject(user.getID());
 
         /* Hash the input password using the user's salt */
-        byte[] hashedInputPassword = hashPassword(user.getOnceHashedPassword(), userData.salt);
+        String hashedInputPassword = hashPassword(user.getOnceHashedPassword(), userData.salt);
 
         /* Make sure that the hashed input password matches the hashed password on file */
-        if (!Arrays.equals(hashedInputPassword, userData.twiceHashedPassword)) {
+        if (!hashedInputPassword.equals(userData.twiceHashedPassword)) {
             throw new IncorrectPasswordException(user.getID(), user.getOnceHashedPassword());
         }
         return userData;
@@ -77,7 +84,7 @@ public class PasswordManager {
      * @param salt
      * @return A byte array of the hashed password
      */
-    private byte[] hashPassword(byte[] password, byte[] salt) {
+    private String hashPassword(String password, String salt) {
 
         /* Initialise the algorithm data or the IDE will get mad */
         MessageDigest md = null;
@@ -89,10 +96,13 @@ public class PasswordManager {
         }
 
         /* Set the hashing algo to use our salt */
-        md.update(salt);
-
-        byte[] hashedPassword = md.digest(password);
-
+        md.update(salt.getBytes());
+        String hashedPassword = null;
+        try {
+            hashedPassword = new String(md.digest(password.getBytes()), "ISO-8859-1");
+        } catch (UnsupportedEncodingException e){
+            e.printStackTrace(); /* Will never happen */
+        }
         return hashedPassword;
     }
 
@@ -105,7 +115,7 @@ public class PasswordManager {
      * @throws DatabaseNotAccessibleException
      * @throws DatabaseLogicException
      */
-    public void changePassword(UserDataInput inputUser, byte[] onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
+    public void changePassword(UserDataInput inputUser, String onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
         User oldUserData = passwordDatabase.getObject(inputUser.getID());
         passwordDatabase.removeObject(inputUser.getID());
         oldUserData.setOnceHashedPassword(onceHashedNewPassword);
