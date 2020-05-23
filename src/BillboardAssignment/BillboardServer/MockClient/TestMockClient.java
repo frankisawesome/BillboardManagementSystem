@@ -14,12 +14,21 @@ public class TestMockClient {
      * @param args
      */
     public static void main(String[] args) {
+        //this would be your requests, for example ServerRequest<User> request = new ...(RequestType.USER, "Login");
         ServerRequest<String> myRequest = new ServerRequest<String>(RequestType.TEST, "Test Message");
+        //you should always do a try catch when running the getResponse() method
         try {
             ServerResponse<String> response = myRequest.getResponse();
-            System.out.println("Response status: "+ response.status());
-            System.out.println(response.body());
-        } catch (Exception e) {
+            //this would catch errors such as bad request - basically something wrong in your request
+            //the response.status() string should always be "ok" if the request was successful
+            if (response.status().equals("ok")) {
+                System.out.println(response.body());
+            } else {
+                System.out.println("Request failed - status: " + response.status());
+            }
+        }
+        //this would catch errors such as server not online - basically server side failures
+        catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
