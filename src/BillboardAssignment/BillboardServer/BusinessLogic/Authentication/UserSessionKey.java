@@ -2,9 +2,10 @@ package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
 
 import BillboardAssignment.BillboardServer.Database.Identifiable;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class UserSessionKey implements Identifiable {
+public class UserSessionKey implements Identifiable, Serializable {
 
     public String sessionKey;
 

@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardServer.BillboardServer;
 import java.io.*;
 import java.net.Socket;
 import java.rmi.UnknownHostException;
+import java.util.HashMap;
 
 /**
  * A server request for data of type T
@@ -11,6 +12,7 @@ import java.rmi.UnknownHostException;
 public class ServerRequest<T> implements Serializable {
     public final RequestType requestType;
     public final String requestMessage;
+    public final HashMap<String, String> requestBody;
 
     /**
      * Constructs a new request ready to be sent to the server
@@ -20,6 +22,13 @@ public class ServerRequest<T> implements Serializable {
     public ServerRequest(RequestType requestType, String requestMessage) {
         this.requestType = requestType;
         this.requestMessage = requestMessage;
+        this.requestBody = new HashMap<String, String>();
+    }
+
+    public ServerRequest(RequestType requestType, String requestMessage, HashMap<String, String>requestBody) {
+        this.requestType = requestType;
+        this.requestMessage = requestMessage;
+        this.requestBody = requestBody;
     }
 
     /**
@@ -29,12 +38,11 @@ public class ServerRequest<T> implements Serializable {
      */
     public ServerResponse<T> getResponse() throws Exception {
         try (Socket socket = new Socket("localhost", 3005)) {
-            ServerRequest request = new ServerRequest(requestType, requestMessage);
             // get the output stream from the socket.
             OutputStream outputStream = socket.getOutputStream();
             // create an object output stream from the output stream so we can send an object through it
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(request);
+            objectOutputStream.writeObject(this);
 
             InputStream input = socket.getInputStream();
             ObjectInputStream objectInputStream = new ObjectInputStream(input);
