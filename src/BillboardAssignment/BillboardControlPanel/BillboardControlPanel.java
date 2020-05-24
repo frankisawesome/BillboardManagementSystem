@@ -1,8 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
-public class main {
-    public static void main() {
-        login shit = new login();
-        shit.create();
+public class BillboardControlPanel {
+    public static void main (String[] args) {
+        Login.create();
     }
 }
+
