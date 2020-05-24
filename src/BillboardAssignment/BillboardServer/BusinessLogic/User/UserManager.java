@@ -6,7 +6,7 @@ import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleExcepti
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.BillboardServer.Database.Queryable;
 
-public class UserManager {
+public class UserManager{
 
     public Queryable<User> userDatabase;
     private PasswordManager passwords;
