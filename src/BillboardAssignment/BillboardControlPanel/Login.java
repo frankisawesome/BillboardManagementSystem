@@ -41,7 +41,8 @@ public class Login extends JFrame {
                 if (loginReturn[0] == "1") {
                     SessionKey = loginReturn[1];
                     dispose();
-                    MainMenu.create(SessionKey);
+                    String[] userData = {SessionKey, id};
+                    MainMenu.create(userData);
                 } else {
                     JOptionPane.showMessageDialog(null, loginReturn[1]);
                 }

@@ -17,20 +17,23 @@ public class MainMenu extends JFrame {
     private JButton button2;
     private JButton button3;
     private JButton button4;
-    private static String SessionKey;
+    private JLabel labelUsername;
+    private String[] UserData;
 
-
-    public MainMenu(String titles) {
+    public MainMenu(String titles, String[] userDataInput) {
         super(titles);
         $$$setupUI$$$();
+        this.UserData = userDataInput;
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.labelUsername.setText(("Welcome User - " + UserData[1]));
         this.pack();
         buttonLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Login.create();
                 dispose();
+                JOptionPane.showMessageDialog(null, "You have successfully logged out!");
             }
         });
         button1.addActionListener(new ActionListener() {
@@ -59,10 +62,13 @@ public class MainMenu extends JFrame {
         });
     }
 
-    protected static void create(String key) {
-        SessionKey = key;
-        JFrame frame = new JFrame("Billboard Client");
-        //frame.setVisible(true);
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
+
+    protected static void create(String[] userDataInput) {
+        JFrame frame = new MainMenu("Billboard Client", userDataInput);
+        frame.setVisible(true);
     }
 
 
@@ -75,12 +81,12 @@ public class MainMenu extends JFrame {
      */
     private void $$$setupUI$$$() {
         Background = new JPanel();
-        Background.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
+        Background.setLayout(new GridLayoutManager(7, 5, new Insets(0, 0, 0, 0), -1, -1));
         Background.setBackground(new Color(-5461075));
         buttonLogout = new JButton();
-        buttonLogout.setForeground(new Color(-66049));
+        buttonLogout.setForeground(new Color(-16053493));
         buttonLogout.setText("Log Out");
-        Background.add(buttonLogout, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), null, null, 0, false));
+        Background.add(buttonLogout, new GridConstraints(6, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), null, null, 0, false));
         labelTitle = new JLabel();
         labelTitle.setBackground(new Color(-12828863));
         Font labelTitleFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 22, labelTitle.getFont());
@@ -89,23 +95,41 @@ public class MainMenu extends JFrame {
         labelTitle.setHorizontalAlignment(0);
         labelTitle.setHorizontalTextPosition(0);
         labelTitle.setText("Sick Azz Billboard Manager");
-        Background.add(labelTitle, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(labelTitle, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         button1 = new JButton();
         button1.setText("Button");
-        Background.add(button1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(button1, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
         button2 = new JButton();
         button2.setText("Button");
-        Background.add(button2, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(button2, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
         button3 = new JButton();
         button3.setText("Button");
-        Background.add(button3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(button3, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
         button4 = new JButton();
         button4.setText("Button");
-        Background.add(button4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(button4, new GridConstraints(4, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        Background.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 10), null, null, 0, false));
+        Background.add(spacer1, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 20), null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        Background.add(spacer2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, 5), null, null, 0, false));
+        Background.add(spacer2, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(50, 50), null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        Background.add(spacer3, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(50, 50), null, null, 0, false));
+        final Spacer spacer4 = new Spacer();
+        Background.add(spacer4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 20), null, null, 0, false));
+        final Spacer spacer5 = new Spacer();
+        Background.add(spacer5, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(10, 20), null, new Dimension(25, 25), 0, false));
+        final Spacer spacer6 = new Spacer();
+        Background.add(spacer6, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(50, 50), null, null, 0, false));
+        final Spacer spacer7 = new Spacer();
+        Background.add(spacer7, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        labelUsername = new JLabel();
+        Font labelUsernameFont = this.$$$getFont$$$(null, -1, 16, labelUsername.getFont());
+        if (labelUsernameFont != null) labelUsername.setFont(labelUsernameFont);
+        labelUsername.setForeground(new Color(-12828863));
+        labelUsername.setHorizontalAlignment(0);
+        labelUsername.setHorizontalTextPosition(0);
+        labelUsername.setText("Credentials Error, Please Sign In Again!");
+        Background.add(labelUsername, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
