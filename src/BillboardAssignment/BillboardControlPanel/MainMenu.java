@@ -13,21 +13,25 @@ public class MainMenu extends JFrame {
     private JButton buttonLogout;
     private JPanel Background;
     private JLabel labelTitle;
-    private JButton button1;
-    private JButton button2;
-    private JButton button3;
-    private JButton button4;
+    private JButton buttonCreate;
+    private JButton buttonView;
+    private JButton buttonSchedule;
+    private JButton buttonUser;
     private JLabel labelUsername;
     private String[] UserData;
 
     public MainMenu(String titles, String[] userDataInput) {
         super(titles);
         $$$setupUI$$$();
+        // Finish setting up UI after all elements added to background
         this.UserData = userDataInput;
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //Display Username at top of screen.
         this.labelUsername.setText(("Welcome User - " + UserData[1]));
         this.pack();
+
+        //Listener for Logout Button
         buttonLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -36,31 +40,38 @@ public class MainMenu extends JFrame {
                 JOptionPane.showMessageDialog(null, "You have successfully logged out!");
             }
         });
-        button1.addActionListener(new ActionListener() {
+
+        //Listener for Create Button
+        buttonCreate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                CreateMenu.create();
+            }
+        });
+
+        //Listener for View Button
+        buttonView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
         });
-        button2.addActionListener(new ActionListener() {
+
+        //Listener for Schedule Button
+        buttonSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
         });
-        button3.addActionListener(new ActionListener() {
+
+        //Listener for user management button.
+        buttonUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
-        });
-        button4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        Background.addKeyListener(new KeyAdapter() {
         });
     }
 
@@ -69,6 +80,7 @@ public class MainMenu extends JFrame {
     }
 
     protected static void create(String[] userDataInput) {
+        //Create Menu Frame & Pass User Data
         JFrame frame = new MainMenu("Billboard Client", userDataInput);
         frame.setVisible(true);
     }
@@ -98,18 +110,18 @@ public class MainMenu extends JFrame {
         labelTitle.setHorizontalTextPosition(0);
         labelTitle.setText("Sick Azz Billboard Manager");
         Background.add(labelTitle, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        button1 = new JButton();
-        button1.setText("Button");
-        Background.add(button1, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
-        button2 = new JButton();
-        button2.setText("Button");
-        Background.add(button2, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
-        button3 = new JButton();
-        button3.setText("Button");
-        Background.add(button3, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
-        button4 = new JButton();
-        button4.setText("Button");
-        Background.add(button4, new GridConstraints(4, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
+        buttonCreate = new JButton();
+        buttonCreate.setText("Create Billboard");
+        Background.add(buttonCreate, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
+        buttonView = new JButton();
+        buttonView.setText("View/Modify Billboards");
+        Background.add(buttonView, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
+        buttonSchedule = new JButton();
+        buttonSchedule.setText("Schedule Billboards");
+        Background.add(buttonSchedule, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
+        buttonUser = new JButton();
+        buttonUser.setText("User Management (Admin)");
+        Background.add(buttonUser, new GridConstraints(4, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(200, 100), null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         Background.add(spacer1, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 20), null, null, 0, false));
         final Spacer spacer2 = new Spacer();
@@ -131,7 +143,7 @@ public class MainMenu extends JFrame {
         labelUsername.setHorizontalAlignment(0);
         labelUsername.setHorizontalTextPosition(0);
         labelUsername.setText("Credentials Error, Please Sign In Again!");
-        Background.add(labelUsername, new GridConstraints(2, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(labelUsername, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
