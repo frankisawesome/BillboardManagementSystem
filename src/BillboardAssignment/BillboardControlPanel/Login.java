@@ -12,13 +12,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 public class Login extends JFrame {
     private JPanel Background;
     private JLabel labeltitle;
     private JButton buttonlogin;
-    private JTextField fieldUsernam;
+    private JTextField fieldUsername;
     private JLabel labelPassword;
     private JLabel labelUsername;
     private JPasswordField passwordField;
@@ -33,7 +35,7 @@ public class Login extends JFrame {
         buttonlogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String id = fieldUsernam.getText();
+                String id = fieldUsername.getText();
                 char[] pwdChar = passwordField.getPassword();
                 String pwd = new String(pwdChar);
                 String[] loginReturn;
@@ -45,6 +47,30 @@ public class Login extends JFrame {
                     MainMenu.create(userData);
                 } else {
                     JOptionPane.showMessageDialog(null, loginReturn[1]);
+                }
+            }
+        });
+        buttonlogin.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    buttonlogin.doClick();
+                }
+            }
+        });
+        fieldUsername.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    buttonlogin.doClick();
+                }
+            }
+        });
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    buttonlogin.doClick();
                 }
             }
         });
@@ -108,11 +134,11 @@ public class Login extends JFrame {
         buttonlogin.setLabel("Login");
         buttonlogin.setText("Login");
         Background.add(buttonlogin, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        fieldUsernam = new JTextField();
-        fieldUsernam.setBackground(new Color(-7763830));
-        fieldUsernam.setForeground(new Color(-66049));
-        fieldUsernam.setSelectedTextColor(new Color(-66049));
-        Background.add(fieldUsernam, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fieldUsername = new JTextField();
+        fieldUsername.setBackground(new Color(-7763830));
+        fieldUsername.setForeground(new Color(-66049));
+        fieldUsername.setSelectedTextColor(new Color(-66049));
+        Background.add(fieldUsername, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         labelPassword = new JLabel();
         Font labelPasswordFont = this.$$$getFont$$$("Consolas", -1, 16, labelPassword.getFont());
         if (labelPasswordFont != null) labelPassword.setFont(labelPasswordFont);
@@ -137,7 +163,7 @@ public class Login extends JFrame {
         Background.add(spacer4, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(2, 2), null, null, 0, false));
         final Spacer spacer5 = new Spacer();
         Background.add(spacer5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(2, 2), null, new Dimension(5, 5), 0, false));
-        labelUsername.setLabelFor(fieldUsernam);
+        labelUsername.setLabelFor(fieldUsername);
     }
 
     /**

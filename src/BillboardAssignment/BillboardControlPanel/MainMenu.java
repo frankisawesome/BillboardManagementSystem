@@ -7,7 +7,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionListener;import java.awt.event.KeyAdapter;
 
 public class MainMenu extends JFrame {
     private JButton buttonLogout;
@@ -59,6 +59,8 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
             }
+        });
+        Background.addKeyListener(new KeyAdapter() {
         });
     }
 
@@ -129,7 +131,7 @@ public class MainMenu extends JFrame {
         labelUsername.setHorizontalAlignment(0);
         labelUsername.setHorizontalTextPosition(0);
         labelUsername.setText("Credentials Error, Please Sign In Again!");
-        Background.add(labelUsername, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Background.add(labelUsername, new GridConstraints(2, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
