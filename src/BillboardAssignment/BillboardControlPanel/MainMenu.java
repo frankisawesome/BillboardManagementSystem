@@ -33,12 +33,36 @@ public class MainMenu extends JFrame {
                 dispose();
             }
         });
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        button3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        button4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
     protected static void create(String key) {
         SessionKey = key;
-        JFrame frames = new JFrame("Billboard Client");
-        frames.setVisible(true);
+        JFrame frame = new JFrame("Billboard Client");
+        //frame.setVisible(true);
     }
 
 
@@ -51,7 +75,7 @@ public class MainMenu extends JFrame {
      */
     private void $$$setupUI$$$() {
         Background = new JPanel();
-        Background.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
+        Background.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
         Background.setBackground(new Color(-5461075));
         buttonLogout = new JButton();
         buttonLogout.setForeground(new Color(-66049));
@@ -78,6 +102,10 @@ public class MainMenu extends JFrame {
         button4 = new JButton();
         button4.setText("Button");
         Background.add(button4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        Background.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 10), null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        Background.add(spacer2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, 5), null, null, 0, false));
     }
 
     /**

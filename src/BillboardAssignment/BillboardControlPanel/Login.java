@@ -64,7 +64,7 @@ public class Login extends JFrame {
                 String[] returnVal = {"1", response.body().sessionKey};
                 return (returnVal);
             } else {
-                String errorMsg = ("Error" + response.status());
+                String errorMsg = ("Error: " + response.status());
                 String[] returnVal = {"2", errorMsg};
                 return (returnVal);
             }
