@@ -24,8 +24,12 @@ public class Login extends JFrame {
     private JPasswordField passwordField;
     private String SessionKey;
 
-    public Login() {
+    public Login(String title) {
+        super(title);
         $$$setupUI$$$();
+        this.setContentPane(Background);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
         buttonlogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -36,6 +40,8 @@ public class Login extends JFrame {
                 loginReturn = SendRequest(id, pwd);
                 if (loginReturn[0] == "1") {
                     SessionKey = loginReturn[1];
+                    dispose();
+                    MainMenu.create(SessionKey);
                 } else {
                     JOptionPane.showMessageDialog(null, loginReturn[1]);
                 }
@@ -69,10 +75,7 @@ public class Login extends JFrame {
     }
 
     protected static void create() {
-        JFrame frame = new JFrame("Billboard Client");
-        frame.setContentPane(new Login().Background);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        JFrame frame = new Login("Billboard Client");
         frame.setVisible(true);
     }
 
