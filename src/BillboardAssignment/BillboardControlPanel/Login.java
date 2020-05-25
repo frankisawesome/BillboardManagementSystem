@@ -12,67 +12,113 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 public class Login extends JFrame {
+    //Form Components
     private JPanel Background;
     private JLabel labeltitle;
     private JButton buttonlogin;
-    private JTextField fieldUsernam;
+    private JTextField fieldUsername;
     private JLabel labelPassword;
     private JLabel labelUsername;
     private JPasswordField passwordField;
     private String SessionKey;
 
-    public Login() {
+    public Login(String title) {
+        super(title);
         $$$setupUI$$$();
+        //Completes GUI seyup after all components added to background in $$$setupUI$$$
+        this.setContentPane(Background);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+        //Listener for button press.
         buttonlogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String id = fieldUsernam.getText();
+                // Fetch user input.
+                String id = fieldUsername.getText();
                 char[] pwdChar = passwordField.getPassword();
                 String pwd = new String(pwdChar);
                 String[] loginReturn;
+                //Call sendrequest function to send info to server.
+                //In loginReturn array 0 - Return Code from Server 1 - Any Message from Server
                 loginReturn = SendRequest(id, pwd);
+                //If Login Successful.
                 if (loginReturn[0] == "1") {
                     SessionKey = loginReturn[1];
-                } else {
+                    dispose();
+                    //Launch Main Menu and Transmit User ID and Key to Menu Class
+                    String[] userData = {SessionKey, id};
+                    MainMenu.create(userData);
+                }
+                //If Login Unsuccessful
+                else {
                     JOptionPane.showMessageDialog(null, loginReturn[1]);
+                }
+            }
+        });
+        /**
+         * Key Listeners for User Enter Press In Login Page = Pressing Login Button
+         */
+        buttonlogin.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    buttonlogin.doClick();
+                }
+            }
+        });
+        fieldUsername.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    buttonlogin.doClick();
+                }
+            }
+        });
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    buttonlogin.doClick();
                 }
             }
         });
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
-
+//Function for Sending Request to Server
     private String[] SendRequest(String id, String pwd) {
+        // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("id", id);
         requestBody.put("password", pwd);
+        //Send Request
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
         try {
             ServerResponse<UserSessionKey> response = request.getResponse();
             if (response.status().equals("ok")) {
+                //If response ok, return session key and code 1 - successful
                 String[] returnVal = {"1", response.body().sessionKey};
                 return (returnVal);
             } else {
-                String errorMsg = ("Error" + response.status());
+                // If response fail, return code 2 and error message.
+                String errorMsg = ("Error: " + response.status());
                 String[] returnVal = {"2", errorMsg};
                 return (returnVal);
             }
         } catch (Exception e) {
+            // If exception thrown, return code 2 and error message prompting user to seek IT support.
             String[] returnVal = {"2", "Please Contact IT Support and Quote the Following: \n" + e.getMessage()};
             return (returnVal);
         }
     }
 
     protected static void create() {
-        JFrame frame = new JFrame("Billboard Client");
-        frame.setContentPane(new Login().Background);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        //Creates new frame for Login and sets Visible.
+        JFrame frame = new Login("Billboard Client");
         frame.setVisible(true);
     }
 
@@ -96,7 +142,8 @@ public class Login extends JFrame {
         final Spacer spacer1 = new Spacer();
         Background.add(spacer1, new GridConstraints(2, 2, 6, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         buttonlogin = new JButton();
-        buttonlogin.setBackground(new Color(-6119005));
+        buttonlogin.setBackground(new Color(-10196627));
+        buttonlogin.setEnabled(true);
         Font buttonloginFont = this.$$$getFont$$$(null, Font.BOLD, -1, buttonlogin.getFont());
         if (buttonloginFont != null) buttonlogin.setFont(buttonloginFont);
         buttonlogin.setForeground(new Color(-66049));
@@ -104,11 +151,11 @@ public class Login extends JFrame {
         buttonlogin.setLabel("Login");
         buttonlogin.setText("Login");
         Background.add(buttonlogin, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        fieldUsernam = new JTextField();
-        fieldUsernam.setBackground(new Color(-7763830));
-        fieldUsernam.setForeground(new Color(-66049));
-        fieldUsernam.setSelectedTextColor(new Color(-66049));
-        Background.add(fieldUsernam, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fieldUsername = new JTextField();
+        fieldUsername.setBackground(new Color(-7763830));
+        fieldUsername.setForeground(new Color(-66049));
+        fieldUsername.setSelectedTextColor(new Color(-66049));
+        Background.add(fieldUsername, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         labelPassword = new JLabel();
         Font labelPasswordFont = this.$$$getFont$$$("Consolas", -1, 16, labelPassword.getFont());
         if (labelPasswordFont != null) labelPassword.setFont(labelPasswordFont);
@@ -133,7 +180,7 @@ public class Login extends JFrame {
         Background.add(spacer4, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(2, 2), null, null, 0, false));
         final Spacer spacer5 = new Spacer();
         Background.add(spacer5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(2, 2), null, new Dimension(5, 5), 0, false));
-        labelUsername.setLabelFor(fieldUsernam);
+        labelUsername.setLabelFor(fieldUsername);
     }
 
     /**
