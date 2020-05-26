@@ -8,11 +8,10 @@ import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSess
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.HashMap;
 
 public class TestUserControllers {
-    UserSessionKey login() throws Exception {
+    UserSessionKey loginWithAdmin() throws Exception {
         HashMap<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("id", "69420");
         requestBody.put("password", "pwd");
@@ -21,37 +20,37 @@ public class TestUserControllers {
         return response.body();
     }
 
-    boolean logout() throws Exception {
-        UserSessionKey key = login();
+    Boolean logout(UserSessionKey key) throws Exception {
         HashMap<String, String> requestBody = new HashMap<String, String>();
-        requestBody.put("key", key);
-        requestBody.put("password", "pwd");
+        requestBody.put("key", key.sessionKey);
+        requestBody.put("id", Integer.toString(key.getID()));
+        ServerRequest<Boolean> request = new ServerRequest<Boolean>(RequestType.USER, "logout", requestBody);
+        ServerResponse<Boolean> response = request.getResponse();
+        return response.body();
     }
+
     @Test
     void checkLogin() throws Exception {
-        UserSessionKey key = login();
-        //response should be ok, and the body should be a non empty string (token)
+        UserSessionKey key = loginWithAdmin();
         assertNotEquals("",key.sessionKey);
     }
 
     @Test
     void checkLogOut() throws Exception {
-        UserSessionKey key = login();
-        HashMap<String, String> requestBody = new HashMap<String, String>();
-        requestBody.put("key", );
-        requestBody.put("password", "pwd");
-        ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
-        ServerResponse<UserSessionKey> response = request.getResponse();
+        UserSessionKey key = loginWithAdmin();
+        boolean logoutSuccess = logout(key);
+        assertEquals(true, logoutSuccess);
     }
 
     @Test
     void checkCreateUser() throws Exception {
-        HashMap<String, String> requestBody = new HashMap<String, String>();
-        requestBody.put("id", "69420");
-        requestBody.put("password", "pwd");
-        ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
-        ServerResponse<UserSessionKey> response = request.getResponse();
-        UserSessionKey sessionKey = response.body();
-        ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
+        UserSessionKey key = loginWithAdmin();
+        HashMap<String, String> requestBody = new HashMap<>();
+        requestBody.put("id", "12345");
+        requestBody.put("password", "newpass");
+        requestBody.put("key", key.sessionKey);
+        ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "create", requestBody);
+        ServerResponse response = request.getResponse();
+        assertEquals("ok", response.status());
     }
 }
