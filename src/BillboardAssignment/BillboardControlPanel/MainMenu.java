@@ -47,7 +47,7 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (permissionCheck(1) == 1) {
                     dispose();
-                    CreateMenu.create();
+                    CreateMenu.create(UserData);
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
                             "\n If this is an error please retry, or contact system administrator.");
@@ -93,7 +93,7 @@ public class MainMenu extends JFrame {
     protected int permissionCheck(int type) {
         //Type - 1 = create, 2 = Schedule, 3 = User Admin
         //CHECK IF USER HAS REQUIRED PERMISSION TO DO
-        return (0);
+        return (1);
     }
 
     private void createUIComponents() {
@@ -116,7 +116,7 @@ public class MainMenu extends JFrame {
      */
     private void $$$setupUI$$$() {
         Background = new JPanel();
-        Background.setLayout(new GridLayoutManager(7, 5, new Insets(0, 0, 0, 0), -1, -1));
+        Background.setLayout(new GridLayoutManager(8, 5, new Insets(0, 0, 0, 0), -1, -1));
         Background.setBackground(new Color(-5461075));
         buttonLogout = new JButton();
         buttonLogout.setForeground(new Color(-16053493));
@@ -165,6 +165,8 @@ public class MainMenu extends JFrame {
         labelUsername.setHorizontalTextPosition(0);
         labelUsername.setText("Credentials Error, Please Sign In Again!");
         Background.add(labelUsername, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer8 = new Spacer();
+        Background.add(spacer8, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 10), null, null, 0, false));
     }
 
     /**
