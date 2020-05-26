@@ -45,8 +45,13 @@ public class MainMenu extends JFrame {
         buttonCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                CreateMenu.create();
+                if (permissionCheck(1) == 1) {
+                    dispose();
+                    CreateMenu.create();
+                } else {
+                    JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
+                            "\n If this is an error please retry, or contact system administrator.");
+                }
             }
         });
 
@@ -62,7 +67,12 @@ public class MainMenu extends JFrame {
         buttonSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (permissionCheck(2) == 1) {
 
+                } else {
+                    JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
+                            "\n If this is an error please retry, or contact system administrator.");
+                }
             }
         });
 
@@ -70,9 +80,20 @@ public class MainMenu extends JFrame {
         buttonUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (permissionCheck(3) == 1) {
 
+                } else {
+                    JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
+                            "\n If this is an error please retry, or contact system administrator.");
+                }
             }
         });
+    }
+
+    protected int permissionCheck(int type) {
+        //Type - 1 = create, 2 = Schedule, 3 = User Admin
+        //CHECK IF USER HAS REQUIRED PERMISSION TO DO
+        return (0);
     }
 
     private void createUIComponents() {
