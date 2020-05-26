@@ -46,7 +46,8 @@ public class TestUserControllers {
     void checkCreateUser() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("id", "12345");
+        requestBody.put("currentUserId", Integer.toString(key.getID()));
+        requestBody.put("newUserId", "12345");
         requestBody.put("password", "newpass");
         requestBody.put("key", key.sessionKey);
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "create", requestBody);
