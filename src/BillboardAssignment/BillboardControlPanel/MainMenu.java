@@ -18,6 +18,7 @@ public class MainMenu extends JFrame {
     private JButton buttonSchedule;
     private JButton buttonUser;
     private JLabel labelUsername;
+    private JButton buttonChangePwd;
     private String[] UserData;
 
     public MainMenu(String titles, String[] userDataInput) {
@@ -88,6 +89,12 @@ public class MainMenu extends JFrame {
                 }
             }
         });
+        buttonChangePwd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ChangePassword.create(UserData);
+            }
+        });
     }
 
     protected int permissionCheck(int type) {
@@ -116,12 +123,12 @@ public class MainMenu extends JFrame {
      */
     private void $$$setupUI$$$() {
         Background = new JPanel();
-        Background.setLayout(new GridLayoutManager(8, 5, new Insets(0, 0, 0, 0), -1, -1));
+        Background.setLayout(new GridLayoutManager(10, 5, new Insets(0, 0, 0, 0), -1, -1));
         Background.setBackground(new Color(-5461075));
         buttonLogout = new JButton();
         buttonLogout.setForeground(new Color(-16053493));
         buttonLogout.setText("Log Out");
-        Background.add(buttonLogout, new GridConstraints(6, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), null, null, 0, false));
+        Background.add(buttonLogout, new GridConstraints(8, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), null, null, 0, false));
         labelTitle = new JLabel();
         labelTitle.setBackground(new Color(-12828863));
         Font labelTitleFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 22, labelTitle.getFont());
@@ -166,7 +173,12 @@ public class MainMenu extends JFrame {
         labelUsername.setText("Credentials Error, Please Sign In Again!");
         Background.add(labelUsername, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer8 = new Spacer();
-        Background.add(spacer8, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 10), null, null, 0, false));
+        Background.add(spacer8, new GridConstraints(9, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 10), null, null, 0, false));
+        buttonChangePwd = new JButton();
+        buttonChangePwd.setText("Change Password");
+        Background.add(buttonChangePwd, new GridConstraints(6, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer9 = new Spacer();
+        Background.add(spacer9, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 20), null, null, 0, false));
     }
 
     /**
