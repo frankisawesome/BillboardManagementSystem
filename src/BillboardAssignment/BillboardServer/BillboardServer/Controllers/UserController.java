@@ -1,9 +1,9 @@
-package BillboardAssignment.BillboardServer.BillboardServer;
+package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
 
 
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
