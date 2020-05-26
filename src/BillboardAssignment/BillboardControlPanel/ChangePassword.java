@@ -23,12 +23,15 @@ public class ChangePassword extends JFrame {
 
     public ChangePassword(String titles, String[] userDataInput) {
         super(titles);
+        //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.labelUsername.setText(("User - " + UserData[1]));
         this.pack();
+
+        //Listener for confirm button
         buttonConfirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -43,9 +46,10 @@ public class ChangePassword extends JFrame {
                 pwdChar = passwordNew2.getPassword();
                 String pwd2 = new String(pwdChar);
 
-                System.out.println(pwd1 + "|" + pwd2 + "|" + pwdE);
+                //Checks validity of password change, first that new passwords match, then that existing password is correct.
                 if (pwd1.equals(pwd2)) {
                     if (checkPassword(pwdE) == 1) {
+                        changePassword(pwd1);
                         JOptionPane.showMessageDialog(null, "Password successfully changed!");
                         dispose();
                     } else {
@@ -56,6 +60,8 @@ public class ChangePassword extends JFrame {
                 }
             }
         });
+
+        //Listener for cancel button
         buttonCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,6 +73,10 @@ public class ChangePassword extends JFrame {
     protected int checkPassword(String password) {
         //Return 1 if verification successful, otherwise return 0.
         return (1);
+    }
+
+    protected void changePassword(String Password){
+        //Insert code to change password here!!!!!
     }
 
     protected static void create(String[] userDataInput) {

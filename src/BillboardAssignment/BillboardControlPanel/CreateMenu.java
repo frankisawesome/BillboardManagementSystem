@@ -20,11 +20,14 @@ public class CreateMenu extends JFrame {
 
     public CreateMenu(String titles, String[] userDataInput) {
         super(titles);
+        //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
+
+        //Listener for the back button, simply disposes and creates main menu
         buttonBack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -32,6 +35,8 @@ public class CreateMenu extends JFrame {
                 MainMenu.create(UserData);
             }
         });
+
+        //Listener for create button, will open the billboard design module.
         buttonCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -40,6 +45,7 @@ public class CreateMenu extends JFrame {
         });
     }
 
+    //Method to create GUI
     protected static void create(String[] userDataInput) {
         JFrame frame = new CreateMenu("Billboard Client", userDataInput);
         frame.setVisible(true);

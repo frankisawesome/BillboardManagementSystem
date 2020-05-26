@@ -46,6 +46,7 @@ public class MainMenu extends JFrame {
         buttonCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Check if user has required permissions
                 if (permissionCheck(1) == 1) {
                     dispose();
                     CreateMenu.create(UserData);
