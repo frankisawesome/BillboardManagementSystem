@@ -102,7 +102,7 @@ public class Login extends JFrame {
             if (response.status().equals("ok")) {
                 //If response ok, return session key and code 1 - successful
 
-                String[] returnVal = {"1", Integer.toString(response.body().getID())};
+                String[] returnVal = {"1", response.body().sessionKey};
                 return (returnVal);
             } else {
                 // If response fail, return code 2 and error message.

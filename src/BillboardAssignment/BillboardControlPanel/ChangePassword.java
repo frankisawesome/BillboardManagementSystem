@@ -86,13 +86,14 @@ public class ChangePassword extends JFrame {
             requestBody.put("newPassword", Password);
             requestBody.put("key", UserData[0]);
             requestBody.put("keyId", UserData[1]);
+            //JOptionPane.showMessageDialog(null, UserData[0] + "|" + UserData[1]);
             ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "change password", requestBody);
             ServerResponse<String> response = request.getResponse();
-            if (response.status() == "ok") {
+            if (response.status().equals("ok")) {
                 JOptionPane.showMessageDialog(null, "Password successfully changed!");
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Server request rejected unexpectedly");
+                JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Server request rejected unexpectedly " + response.status());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n" + e.getMessage());
