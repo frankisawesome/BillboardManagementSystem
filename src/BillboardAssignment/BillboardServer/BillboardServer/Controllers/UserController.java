@@ -55,7 +55,7 @@ public class UserController {
 
     private ServerResponse logout() {
         try {
-            UserSessionKey parsedSessionKey = new UserSessionKey(Integer.parseInt(body.get("id")), body.get("key"));
+            UserSessionKey parsedSessionKey = reconstructKey();
             userManager.logout(parsedSessionKey);
             return new ServerResponse(true, "ok");
         } catch (DatabaseNotAccessibleException e) {
@@ -65,7 +65,7 @@ public class UserController {
 
     private ServerResponse create() {
         try {
-            UserSessionKey key = new UserSessionKey(Integer.parseInt(body.get("currentUserId")), body.get("key"));
+            UserSessionKey key = reconstructKey();
             UserDataInput user = new UserDataInput(Integer.parseInt(body.get("newUserId")), body.get("password"));
             userManager.createUser(user, key);
             return new ServerResponse("Success! User created", "ok");
@@ -84,5 +84,9 @@ public class UserController {
         UserController controller = new UserController(message, manager, body);
         controller.Handle();
         return controller.response;
+    }
+
+    private UserSessionKey reconstructKey() {
+        return new UserSessionKey(Integer.parseInt(body.get("keyId")), body.get("key"));
     }
 }
