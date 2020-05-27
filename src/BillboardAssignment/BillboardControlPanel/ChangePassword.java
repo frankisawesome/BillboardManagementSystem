@@ -75,7 +75,7 @@ public class ChangePassword extends JFrame {
         return (1);
     }
 
-    protected void changePassword(String Password){
+    protected void changePassword(String Password) {
         //Insert code to change password here!!!!!
     }
 

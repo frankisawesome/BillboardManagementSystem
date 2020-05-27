@@ -1,10 +1,11 @@
 package BillboardAssignment.BillboardServer.BillboardServer;
 
+import BillboardAssignment.BillboardServer.BillboardServer.Controllers.TestController;
+import BillboardAssignment.BillboardServer.BillboardServer.Controllers.UserController;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.SessionKeyManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseArray;
 import BillboardAssignment.BillboardServer.Database.Queryable;

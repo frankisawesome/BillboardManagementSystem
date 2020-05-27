@@ -74,7 +74,7 @@ public class SessionKeyManager {
             throw new OutOfDateSessionKeyException(user.getID());
         }
 
-        if (dataInDatabase.sessionKey != user.sessionKey) {
+        if (!dataInDatabase.sessionKey.equals(user.sessionKey)) {
             throw new IncorrectSessionKeyException(user.getID(), user.sessionKey);
         }
 
