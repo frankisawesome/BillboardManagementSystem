@@ -16,19 +16,16 @@ import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundExcept
 
 import java.util.HashMap;
 
-public class UserController {
-    private String message;
-    private HashMap<String, String> body;
+public class UserController extends Controller{
     private UserManager userManager;
-    private ServerResponse response;
 
     private UserController(String message, UserManager userManager, HashMap<String, String> body) {
-        this.message = message;
+        super(message, body);
         this.userManager = userManager;
-        this.body = body;
     }
 
-    private void Handle() {
+    @Override
+    protected void handle() {
         switch (message) {
             case "login":
                 response = login();
@@ -57,24 +54,27 @@ public class UserController {
     }
 
     private ServerResponse getPermissions() {
-        try {
+        return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
             UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
             UserPrivilege[] privileges =  userManager.getPermissions(user, key);
             return new ServerResponse(privileges, "ok");
-        } catch (InsufficentPrivilegeException e) {
-            return new ServerResponse("", "User doesn't have the privilege EditUser");
-        } catch (IncorrectSessionKeyException e) {
-            return new ServerResponse("", "Session key invalid");
-        } catch (OutOfDateSessionKeyException e) {
-            return new ServerResponse("", "Session key has expired");
-        } catch (Exception e) {
-            return new ServerResponse("", e.getMessage());
-        }
+        });
     }
 
     private ServerResponse addPrivilege() {
-        return new ServerResponse("", "");
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
+            UserPrivilege[] privileges =  userManager.getPermissions(user, key);
+            UserPrivilege[] newPrivileges = new UserPrivilege[privileges.length + 1];
+            for (int i = 0; i < privileges.length; i++) {
+                newPrivileges[i] = privileges[i];
+            }
+            newPrivileges[privileges.length] = parsePrivilege(body.get("newPrivilege"));
+            userManager.setPermissions(user, newPrivileges, key);
+            return new ServerResponse(newPrivileges, "ok");
+        });
     }
 
     private ServerResponse removePrivilege() {
@@ -90,7 +90,7 @@ public class UserController {
             UserSessionKey sessionKey = userManager.login(new UserDataInput(Integer.parseInt(body.get("id")), body.get("password")));
             return new ServerResponse<UserSessionKey>(sessionKey, "ok");
         } catch (IncorrectPasswordException | DatabaseObjectNotFoundException e) {
-            return new ServerResponse("", "Incorrect id or password");
+            return errorResponse("Incorrect credentials");
         } catch (Exception e) {
             return new ServerResponse("", e.getMessage());
         }
@@ -102,34 +102,22 @@ public class UserController {
             userManager.logout(parsedSessionKey);
             return new ServerResponse(true, "ok");
         } catch (DatabaseNotAccessibleException e) {
-            return new ServerResponse("", "Failed to logout, some error occured when trying to perform db operation");
+            return errorResponse("Failed to logout, some error occured when trying to perform db operation");
         }
     }
 
     private ServerResponse create() {
-        try {
+        return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
             UserDataInput user = new UserDataInput(Integer.parseInt(body.get("newUserId")), body.get("password"));
             userManager.createUser(user, key);
             return new ServerResponse("Success! User created", "ok");
-        } catch (InsufficentPrivilegeException e) {
-            return new ServerResponse("", "Failed to create user, user doesn't have required privilage");
-        } catch (IncorrectSessionKeyException e) {
-            return new ServerResponse("", "Failed to create user, invalid session key");
-        } catch (OutOfDateSessionKeyException e) {
-            return new ServerResponse("", "Failed to create user, session key expired");
-        } catch (Exception e) {
-            return new ServerResponse("", "Failed to create user, this is the catch all exception - something horrible must've happened");
-        }
+        });
     }
 
     public static ServerResponse use(String message, UserManager manager, HashMap<String, String> body) {
         UserController controller = new UserController(message, manager, body);
-        controller.Handle();
+        controller.handle();
         return controller.response;
-    }
-
-    private UserSessionKey reconstructKey() {
-        return new UserSessionKey(Integer.parseInt(body.get("keyId")), body.get("key"));
     }
 }

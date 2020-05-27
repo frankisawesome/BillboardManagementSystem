@@ -86,7 +86,8 @@ public class TestUserControllers {
     void checkAddPermission() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("permission", "EditAllBillboards");
+        requestBody.put("newPrivilege", "EditAllBillboards");
+        requestBody.put("idToFind", Integer.toString(key.getID()));
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
         ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "add privilege", requestBody);
