@@ -1,6 +1,7 @@
 package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
 
 
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
@@ -9,6 +10,7 @@ import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSess
 import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
@@ -37,9 +39,50 @@ public class UserController {
             case "create":
                 response = create();
                 break;
+            case "get privileges":
+                response = getPermissions();
+                break;
+            case "add privilege":
+                response = addPrivilege();
+                break;
+            case "remove privilege":
+                response = removePrivilege();
+                break;
+            case "change password":
+                response = changePassword();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
+    }
+
+    private ServerResponse getPermissions() {
+        try {
+            UserSessionKey key = reconstructKey();
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
+            UserPrivilege[] privileges =  userManager.getPermissions(user, key);
+            return new ServerResponse(privileges, "ok");
+        } catch (InsufficentPrivilegeException e) {
+            return new ServerResponse("", "User doesn't have the privilege EditUser");
+        } catch (IncorrectSessionKeyException e) {
+            return new ServerResponse("", "Session key invalid");
+        } catch (OutOfDateSessionKeyException e) {
+            return new ServerResponse("", "Session key has expired");
+        } catch (Exception e) {
+            return new ServerResponse("", e.getMessage());
+        }
+    }
+
+    private ServerResponse addPrivilege() {
+        return new ServerResponse("", "");
+    }
+
+    private ServerResponse removePrivilege() {
+        return new ServerResponse("", "");
+    }
+
+    private ServerResponse changePassword() {
+        return new ServerResponse("", "");
     }
 
     private ServerResponse login() {
