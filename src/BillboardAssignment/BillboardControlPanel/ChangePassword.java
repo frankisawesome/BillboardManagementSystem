@@ -27,7 +27,6 @@ public class ChangePassword extends JFrame {
         $$$setupUI$$$();
         this.UserData = userDataInput;
         this.setContentPane(Background);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.labelUsername.setText(("User - " + UserData[1]));
         this.pack();
 
