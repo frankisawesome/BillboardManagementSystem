@@ -1,5 +1,9 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChangePassword extends JFrame {
     private JLabel labelTitle;
@@ -49,8 +56,6 @@ public class ChangePassword extends JFrame {
                 if (pwd1.equals(pwd2)) {
                     if (checkPassword(pwdE) == 1) {
                         changePassword(pwd1);
-                        JOptionPane.showMessageDialog(null, "Password successfully changed!");
-                        dispose();
                     } else {
                         JOptionPane.showMessageDialog(null, "Existing password is incorrect, please try again!");
                     }
@@ -75,7 +80,23 @@ public class ChangePassword extends JFrame {
     }
 
     protected void changePassword(String Password) {
-        //Insert code to change password here!!!!!
+        try {
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("idToChange", UserData[1]);
+            requestBody.put("newPassword", Password);
+            requestBody.put("key", UserData[0]);
+            requestBody.put("keyId", UserData[1]);
+            ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "change password", requestBody);
+            ServerResponse<String> response = request.getResponse();
+            if (response.status() == "ok") {
+                JOptionPane.showMessageDialog(null, "Password successfully changed!");
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Server request rejected unexpectedly");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n" + e.getMessage());
+        }
     }
 
     protected static void create(String[] userDataInput) {

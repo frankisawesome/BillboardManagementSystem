@@ -101,7 +101,8 @@ public class Login extends JFrame {
             ServerResponse<UserSessionKey> response = request.getResponse();
             if (response.status().equals("ok")) {
                 //If response ok, return session key and code 1 - successful
-                String[] returnVal = {"1", response.body().sessionKey};
+
+                String[] returnVal = {"1", Integer.toString(response.body().getID())};
                 return (returnVal);
             } else {
                 // If response fail, return code 2 and error message.
