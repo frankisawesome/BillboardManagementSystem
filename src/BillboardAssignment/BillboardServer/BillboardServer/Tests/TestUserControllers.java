@@ -53,7 +53,7 @@ public class TestUserControllers {
     void checkLogOut() throws Exception {
         UserSessionKey key = loginWithAdmin();
         boolean logoutSuccess = logout(key);
-        assertEquals(true, logoutSuccess);
+        assertTrue(logoutSuccess);
     }
 
     @Test

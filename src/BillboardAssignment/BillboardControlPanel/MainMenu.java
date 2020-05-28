@@ -1,5 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -7,7 +10,8 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;import java.awt.event.KeyAdapter;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class MainMenu extends JFrame {
     private JButton buttonLogout;
@@ -19,26 +23,41 @@ public class MainMenu extends JFrame {
     private JButton buttonUser;
     private JLabel labelUsername;
     private JButton buttonChangePwd;
-    private String[] UserData;
+    private String[] userData;
 
     public MainMenu(String titles, String[] userDataInput) {
         super(titles);
         $$$setupUI$$$();
         // Finish setting up UI after all elements added to background
-        this.UserData = userDataInput;
+        this.userData = userDataInput;
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Display Username at top of screen.
-        this.labelUsername.setText(("Welcome User - " + UserData[1]));
+        this.labelUsername.setText(("Welcome User - " + userData[1]));
         this.pack();
 
         //Listener for Logout Button
         buttonLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Login.create();
-                dispose();
-                JOptionPane.showMessageDialog(null, "You have successfully logged out!");
+                try {
+                    HashMap<String, String> requestBody = new HashMap<String, String>();
+                    requestBody.put("key", userData[0]);
+                    requestBody.put("keyId", userData[1]);
+                    ServerRequest<Boolean> request = new ServerRequest<Boolean>(RequestType.USER, "logout", requestBody);
+                    ServerResponse<Boolean> response = request.getResponse();
+                    if (response.body() == true) {
+                        Login.create();
+                        dispose();
+                        JOptionPane.showMessageDialog(null, "You have successfully logged out!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \nLog-Out Request Rejected at Serverside");
+                    }
+                } catch (Exception f) {
+                    JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n" + f.getMessage());
+                }
+
+
             }
         });
 
@@ -47,9 +66,9 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Check if user has required permissions
-                if (permissionCheck(1) == 1) {
+                if (userData[2].equals("1")) {
                     dispose();
-                    CreateMenu.create(UserData);
+                    CreateMenu.create(userData);
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
                             "\n If this is an error please retry, or contact system administrator.");
@@ -69,7 +88,8 @@ public class MainMenu extends JFrame {
         buttonSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (permissionCheck(2) == 1) {
+                //Permission Check
+                if (userData[4].equals("1")) {
 
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
@@ -82,7 +102,8 @@ public class MainMenu extends JFrame {
         buttonUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (permissionCheck(3) == 1) {
+                //Permission Check
+                if (userData[5].equals("1")) {
 
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
@@ -93,16 +114,12 @@ public class MainMenu extends JFrame {
         buttonChangePwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ChangePassword.create(UserData);
+                dispose();
+                ChangePassword.create(userData, 0);
             }
         });
     }
 
-    protected int permissionCheck(int type) {
-        //Type - 1 = create, 2 = Schedule, 3 = User Admin
-        //CHECK IF USER HAS REQUIRED PERMISSION TO DO
-        return (1);
-    }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
