@@ -6,8 +6,8 @@ import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashMap;
 import java.util.Random;
@@ -15,6 +15,7 @@ import java.util.Random;
 /**
  * Test suite for all user related controllers, i.e RequestType.USER
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestUserControllers {
     /*
     Helper method to get key with admin privileges
@@ -41,12 +42,14 @@ public class TestUserControllers {
     }
 
     @Test
+    @Order(1)
     void checkLogin() throws Exception {
         UserSessionKey key = loginWithAdmin();
         assertNotEquals("",key.sessionKey);
     }
 
     @Test
+    @Order(2)
     void checkLogOut() throws Exception {
         UserSessionKey key = loginWithAdmin();
         boolean logoutSuccess = logout(key);
@@ -54,6 +57,7 @@ public class TestUserControllers {
     }
 
     @Test
+    @Order(3)
     void checkCreateUser() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
@@ -68,6 +72,7 @@ public class TestUserControllers {
     }
 
     @Test
+    @Order(4)
     void checkGetUserPerms() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
@@ -83,6 +88,7 @@ public class TestUserControllers {
     }
 
     @Test
+    @Order(6)
     void checkAddPermission() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
@@ -96,10 +102,12 @@ public class TestUserControllers {
     }
 
     @Test
+    @Order(5)
     void checkRemovePermission() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("permission", "EditAllBillboards");
+        requestBody.put("privilegeToRemove", "EditAllBillboards");
+        requestBody.put("idToFind", Integer.toString(key.getID()));
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
         ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "remove privilege", requestBody);
@@ -108,10 +116,11 @@ public class TestUserControllers {
     }
 
     @Test
+    @Order(7)
     void checkChangePassword() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("idToChange", Integer.toString(key.getID()));
+        requestBody.put("idToFind", Integer.toString(key.getID()));
         requestBody.put("newPassword", "newpass");
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
