@@ -58,8 +58,7 @@ public class ChangePassword extends JFrame {
                 //Checks validity of password change, first that a password has been entered, then that new passwords match, then that existing password is correct.
                 if (pwd1.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please Enter a New Password, Field Cannot Be Blank");
-                }
-                else {
+                } else {
                     if (pwd1.equals(pwd2)) {
                         int checkResult = checkPassword(pwdE);
                         // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
@@ -183,7 +182,7 @@ public class ChangePassword extends JFrame {
      */
     private void $$$setupUI$$$() {
         Background = new JPanel();
-        Background.setLayout(new GridLayoutManager(13, 4, new Insets(0, 0, 0, 0), -1, -1));
+        Background.setLayout(new GridLayoutManager(14, 4, new Insets(0, 0, 0, 0), -1, -1));
         Background.setBackground(new Color(-5461075));
         labelTitle = new JLabel();
         Font labelTitleFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 18, labelTitle.getFont());
@@ -239,6 +238,8 @@ public class ChangePassword extends JFrame {
         labelUsername.setForeground(new Color(-12828863));
         labelUsername.setText("Error");
         Background.add(labelUsername, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer7 = new Spacer();
+        Background.add(spacer7, new GridConstraints(13, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
     }
 
     /**
