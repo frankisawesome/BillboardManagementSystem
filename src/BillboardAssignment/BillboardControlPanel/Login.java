@@ -4,6 +4,7 @@ import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -15,6 +16,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class Login extends JFrame {
     //Form Components
@@ -45,13 +49,14 @@ public class Login extends JFrame {
                 String[] loginReturn;
                 //Call sendrequest function to send info to server.
                 //In loginReturn array 0 - Return Code from Server 1 - Any Message from Server
-                loginReturn = SendRequest(id, pwd);
+                loginReturn = SendLoginRequest(id, pwd);
                 //If Login Successful.
                 if (loginReturn[0] == "1") {
                     SessionKey = loginReturn[1];
                     dispose();
                     //Launch Main Menu and Transmit User ID and Key to Menu Class
                     String[] userData = {SessionKey, id};
+                    GetPermissionsRequest(userData);
                     MainMenu.create(userData);
                 }
                 //If Login Unsuccessful
@@ -89,8 +94,8 @@ public class Login extends JFrame {
         });
     }
 
-//Function for Sending Request to Server
-    private String[] SendRequest(String id, String pwd) {
+    //Function for Sending Request to Server
+    private String[] SendLoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("id", id);
@@ -114,6 +119,28 @@ public class Login extends JFrame {
             // If exception thrown, return code 2 and error message prompting user to seek IT support.
             String[] returnVal = {"2", "Please Contact IT Support and Quote the Following: \n" + e.getMessage()};
             return (returnVal);
+        }
+    }
+
+    private UserPrivilege[] GetPermissionsRequest(String[] userData) {
+        try {
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("idToFind", userData[1]);
+            requestBody.put("key", userData[0]);
+            requestBody.put("keyId", userData[1]);
+            ServerRequest<UserPrivilege[]> request = new ServerRequest<>(RequestType.USER, "get privileges", requestBody);
+            ServerResponse<UserPrivilege[]> response = request.getResponse();
+            //privileges can't be empty
+            UserPrivilege[] Perms = response.body();
+            System.out.println(Perms[0]);
+            System.out.println(Perms[1]);
+            System.out.println(Perms[2]);
+            System.out.println(Perms[3]);
+            return (response.body());
+        } catch (Exception e) {
+            UserPrivilege[] Error = {};
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
+            return (Error);
         }
     }
 

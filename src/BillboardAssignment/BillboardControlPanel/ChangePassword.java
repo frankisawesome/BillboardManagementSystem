@@ -55,19 +55,24 @@ public class ChangePassword extends JFrame {
                 pwdChar = passwordNew2.getPassword();
                 String pwd2 = new String(pwdChar);
 
-                //Checks validity of password change, first that new passwords match, then that existing password is correct.
-                if (pwd1.equals(pwd2)) {
-                    int checkResult = checkPassword(pwdE);
-                    // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
-                    if (checkResult == 1) {
-                        changePassword(pwd1);
-                    } else {
-                        if (checkResult == 0) {
-                            JOptionPane.showMessageDialog(null, "Existing password is incorrect, please try again!");
+                //Checks validity of password change, first that a password has been entered, then that new passwords match, then that existing password is correct.
+                if (pwd1.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please Enter a New Password, Field Cannot Be Blank");
+                }
+                else {
+                    if (pwd1.equals(pwd2)) {
+                        int checkResult = checkPassword(pwdE);
+                        // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
+                        if (checkResult == 1) {
+                            changePassword(pwd1);
+                        } else {
+                            if (checkResult == 0) {
+                                JOptionPane.showMessageDialog(null, "Existing password is incorrect, please try again!");
+                            }
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error, new password entries do not match!");
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error, new password entries do not match!");
                 }
             }
         });
@@ -78,7 +83,7 @@ public class ChangePassword extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 //If request type is 0 - change own password, load main menu.
-                if (requestType == 0){
+                if (requestType == 0) {
                     MainMenu.create(UserData);
                 }
             }
