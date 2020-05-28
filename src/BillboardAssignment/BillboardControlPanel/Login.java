@@ -54,10 +54,26 @@ public class Login extends JFrame {
                 if (loginReturn[0] == "1") {
                     SessionKey = loginReturn[1];
                     dispose();
-                    //Launch Main Menu and Transmit User ID and Key to Menu Class
-                    String[] userData = {SessionKey, id};
-                    GetPermissionsRequest(userData);
-                    MainMenu.create(userData);
+                    //Store ID and Session key in an array of user data
+                    String[] userData = new String[6];
+                    userData[0] = SessionKey;
+                    userData[1] = id;
+
+                    // Fetch user permissions from server
+                    String[] permission = GetPermissionsRequest(userData);
+                    //If an error is not returned, store these, then create main menu and transmit all user data to menu
+
+                    //An error in getting permissions is handled in the GetPermissionsRequest method and will prompt user
+                    //to contact support. The loop also breaks, aborting the log in.
+                    for (int i = 0; i < 4; i++) {
+                        userData[i + 2] = permission[i];
+                        if (permission[i].equals("E")) {
+                            break;
+                        }
+                        if (i == 3) {
+                            MainMenu.create(userData);
+                        }
+                    }
                 }
                 //If Login Unsuccessful
                 else {
@@ -122,23 +138,50 @@ public class Login extends JFrame {
         }
     }
 
-    private UserPrivilege[] GetPermissionsRequest(String[] userData) {
+    private String[] GetPermissionsRequest(String[] userData) {
         try {
+            //Set up Request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("idToFind", userData[1]);
             requestBody.put("key", userData[0]);
             requestBody.put("keyId", userData[1]);
+
+            //Send Request
             ServerRequest<UserPrivilege[]> request = new ServerRequest<>(RequestType.USER, "get privileges", requestBody);
             ServerResponse<UserPrivilege[]> response = request.getResponse();
-            //privileges can't be empty
-            UserPrivilege[] Perms = response.body();
-            System.out.println(Perms[0]);
-            System.out.println(Perms[1]);
-            System.out.println(Perms[2]);
-            System.out.println(Perms[3]);
-            return (response.body());
+
+            //Fetch response and convert to string format
+            UserPrivilege[] perms = response.body();
+            String[] stringPerms = {"0", "0", "0", "0"};
+            String tempPerm;
+
+            //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
+            for (int i = 0; i < perms.length; i++) {
+                tempPerm = String.valueOf(perms[i]);
+                switch (tempPerm) {
+                    case "CreateBillboards":
+                        stringPerms[0] = "1";
+                        break;
+                    case "EditAllBillboards":
+                        stringPerms[1] = "1";
+                        break;
+                    case "ScheduleBillboards":
+                        stringPerms[2] = "1";
+                        break;
+                    case "EditUsers":
+                        stringPerms[3] = "1";
+                        break;
+                    default:
+                        //Return an element E if error occurs as a flag to login, error is handled here however with a prompt.
+                        String[] Error = {"E"};
+                        JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Invalid Permission returned by server");
+                        return (Error);
+                }
+            }
+            return (stringPerms);
         } catch (Exception e) {
-            UserPrivilege[] Error = {};
+            //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
+            String[] Error = {"E"};
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
             return (Error);
         }
