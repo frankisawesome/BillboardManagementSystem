@@ -4,6 +4,7 @@ import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -27,12 +28,14 @@ public class ChangePassword extends JFrame {
     private JPanel Background;
     private JLabel labelUsername;
     private String[] UserData;
+    private int requestType;
 
-    public ChangePassword(String titles, String[] userDataInput) {
+    public ChangePassword(String titles, String[] userDataInput, int type) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
+        this.requestType = type;
         this.setContentPane(Background);
         this.labelUsername.setText(("User - " + UserData[1]));
         this.pack();
@@ -54,10 +57,14 @@ public class ChangePassword extends JFrame {
 
                 //Checks validity of password change, first that new passwords match, then that existing password is correct.
                 if (pwd1.equals(pwd2)) {
-                    if (checkPassword(pwdE) == 1) {
+                    int checkResult = checkPassword(pwdE);
+                    // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
+                    if (checkResult == 1) {
                         changePassword(pwd1);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Existing password is incorrect, please try again!");
+                        if (checkResult == 0) {
+                            JOptionPane.showMessageDialog(null, "Existing password is incorrect, please try again!");
+                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error, new password entries do not match!");
@@ -70,40 +77,97 @@ public class ChangePassword extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                //If request type is 0 - change own password, load main menu.
+                if (requestType == 0){
+                    MainMenu.create(UserData);
+                }
             }
         });
     }
 
     protected int checkPassword(String password) {
-        //Return 1 if verification successful, otherwise return 0.
-        return (1);
+        String[] loginReturn;
+        loginReturn = LoginRequest(UserData[1], password);
+        //If Dummy Login Successful
+        if (loginReturn[0] == "1") {
+            //Change to new Session Key
+            String newSessionKey = loginReturn[1];
+            UserData[0] = newSessionKey;
+            return (1);
+        }
+        //If Dummy Login Unsuccessful
+        else {
+            if (loginReturn[0] == "2") {
+                //If fail was due to exception thrown
+                JOptionPane.showMessageDialog(null, loginReturn[1]);
+                return (3);
+            } else {
+                //If fail was due to wrong password
+                return (0);
+            }
+        }
     }
 
     protected void changePassword(String Password) {
         try {
+            //Set up Request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("idToFind", UserData[1]);
             requestBody.put("newPassword", Password);
             requestBody.put("key", UserData[0]);
             requestBody.put("keyId", UserData[1]);
-            //JOptionPane.showMessageDialog(null, UserData[0] + "|" + UserData[1]);
+
+            //Send Request
             ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "change password", requestBody);
             ServerResponse<String> response = request.getResponse();
             if (response.status().equals("ok")) {
                 JOptionPane.showMessageDialog(null, "Password successfully changed!");
                 dispose();
+                //If request type is 0 (changing own password) create main menu, and pass back new session key, else simply dispose.
+                if (requestType == 0) {
+                    MainMenu.create(UserData);
+                }
             } else {
-                JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Server request rejected unexpectedly " + response.status());
+                JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Change Server request rejected unexpectedly " + response.status());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n" + e.getMessage());
         }
     }
 
-    protected static void create(String[] userDataInput) {
-        JFrame frame = new ChangePassword("Billboard Client", userDataInput);
+    protected static void create(String[] userDataInput, int type) {
+        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type);
         frame.setVisible(true);
     }
+
+    //Login Function for creating a dummy login request to check correctness of existing password.
+    private String[] LoginRequest(String id, String pwd) {
+        // Set Up Request
+        HashMap<String, String> requestBody = new HashMap<String, String>();
+        requestBody.put("id", id);
+        requestBody.put("password", pwd);
+        //Send Request
+        ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
+        try {
+            ServerResponse<UserSessionKey> response = request.getResponse();
+            if (response.status().equals("ok")) {
+                //If response ok, return session key and code 1 - successful
+
+                String[] returnVal = {"1", response.body().sessionKey};
+                return (returnVal);
+            } else {
+                // If response fail, return code 2 and error message.
+                String errorMsg = ("Error: " + response.status());
+                String[] returnVal = {"3", errorMsg};
+                return (returnVal);
+            }
+        } catch (Exception e) {
+            // If exception thrown, return code 2 and error message prompting user to seek IT support.
+            String[] returnVal = {"2", "Please Contact IT Support and Quote the Following: \n" + "Error in dummy login for existing check \n" + e.getMessage()};
+            return (returnVal);
+        }
+    }
+
 
     /**
      * Method generated by IntelliJ IDEA GUI Designer

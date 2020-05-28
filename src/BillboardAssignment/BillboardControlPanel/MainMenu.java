@@ -112,7 +112,8 @@ public class MainMenu extends JFrame {
         buttonChangePwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ChangePassword.create(userData);
+                dispose();
+                ChangePassword.create(userData, 0);
             }
         });
     }
