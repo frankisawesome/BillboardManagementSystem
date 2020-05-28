@@ -1,19 +1,15 @@
 package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
 
-
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserController extends Controller{
@@ -69,6 +65,9 @@ public class UserController extends Controller{
             UserPrivilege[] privileges =  userManager.getPermissions(user, key);
             UserPrivilege[] newPrivileges = new UserPrivilege[privileges.length + 1];
             for (int i = 0; i < privileges.length; i++) {
+                if (privileges[i] == parsePrivilege(body.get("newPrivilege"))) {
+                    return new ServerResponse("", "User already have the privilege");
+                }
                 newPrivileges[i] = privileges[i];
             }
             newPrivileges[privileges.length] = parsePrivilege(body.get("newPrivilege"));
@@ -78,11 +77,29 @@ public class UserController extends Controller{
     }
 
     private ServerResponse removePrivilege() {
-        return new ServerResponse("", "");
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
+            UserPrivilege[] privileges =  userManager.getPermissions(user, key);
+            ArrayList<UserPrivilege> newPrivileges = new ArrayList<UserPrivilege>();
+            for (int i = 0; i < privileges.length; i++) {
+                if (privileges[i] != parsePrivilege(body.get("privilegeToRemove"))) {
+                    newPrivileges.add(privileges[i]);
+                }
+            }
+            UserPrivilege[] newPrivilegesArr =  newPrivileges.toArray(new UserPrivilege[0]);
+            userManager.setPermissions(user, newPrivilegesArr, key);
+            return new ServerResponse(newPrivilegesArr, "ok");
+        });
     }
 
     private ServerResponse changePassword() {
-        return new ServerResponse("", "");
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
+            userManager.setPassword(user, body.get("newPassword"), key);
+            return new ServerResponse("Password changed!", "ok");
+        });
     }
 
     private ServerResponse login() {
