@@ -66,7 +66,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Check if user has required permissions
-                if (permissionCheck(1) == 1) {
+                if (userData[2].equals("1")) {
                     dispose();
                     CreateMenu.create(userData);
                 } else {
@@ -88,7 +88,8 @@ public class MainMenu extends JFrame {
         buttonSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (permissionCheck(2) == 1) {
+                //Permission Check
+                if (userData[4].equals("1")) {
 
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
@@ -101,7 +102,8 @@ public class MainMenu extends JFrame {
         buttonUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (permissionCheck(3) == 1) {
+                //Permission Check
+                if (userData[5].equals("1")) {
 
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
@@ -118,11 +120,6 @@ public class MainMenu extends JFrame {
         });
     }
 
-    protected int permissionCheck(int type) {
-        //Type - 1 = create, 2 = Schedule, 3 = User Admin
-        //CHECK IF USER HAS REQUIRED PERMISSION TO DO
-        return (1);
-    }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here

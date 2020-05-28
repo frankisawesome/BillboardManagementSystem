@@ -179,7 +179,8 @@ public class Login extends JFrame {
                 }
             }
             return (stringPerms);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
             String[] Error = {"E"};
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
