@@ -82,7 +82,7 @@ public class ChangePassword extends JFrame {
     protected void changePassword(String Password) {
         try {
             HashMap<String, String> requestBody = new HashMap<>();
-            requestBody.put("idToChange", UserData[1]);
+            requestBody.put("idToFind", UserData[1]);
             requestBody.put("newPassword", Password);
             requestBody.put("key", UserData[0]);
             requestBody.put("keyId", UserData[1]);
