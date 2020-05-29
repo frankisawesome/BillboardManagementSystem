@@ -122,6 +122,12 @@ public class UserManage extends JFrame {
                 DisplayUsersMain(page - 1);
             }
         });
+        buttonEdit1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[page * 10]);
+            }
+        });
     }
 
     //Method to create GUI
