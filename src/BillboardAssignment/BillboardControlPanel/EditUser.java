@@ -138,7 +138,7 @@ public class EditUser extends JFrame {
     }
 
     //Method to add permission
-    private int AddPermission(String permissionName){
+    private int AddPermission(String permissionName) {
         //Set Up Server Request
         try {
             HashMap<String, String> requestBody = new HashMap<>();
@@ -150,12 +150,12 @@ public class EditUser extends JFrame {
             //Perform Request
             ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "add privilege", requestBody);
             ServerResponse<String> response = request.getResponse();
-        }
-        catch(Exception e){
-            return(0);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission | " + e.getMessage());
+            return (0);
         }
 
-        return(1);
+        return (1);
     }
 
     //Method to create GUI
