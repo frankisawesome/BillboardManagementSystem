@@ -76,13 +76,17 @@ public class UserManage extends JFrame {
     private JCheckBox admin9;
     private JCheckBox admin10;
     private JButton buttonCreate;
+    private JLabel labelPage;
     private String[] UserData;
+    private String[][] userList;
 
-    public UserManage(String titles, String[] userDataInput) {
+    public UserManage(String titles, String[] userDataInput, String[][] userList) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
+        this.userList = userList;
+        DisplayUsersMain(0);
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -105,8 +109,181 @@ public class UserManage extends JFrame {
 
     //Method to create GUI
     protected static void create(String[] userDataInput) {
-        JFrame frame = new UserManage("Billboard Client", userDataInput);
+        JFrame frame = new UserManage("Billboard Client", userDataInput, ListUsers(userDataInput));
         frame.setVisible(true);
+    }
+
+    //Returns list of users and their existing permissions
+    private static String[][] ListUsers(String[] userDataInput) {
+        String[][] returnVal = {{"69420", "0", "1", "1", "1"}};
+        System.out.println(returnVal.length);
+        return (returnVal);
+    }
+
+    //Displays users in GUI Elements
+    private void DisplayUsersMain(int page) {
+        String[] blank = {"", "", "", "", ""};
+
+        //Check if user exists to be displayed, if so display it, else display blank field.
+        //User 1
+        if (userList.length >= (page * 10 + 1)) {
+            DisplayUser1(userList[page * 10]);
+        } else {
+            DisplayUser1(blank);
+        }
+        //User 2
+        if (userList.length >= (page * 10 + 2)) {
+            DisplayUser2(userList[page * 10 + 1]);
+        } else {
+            DisplayUser2(blank);
+        }
+        //User 3
+        if (userList.length >= (page * 10 + 3)) {
+            DisplayUser3(userList[page * 10 + 2]);
+        } else {
+            DisplayUser3(blank);
+        }
+        //User 4
+        if (userList.length >= (page * 10 + 4)) {
+            DisplayUser4(userList[page * 10 + 3]);
+        } else {
+            DisplayUser4(blank);
+        }
+        //User 5
+        if (userList.length >= (page * 10 + 5)) {
+            DisplayUser5(userList[page * 10 + 4]);
+        } else {
+            DisplayUser5(blank);
+        }
+        //User 6
+        if (userList.length >= (page * 10 + 6)) {
+            DisplayUser6(userList[page * 10 + 5]);
+        } else {
+            DisplayUser6(blank);
+        }
+        //User 7
+        if (userList.length >= (page * 10 + 7)) {
+            DisplayUser7(userList[page * 10 + 6]);
+        } else {
+            DisplayUser7(blank);
+        }
+        //User 8
+        if (userList.length >= (page * 10 + 8)) {
+            DisplayUser8(userList[page * 10 + 7]);
+        } else {
+            DisplayUser8(blank);
+        }
+        //User 9
+        if (userList.length >= (page * 10 + 9)) {
+            DisplayUser9(userList[page * 10 + 8]);
+        } else {
+            DisplayUser9(blank);
+        }
+        //User 10
+        if (userList.length >= (page * 10 + 10)) {
+            DisplayUser10(userList[page * 10 + 9]);
+        } else {
+            DisplayUser10(blank);
+        }
+
+        //Check if the next or previous page buttons should be activated.
+        buttonNext.enable(userList.length > (page * 10 + 10));
+        buttonPrevious.enable(page > 0);
+
+        //Set page number to display
+        int numPages = (int) Math.ceil((double) userList.length / 10);
+        labelPage.setText("User ID    (Page " + (page + 1) + " of " + numPages + ")");
+    }
+
+    //Functions to display user info on GUI
+    private void DisplayUser1(String[] data) {
+        labelU1.setText(data[0]);
+        create1.setSelected(data[1].equals("1"));
+        edit1.setSelected(data[2].equals("1"));
+        schedule1.setSelected(data[3].equals("1"));
+        admin1.setSelected(data[4].equals("1"));
+        buttonEdit1.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser2(String[] data) {
+        labelU2.setText(data[0]);
+        create2.setSelected(data[1].equals("1"));
+        edit2.setSelected(data[2].equals("1"));
+        schedule2.setSelected(data[3].equals("1"));
+        admin2.setSelected(data[4].equals("1"));
+        buttonEdit2.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser3(String[] data) {
+        labelU3.setText(data[0]);
+        create3.setSelected(data[1].equals("1"));
+        edit3.setSelected(data[2].equals("1"));
+        schedule3.setSelected(data[3].equals("1"));
+        admin3.setSelected(data[4].equals("1"));
+        buttonEdit3.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser4(String[] data) {
+        labelU4.setText(data[0]);
+        create4.setSelected(data[1].equals("1"));
+        edit4.setSelected(data[2].equals("1"));
+        schedule4.setSelected(data[3].equals("1"));
+        admin4.setSelected(data[4].equals("1"));
+        buttonEdit4.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser5(String[] data) {
+        labelU5.setText(data[0]);
+        create5.setSelected(data[1].equals("1"));
+        edit5.setSelected(data[2].equals("1"));
+        schedule5.setSelected(data[3].equals("1"));
+        admin5.setSelected(data[4].equals("1"));
+        buttonEdit5.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser6(String[] data) {
+        labelU6.setText(data[0]);
+        create6.setSelected(data[1].equals("1"));
+        edit6.setSelected(data[2].equals("1"));
+        schedule6.setSelected(data[3].equals("1"));
+        admin6.setSelected(data[4].equals("1"));
+        buttonEdit6.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser7(String[] data) {
+        labelU7.setText(data[0]);
+        create7.setSelected(data[1].equals("1"));
+        edit7.setSelected(data[2].equals("1"));
+        schedule7.setSelected(data[3].equals("1"));
+        admin7.setSelected(data[4].equals("1"));
+        buttonEdit7.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser8(String[] data) {
+        labelU8.setText(data[0]);
+        create8.setSelected(data[1].equals("1"));
+        edit8.setSelected(data[2].equals("1"));
+        schedule8.setSelected(data[3].equals("1"));
+        admin8.setSelected(data[4].equals("1"));
+        buttonEdit8.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser9(String[] data) {
+        labelU9.setText(data[0]);
+        create9.setSelected(data[1].equals("1"));
+        edit9.setSelected(data[2].equals("1"));
+        schedule9.setSelected(data[3].equals("1"));
+        admin9.setSelected(data[4].equals("1"));
+        buttonEdit9.setVisible(!data[0].equals(""));
+    }
+
+    private void DisplayUser10(String[] data) {
+        labelU10.setText(data[0]);
+        create10.setSelected(data[1].equals("1"));
+        edit10.setSelected(data[2].equals("1"));
+        schedule10.setSelected(data[3].equals("1"));
+        admin10.setSelected(data[4].equals("1"));
+        buttonEdit10.setVisible(!data[0].equals(""));
     }
 
     /**
@@ -212,6 +389,7 @@ public class UserManage extends JFrame {
         create1.setHorizontalAlignment(0);
         create1.setHorizontalTextPosition(0);
         create1.setLabel("");
+        create1.setSelected(false);
         create1.setText("");
         panel1.add(create1, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
@@ -223,33 +401,33 @@ public class UserManage extends JFrame {
         final JPanel panel12 = new JPanel();
         panel12.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel12, new GridConstraints(2, 1, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label1 = new JLabel();
-        label1.setText("User ID");
-        panel12.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        labelPage = new JLabel();
+        labelPage.setText("User ID");
+        panel12.add(labelPage, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel13 = new JPanel();
         panel13.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel13, new GridConstraints(3, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("Create");
-        panel13.add(label2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("Create");
+        panel13.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel14 = new JPanel();
         panel14.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel14, new GridConstraints(3, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label3 = new JLabel();
-        label3.setText("Edit All");
-        panel14.add(label3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Edit All");
+        panel14.add(label2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel15 = new JPanel();
         panel15.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel15, new GridConstraints(3, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label4 = new JLabel();
-        label4.setText("Schedule");
-        panel15.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Schedule");
+        panel15.add(label3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel16 = new JPanel();
         panel16.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel16, new GridConstraints(3, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label5 = new JLabel();
-        label5.setText("User Admin");
-        panel16.add(label5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("User Admin");
+        panel16.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonExit = new JButton();
         buttonExit.setLabel("Exit");
         buttonExit.setText("Exit");
@@ -293,11 +471,11 @@ public class UserManage extends JFrame {
         final JPanel panel17 = new JPanel();
         panel17.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel17, new GridConstraints(2, 5, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label6 = new JLabel();
-        label6.setHorizontalAlignment(0);
-        label6.setHorizontalTextPosition(0);
-        label6.setText("Permissions");
-        panel17.add(label6, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label5 = new JLabel();
+        label5.setHorizontalAlignment(0);
+        label5.setHorizontalTextPosition(0);
+        label5.setText("Permissions");
+        panel17.add(label5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         edit1 = new JCheckBox();
         edit1.setActionCommand("");
         edit1.setEnabled(false);
