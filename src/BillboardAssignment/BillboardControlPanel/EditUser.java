@@ -13,9 +13,9 @@ public class EditUser extends JFrame {
     private JLabel labelTitle;
     private JButton buttonAddAdmin;
     private JLabel labelUsername;
-    private JButton changePasswordButton;
-    private JButton removeUserButton;
-    private JButton goBackButton;
+    private JButton buttonChangePassword;
+    private JButton buttonDeleteUser;
+    private JButton buttonBack;
     private JPanel panel1;
     private JButton buttonAddCreate;
     private JButton buttonAddEdit;
@@ -40,15 +40,16 @@ public class EditUser extends JFrame {
         this.pack();
 
         //Listener for the back button, simply disposes
-        goBackButton.addActionListener(new ActionListener() {
+        buttonBack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                UserManage.create(adminUserData);
             }
         });
 
         //Listener for change password button, passes to change password window.
-        changePasswordButton.addActionListener(new ActionListener() {
+        buttonChangePassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (adminUserData[1].equals(editingUserData[0])) {
@@ -58,12 +59,41 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
+        //Listener for the remove user button
+        buttonDeleteUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Contingency check in case button is displayed when it shouldnt be to prevent deleting your own account.
+                if (adminUserData[1].equals(editingUserData[0])) {
+                    JOptionPane.showMessageDialog(null, "You cannot delete your own account.");
+                } else {
+                    //Dialog for user confirmation that they really want to delete the account.
+                    int dialogButton = JOptionPane.YES_NO_OPTION;
+                    int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to " +
+                            "PERMANENTLY delete this account?\n User - " + editingUserData[0], "Warning", dialogButton);
+
+                    //If user confirms, call function to delete User
+                    if (dialogResult == JOptionPane.YES_OPTION) {
+                        DeleteUser();
+                    }
+                }
+            }
+        });
     }
 
     //Method to create GUI
     protected static void create(String[] AdminDataInput, String[] editingUserDataInput) {
         JFrame frame = new EditUser("Billboard Client", AdminDataInput, editingUserDataInput);
         frame.setVisible(true);
+    }
+
+    private void DeleteUser() {
+        //If Successful, inform user, dispose and return to user management menu.
+        JOptionPane.showMessageDialog(null, "User has been deleted! NOT REALLY PLS INCLUDE SERVER LINK");
+        dispose();
+        UserManage.create(adminUserData);
+
     }
 
     //Personalises the generic edit window to be specific to the user which is being edited.
@@ -78,6 +108,7 @@ public class EditUser extends JFrame {
         buttonRemoveSchedule.setVisible(editingUserData[3].equals("1"));
         if (adminUserData[1].equals(editingUserData[0])) {
             buttonRemoveAdmin.setVisible(false);
+            buttonDeleteUser.setVisible(false);
         } else {
             buttonRemoveAdmin.setVisible(editingUserData[4].equals("1"));
         }
@@ -160,20 +191,20 @@ public class EditUser extends JFrame {
         labelUsername.setForeground(new Color(-12828863));
         labelUsername.setText("Error");
         panel1.add(labelUsername, new GridConstraints(1, 0, 1, 6, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        changePasswordButton = new JButton();
-        changePasswordButton.setText("Change Password");
-        panel1.add(changePasswordButton, new GridConstraints(9, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonChangePassword = new JButton();
+        buttonChangePassword.setText("Change Password");
+        panel1.add(buttonChangePassword, new GridConstraints(9, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
         panel1.add(spacer4, new GridConstraints(10, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 5), null, null, 0, false));
-        removeUserButton = new JButton();
-        removeUserButton.setForeground(new Color(-4517878));
-        removeUserButton.setText("Remove User");
-        panel1.add(removeUserButton, new GridConstraints(11, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonDeleteUser = new JButton();
+        buttonDeleteUser.setForeground(new Color(-4517878));
+        buttonDeleteUser.setText("Delete User");
+        panel1.add(buttonDeleteUser, new GridConstraints(11, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer5 = new Spacer();
         panel1.add(spacer5, new GridConstraints(12, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 15), null, null, 0, false));
-        goBackButton = new JButton();
-        goBackButton.setText("Go Back");
-        panel1.add(goBackButton, new GridConstraints(13, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonBack = new JButton();
+        buttonBack.setText("Go Back");
+        panel1.add(buttonBack, new GridConstraints(13, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer6 = new Spacer();
         panel1.add(spacer6, new GridConstraints(14, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 2), null, null, 0, false));
         final Spacer spacer7 = new Spacer();

@@ -126,60 +126,70 @@ public class UserManage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[page * 10]);
+                dispose();
             }
         });
         buttonEdit2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 1]);
+                dispose();
             }
         });
         buttonEdit3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 2]);
+                dispose();
             }
         });
         buttonEdit4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 3]);
+                dispose();
             }
         });
         buttonEdit5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 4]);
+                dispose();
             }
         });
         buttonEdit6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 5]);
+                dispose();
             }
         });
         buttonEdit7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 6]);
+                dispose();
             }
         });
         buttonEdit8.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 7]);
+                dispose();
             }
         });
         buttonEdit9.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 8]);
+                dispose();
             }
         });
         buttonEdit10.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditUser.create(UserData, userList[(page * 10) + 9]);
+                dispose();
             }
         });
     }
