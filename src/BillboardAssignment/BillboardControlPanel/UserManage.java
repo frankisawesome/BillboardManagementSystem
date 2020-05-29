@@ -128,6 +128,60 @@ public class UserManage extends JFrame {
                 EditUser.create(UserData, userList[page * 10]);
             }
         });
+        buttonEdit2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 1]);
+            }
+        });
+        buttonEdit3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 2]);
+            }
+        });
+        buttonEdit4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 3]);
+            }
+        });
+        buttonEdit5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 4]);
+            }
+        });
+        buttonEdit6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 5]);
+            }
+        });
+        buttonEdit7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 6]);
+            }
+        });
+        buttonEdit8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 7]);
+            }
+        });
+        buttonEdit9.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 8]);
+            }
+        });
+        buttonEdit10.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditUser.create(UserData, userList[(page * 10) + 9]);
+            }
+        });
     }
 
     //Method to create GUI

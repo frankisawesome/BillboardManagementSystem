@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="panel1" layout-manager="GridLayoutManager" row-count="15" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="386" height="395"/>
+      <xy x="20" y="20" width="396" height="395"/>
     </constraints>
     <properties>
       <background color="-5461075"/>
@@ -99,7 +99,7 @@
           </component>
         </children>
       </grid>
-      <component id="3f2a3" class="javax.swing.JButton" binding="addButton" default-binding="true">
+      <component id="3f2a3" class="javax.swing.JButton" binding="buttonAddAdmin">
         <constraints>
           <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -107,7 +107,7 @@
           <text value="Add"/>
         </properties>
       </component>
-      <component id="1670b" class="javax.swing.JButton" default-binding="true">
+      <component id="1670b" class="javax.swing.JButton" binding="buttonAddSchedule">
         <constraints>
           <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -115,7 +115,7 @@
           <text value="Add"/>
         </properties>
       </component>
-      <component id="bd31" class="javax.swing.JButton" default-binding="true">
+      <component id="bd31" class="javax.swing.JButton" binding="buttonAddEdit">
         <constraints>
           <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -123,7 +123,7 @@
           <text value="Add"/>
         </properties>
       </component>
-      <component id="3106c" class="javax.swing.JButton" default-binding="true">
+      <component id="3106c" class="javax.swing.JButton" binding="buttonAddCreate">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -131,15 +131,15 @@
           <text value="Add"/>
         </properties>
       </component>
-      <component id="a2413" class="javax.swing.JButton" default-binding="true">
+      <component id="a2413" class="javax.swing.JButton" binding="buttonRemoveCreate">
         <constraints>
-          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Remove"/>
         </properties>
       </component>
-      <component id="f4871" class="javax.swing.JButton" default-binding="true">
+      <component id="f4871" class="javax.swing.JButton" binding="buttonRemoveSchedule">
         <constraints>
           <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -147,7 +147,7 @@
           <text value="Remove"/>
         </properties>
       </component>
-      <component id="dcca7" class="javax.swing.JButton" default-binding="true">
+      <component id="dcca7" class="javax.swing.JButton" binding="buttonRemoveAdmin">
         <constraints>
           <grid row="7" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -155,7 +155,7 @@
           <text value="Remove"/>
         </properties>
       </component>
-      <component id="875cb" class="javax.swing.JButton" default-binding="true">
+      <component id="875cb" class="javax.swing.JButton" binding="buttonRemoveEdit">
         <constraints>
           <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

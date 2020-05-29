@@ -11,12 +11,19 @@ import java.awt.event.ActionListener;
 
 public class EditUser extends JFrame {
     private JLabel labelTitle;
-    private JButton addButton;
+    private JButton buttonAddAdmin;
     private JLabel labelUsername;
     private JButton changePasswordButton;
     private JButton removeUserButton;
     private JButton goBackButton;
     private JPanel panel1;
+    private JButton buttonAddCreate;
+    private JButton buttonAddEdit;
+    private JButton buttonAddSchedule;
+    private JButton buttonRemoveCreate;
+    private JButton buttonRemoveEdit;
+    private JButton buttonRemoveSchedule;
+    private JButton buttonRemoveAdmin;
     private String[] adminUserData;
     private String[] editingUserData;
 
@@ -27,6 +34,7 @@ public class EditUser extends JFrame {
         $$$setupUI$$$();
         this.adminUserData = userDataInput;
         this.editingUserData = editingUserDataInput;
+        PersonaliseWindow();
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -44,6 +52,23 @@ public class EditUser extends JFrame {
     protected static void create(String[] AdminDataInput, String[] editingUserDataInput) {
         JFrame frame = new EditUser("Billboard Client", AdminDataInput, editingUserDataInput);
         frame.setVisible(true);
+    }
+
+    //Personalises the generic edit window to be specific to the user which is being edited.
+    private void PersonaliseWindow() {
+        labelUsername.setText(("User - " + editingUserData[0]));
+        buttonAddCreate.setVisible(editingUserData[1].equals("0"));
+        buttonAddEdit.setVisible(editingUserData[2].equals("0"));
+        buttonAddSchedule.setVisible(editingUserData[3].equals("0"));
+        buttonAddAdmin.setVisible(editingUserData[4].equals("0"));
+        buttonRemoveCreate.setVisible(editingUserData[1].equals("1"));
+        buttonRemoveEdit.setVisible(editingUserData[2].equals("1"));
+        buttonRemoveSchedule.setVisible(editingUserData[3].equals("1"));
+        if (adminUserData[1].equals(editingUserData[0])) {
+            buttonRemoveAdmin.setVisible(false);
+        } else {
+            buttonRemoveAdmin.setVisible(editingUserData[5].equals("1"));
+        }
     }
 
     /**
@@ -89,30 +114,30 @@ public class EditUser extends JFrame {
         final JLabel label4 = new JLabel();
         label4.setText("User Admin");
         panel5.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        addButton = new JButton();
-        addButton.setText("Add");
-        panel1.add(addButton, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button1 = new JButton();
-        button1.setText("Add");
-        panel1.add(button1, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button2 = new JButton();
-        button2.setText("Add");
-        panel1.add(button2, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button3 = new JButton();
-        button3.setText("Add");
-        panel1.add(button3, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button4 = new JButton();
-        button4.setText("Remove");
-        panel1.add(button4, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button5 = new JButton();
-        button5.setText("Remove");
-        panel1.add(button5, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button6 = new JButton();
-        button6.setText("Remove");
-        panel1.add(button6, new GridConstraints(7, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JButton button7 = new JButton();
-        button7.setText("Remove");
-        panel1.add(button7, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonAddAdmin = new JButton();
+        buttonAddAdmin.setText("Add");
+        panel1.add(buttonAddAdmin, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonAddSchedule = new JButton();
+        buttonAddSchedule.setText("Add");
+        panel1.add(buttonAddSchedule, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonAddEdit = new JButton();
+        buttonAddEdit.setText("Add");
+        panel1.add(buttonAddEdit, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonAddCreate = new JButton();
+        buttonAddCreate.setText("Add");
+        panel1.add(buttonAddCreate, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonRemoveCreate = new JButton();
+        buttonRemoveCreate.setText("Remove");
+        panel1.add(buttonRemoveCreate, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        buttonRemoveSchedule = new JButton();
+        buttonRemoveSchedule.setText("Remove");
+        panel1.add(buttonRemoveSchedule, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonRemoveAdmin = new JButton();
+        buttonRemoveAdmin.setText("Remove");
+        panel1.add(buttonRemoveAdmin, new GridConstraints(7, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonRemoveEdit = new JButton();
+        buttonRemoveEdit.setText("Remove");
+        panel1.add(buttonRemoveEdit, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
         panel1.add(spacer2, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
         final Spacer spacer3 = new Spacer();
@@ -172,4 +197,5 @@ public class EditUser extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return panel1;
     }
+
 }
