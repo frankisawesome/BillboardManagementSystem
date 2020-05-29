@@ -46,6 +46,18 @@ public class EditUser extends JFrame {
                 dispose();
             }
         });
+
+        //Listener for change password button, passes to change password window.
+        changePasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (adminUserData[1].equals(editingUserData[0])) {
+                    JOptionPane.showMessageDialog(null, "Please change your own password from the button on the main menu.\nThanks!");
+                } else {
+                    ChangePassword.create(adminUserData, 1, editingUserData[0]);
+                }
+            }
+        });
     }
 
     //Method to create GUI
@@ -67,7 +79,7 @@ public class EditUser extends JFrame {
         if (adminUserData[1].equals(editingUserData[0])) {
             buttonRemoveAdmin.setVisible(false);
         } else {
-            buttonRemoveAdmin.setVisible(editingUserData[5].equals("1"));
+            buttonRemoveAdmin.setVisible(editingUserData[4].equals("1"));
         }
     }
 

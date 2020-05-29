@@ -113,6 +113,8 @@ public class MainMenu extends JFrame {
                 }
             }
         });
+
+        //Listener for change password button
         buttonChangePwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
