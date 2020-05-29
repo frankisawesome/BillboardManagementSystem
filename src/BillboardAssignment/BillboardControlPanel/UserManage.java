@@ -79,6 +79,7 @@ public class UserManage extends JFrame {
     private JLabel labelPage;
     private String[] UserData;
     private String[][] userList;
+    private int page;
 
     public UserManage(String titles, String[] userDataInput, String[][] userList) {
         super(titles);
@@ -105,6 +106,22 @@ public class UserManage extends JFrame {
                 CreateUser.create(UserData);
             }
         });
+
+        //Listener for next button, if clicksed display next page
+        buttonNext.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DisplayUsersMain(page + 1);
+            }
+        });
+
+        //Listener for previous button, if clicked display previouspage
+        buttonPrevious.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DisplayUsersMain(page - 1);
+            }
+        });
     }
 
     //Method to create GUI
@@ -115,14 +132,15 @@ public class UserManage extends JFrame {
 
     //Returns list of users and their existing permissions
     private static String[][] ListUsers(String[] userDataInput) {
-        String[][] returnVal = {{"69420", "0", "1", "1", "1"}};
+        String[][] returnVal = {{"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"},};
         System.out.println(returnVal.length);
         return (returnVal);
     }
 
     //Displays users in GUI Elements
-    private void DisplayUsersMain(int page) {
+    private void DisplayUsersMain(int pageInput) {
         String[] blank = {"", "", "", "", ""};
+        this.page = pageInput;
 
         //Check if user exists to be displayed, if so display it, else display blank field.
         //User 1
@@ -187,8 +205,8 @@ public class UserManage extends JFrame {
         }
 
         //Check if the next or previous page buttons should be activated.
-        buttonNext.enable(userList.length > (page * 10 + 10));
-        buttonPrevious.enable(page > 0);
+        buttonNext.setEnabled((userList.length > (page * 10 + 10)));
+        buttonPrevious.setEnabled(page > 0);
 
         //Set page number to display
         int numPages = (int) Math.ceil((double) userList.length / 10);
