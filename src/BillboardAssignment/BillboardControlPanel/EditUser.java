@@ -90,49 +90,134 @@ public class EditUser extends JFrame {
         buttonAddCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Send request and if successful
+                if (AddPermission("CreateBillboards") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[2] = "1";
+                    } else {
+                        editingUserData[1] = "1";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonAddEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if (AddPermission("EditAllBillboards") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[3] = "1";
+                    } else {
+                        editingUserData[2] = "1";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonAddSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if (AddPermission("ScheduleBillboards") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[4] = "1";
+                    } else {
+                        editingUserData[3] = "1";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonAddAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if (AddPermission("EditUsers") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[5] = "1";
+                    } else {
+                        editingUserData[4] = "1";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonRemoveCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Send request and if successful
+                if (RemovePermission("CreateBillboards") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[2] = "0";
+                    } else {
+                        editingUserData[1] = "0";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonRemoveEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Send request and if successful
+                if (RemovePermission("EditAllBillboards") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[3] = "0";
+                    } else {
+                        editingUserData[2] = "0";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonRemoveSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Send request and if successful
+                if (RemovePermission("ScheduleBillboards") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[4] = "0";
+                    } else {
+                        editingUserData[3] = "0";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
         buttonRemoveAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Send request and if successful
+                if (RemovePermission("EditUsers") == 1) {
+                    //If Admin update admin data, otherwise if other user, update other user data
+                    if (adminUserData[1].equals(editingUserData[0])) {
+                        adminUserData[5] = "0";
+                    } else {
+                        editingUserData[4] = "0";
+                    }
+                    //Update GUI according to changes
+                    PersonaliseWindow();
+                    pack();
+                }
             }
         });
     }
@@ -150,6 +235,41 @@ public class EditUser extends JFrame {
             //Perform Request
             ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "add privilege", requestBody);
             ServerResponse<String> response = request.getResponse();
+
+            //Check that response is ok, if not display error message.
+            if (!response.status().equals("ok")) {
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n" + response.status());
+                return (0);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission | " + e.getMessage());
+            return (0);
+        }
+
+        return (1);
+    }
+
+    //Method to remove permission
+    private int RemovePermission(String permissionName) {
+        //Set Up Server Request
+        try {
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("privilegeToRemove", permissionName);
+            requestBody.put("idToFind", editingUserData[0]);
+            requestBody.put("key", adminUserData[0]);
+            requestBody.put("keyId", adminUserData[1]);
+
+            //Perform Request
+            ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "remove privilege", requestBody);
+            ServerResponse<String> response = request.getResponse();
+
+            //Check that response is ok, if not display error message.
+            if (!response.status().equals("ok")) {
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n" + response.status());
+                return (0);
+            }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission | " + e.getMessage());
             return (0);
@@ -235,28 +355,25 @@ public class EditUser extends JFrame {
         label4.setText("User Admin");
         panel5.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonAddAdmin = new JButton();
-        buttonAddAdmin.setText("Add");
+        buttonAddAdmin.setText("Grant");
         panel1.add(buttonAddAdmin, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonAddSchedule = new JButton();
-        buttonAddSchedule.setText("Add");
+        buttonAddSchedule.setText("Grant");
         panel1.add(buttonAddSchedule, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonAddEdit = new JButton();
-        buttonAddEdit.setText("Add");
+        buttonAddEdit.setText("Grant");
         panel1.add(buttonAddEdit, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonAddCreate = new JButton();
-        buttonAddCreate.setText("Add");
+        buttonAddCreate.setText("Grant");
         panel1.add(buttonAddCreate, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        buttonRemoveCreate = new JButton();
-        buttonRemoveCreate.setText("Remove");
-        panel1.add(buttonRemoveCreate, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         buttonRemoveSchedule = new JButton();
-        buttonRemoveSchedule.setText("Remove");
+        buttonRemoveSchedule.setText("Revoke");
         panel1.add(buttonRemoveSchedule, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonRemoveAdmin = new JButton();
-        buttonRemoveAdmin.setText("Remove");
+        buttonRemoveAdmin.setText("Revoke");
         panel1.add(buttonRemoveAdmin, new GridConstraints(7, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonRemoveEdit = new JButton();
-        buttonRemoveEdit.setText("Remove");
+        buttonRemoveEdit.setText("Revoke");
         panel1.add(buttonRemoveEdit, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
         panel1.add(spacer2, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
@@ -290,6 +407,9 @@ public class EditUser extends JFrame {
         panel1.add(spacer8, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, -1), null, null, 0, false));
         final Spacer spacer9 = new Spacer();
         panel1.add(spacer9, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, -1), null, null, 0, false));
+        buttonRemoveCreate = new JButton();
+        buttonRemoveCreate.setText("Revoke");
+        panel1.add(buttonRemoveCreate, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
