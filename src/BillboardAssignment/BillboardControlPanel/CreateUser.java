@@ -95,8 +95,8 @@ public class CreateUser extends JFrame {
             if (response.status().equals("ok")) {
                 return (1);
             } else {
-                JOptionPane.showMessageDialog(null, "Error, request rejected by server, please try again! \n" +
-                        "This is most likely because there is an existing user with the same username.");
+                JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
+                        response.status());
                 return (0);
             }
         } catch (Exception e) {

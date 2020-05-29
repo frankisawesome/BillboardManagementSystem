@@ -1,5 +1,9 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EditUser extends JFrame {
     private JLabel labelTitle;
@@ -80,6 +87,75 @@ public class EditUser extends JFrame {
                 }
             }
         });
+        buttonAddCreate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonAddEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonAddSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonAddAdmin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonRemoveCreate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonRemoveEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonRemoveSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonRemoveAdmin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+    }
+
+    //Method to add permission
+    private int AddPermission(String permissionName){
+        //Set Up Server Request
+        try {
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("newPrivilege", permissionName);
+            requestBody.put("idToFind", editingUserData[0]);
+            requestBody.put("key", adminUserData[0]);
+            requestBody.put("keyId", adminUserData[1]);
+
+            //Perform Request
+            ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "add privilege", requestBody);
+            ServerResponse<String> response = request.getResponse();
+        }
+        catch(Exception e){
+            return(0);
+        }
+
+        return(1);
     }
 
     //Method to create GUI
@@ -88,6 +164,7 @@ public class EditUser extends JFrame {
         frame.setVisible(true);
     }
 
+    //Method to Delete User
     private void DeleteUser() {
         //If Successful, inform user, dispose and return to user management menu.
         JOptionPane.showMessageDialog(null, "User has been deleted! NOT REALLY PLS INCLUDE SERVER LINK");
