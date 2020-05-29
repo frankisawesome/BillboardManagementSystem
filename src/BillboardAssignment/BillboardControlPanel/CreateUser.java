@@ -1,5 +1,9 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +12,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateUser extends JFrame {
     private JLabel labelTitle;
@@ -16,7 +24,7 @@ public class CreateUser extends JFrame {
     private JPasswordField passwordNew2;
     private JButton buttonConfirm;
     private JButton buttonCancel;
-    private JTextField textField1;
+    private JTextField fieldUsername;
     private JPanel Background;
     private String[] UserData;
 
@@ -38,10 +46,63 @@ public class CreateUser extends JFrame {
         buttonConfirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "User successfully created!");
-                dispose();
+                //Fetch user inputs.
+                String userName = fieldUsername.getText();
+                char[] pwdChar = passwordNew1.getPassword();
+                String pwd1 = new String(pwdChar);
+                char[] pwdChar2 = passwordNew2.getPassword();
+                String pwd2 = new String(pwdChar2);
+
+                //Check validity of inputs
+                if (!userName.equals("")) {
+                    if (pwd1.equals(pwd2)) {
+                        if (!pwd1.equals("")) {
+                            //Send request to server, if an error occurs it will be handled in the request function.
+                            //1 returned - successful, 0 returned - fail
+                            if (CreateUserRequest(userName, pwd1) == 1) {
+                                JOptionPane.showMessageDialog(null, "User successfully created!\n" +
+                                        "Please give user permissions via Edit User in the User Management Tool");
+                                dispose();
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error! Password cannot be blank.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error! Entered passwords do not match.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error! Username cannot be blank.");
+                }
             }
         });
+    }
+
+
+    private int CreateUserRequest(String id, String pwd) {
+        try {
+            //Setup Server Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("newUserId", id);
+            requestBody.put("password", pwd);
+            requestBody.put("key", UserData[0]);
+
+            //Send Request
+            ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "create", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //If Successful, return 1, else return 0 and give error dialog.
+            if (response.status().equals("ok")) {
+                return (1);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error, request rejected by server, please try again! \n" +
+                        "This is most likely because there is an existing user with the same username.");
+                return (0);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Create User | " + e.getMessage());
+            return (0);
+        }
     }
 
     //Method to create GUI
@@ -109,8 +170,8 @@ public class CreateUser extends JFrame {
         Background.add(spacer6, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(15, -1), null, null, 0, false));
         final Spacer spacer7 = new Spacer();
         Background.add(spacer7, new GridConstraints(12, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
-        textField1 = new JTextField();
-        Background.add(textField1, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fieldUsername = new JTextField();
+        Background.add(fieldUsername, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     }
 
     /**
@@ -138,4 +199,5 @@ public class CreateUser extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return Background;
     }
+
 }
