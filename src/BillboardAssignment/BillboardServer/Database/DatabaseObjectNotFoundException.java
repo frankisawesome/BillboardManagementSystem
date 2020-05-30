@@ -14,4 +14,20 @@ public class DatabaseObjectNotFoundException extends Exception {
         super("Object in database " + databaseName + " with given ID \"" + ID + "\" not found in the database.");
     }
 
+    /**
+     * Constructor of the Exception, supply the ID that you want the error message to shout about.
+     * This overload is for where statements.
+     */
+    public DatabaseObjectNotFoundException(String databaseName, int value, String parameterName) {
+        super("Object in database " + databaseName + " with given parameter \"" + parameterName + "\" value \"" + value + "\" not found in the database.");
+    }
+
+    /**
+     * Constructor of the Exception, supply the ID that you want the error message to shout about.
+     * This overload is for where statements.
+     */
+    public DatabaseObjectNotFoundException(String databaseName, String value, String parameterName) {
+        super("Object in database " + databaseName + " with given parameter \"" + parameterName + "\" value \"" + value + "\" not found in the database.");
+    }
+
 }

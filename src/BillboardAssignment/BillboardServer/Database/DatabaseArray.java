@@ -1,6 +1,7 @@
 package BillboardAssignment.BillboardServer.Database;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
@@ -126,6 +127,7 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
     public void initialiseDatabase(String entityName) {
         data = new ArrayList<E>();
         arrayInitialised = true;
+        this.entityName = entityName;
     }
 
     @Override
@@ -171,6 +173,91 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
             throw new DatabaseNotAccessibleException(entityName, "The database array hasn't been initialised yet!");
         }
         data = new ArrayList<E>();
+    }
+
+    /**
+     * Gets the given object, which's parameterName parameter's value matched parameterValue.
+     * E.G. select * from db where parameterName = parameterValue
+     * @param parameterName The name of the object's parameter
+     * @param parameterValue The value of said parameter we want to search for
+     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @return The object(s) that satisfy the condition
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseMultipleMatchException
+     */
+    @Override
+    public ArrayList<E> getWhere(String parameterName, int parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
+        if (!arrayInitialised) {
+            throw new DatabaseNotAccessibleException(entityName, "The database array hasn't been initialised yet!");
+        }
+
+        /* This will error if the field doesn't exist */
+        Field field = dummyObject.getClass().getField(parameterName);
+
+        E obj;
+        ArrayList<E> output = new ArrayList<E>();
+
+        for (int i = 0; i < data.size(); i++ ){
+            obj = data.get(i);
+            try {
+                if ((int) field.get(data.get(i)) == parameterValue) {
+                    output.add(obj);
+                }
+            }
+            catch (IllegalAccessException e) {
+                    throw new NoSuchFieldException();
+                }
+        }
+
+        if (output.size() == 0){
+            throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
+        }
+
+        return output;
+
+    }
+
+    /**
+     * Gets the given object, which's parameterName parameter's value matched parameterValue.
+     * E.G. select * from db where parameterName = parameterValue
+     * @param parameterName The name of the object's parameter
+     * @param parameterValue The value of said parameter we want to search for
+     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @return The object(s) that satisfy the condition
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseMultipleMatchException
+     */
+    @Override
+    public ArrayList<E> getWhere(String parameterName, String parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
+        if (!arrayInitialised) {
+            throw new DatabaseNotAccessibleException(entityName, "The database array hasn't been initialised yet!");
+        }
+
+        /* This will error if the field doesn't exist */
+        Field field = dummyObject.getClass().getField(parameterName);
+
+        E obj;
+        ArrayList<E> output = new ArrayList<E>();
+
+        for (int i = 0; i < data.size(); i++ ){
+            obj = data.get(i);
+            try {
+                if (((String) field.get(data.get(i))).equals(parameterValue)) {
+                    output.add(obj);
+                }
+            }
+            catch (IllegalAccessException e) {
+                throw new NoSuchFieldException();
+            }
+        }
+
+        if (output.size() == 0){
+            throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
+        }
+
+        return output;
     }
 
     ;
