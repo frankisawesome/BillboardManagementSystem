@@ -87,6 +87,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonAddCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,6 +106,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonAddEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,6 +124,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonAddSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,6 +142,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonAddAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -156,6 +160,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonRemoveCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -174,6 +179,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonRemoveEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -192,6 +198,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonRemoveSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -210,6 +217,7 @@ public class EditUser extends JFrame {
                 }
             }
         });
+
         buttonRemoveAdmin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -246,7 +254,7 @@ public class EditUser extends JFrame {
 
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n" + response.status());
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission |" + response.status());
                 return (0);
             }
 
@@ -274,12 +282,12 @@ public class EditUser extends JFrame {
 
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n" + response.status());
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n  Remove Permission |" + response.status());
                 return (0);
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission | " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Remove Permission | " + e.getMessage());
             return (0);
         }
 
@@ -295,9 +303,33 @@ public class EditUser extends JFrame {
     //Method to Delete User
     private void DeleteUser() {
         //If Successful, inform user, dispose and return to user management menu.
-        JOptionPane.showMessageDialog(null, "User has been deleted! NOT REALLY PLS INCLUDE SERVER LINK");
-        dispose();
-        UserManage.create(adminUserData);
+        try{
+            //Set up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("idToFind", editingUserData[0]);
+            requestBody.put("key", adminUserData[0]);
+            requestBody.put("keyId", adminUserData[1] );
+
+            //Send Request
+            ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "delete user", requestBody);
+            ServerResponse<String> response = request.getResponse();
+
+            //If successful, inform user, dispose, return to user management menu
+            if(response.status().equals("ok")) {
+                JOptionPane.showMessageDialog(null, "User has been deleted!");
+                dispose();
+                UserManage.create(adminUserData);
+            }
+            //If unsuccessful display error
+            else{
+                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete User |" + response.status());
+            }
+
+        }
+        //If exception thrown, catch and display for user
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Delete User | " + e.getMessage());
+        }
 
     }
 
