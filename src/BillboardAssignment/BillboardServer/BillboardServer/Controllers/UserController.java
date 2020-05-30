@@ -12,14 +12,26 @@ import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundExcept
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Controller for all user related requests
+ */
 public class UserController extends Controller{
     private UserManager userManager;
 
+    /**
+     * Constructor, only used with the use static method
+     * @param message request message
+     * @param userManager user manager containing related db information
+     * @param body request body
+     */
     private UserController(String message, UserManager userManager, HashMap<String, String> body) {
         super(message, body);
         this.userManager = userManager;
     }
 
+    /**
+     * Invoke relevant private methods based on the request message, to populate the response field
+     */
     @Override
     protected void handle() {
         switch (message) {
@@ -48,6 +60,20 @@ public class UserController extends Controller{
                 response = new ServerResponse("", "Request message invalid");
         }
     }
+
+    /**
+     * Static method for this singleton class, takes request stuff and returns response
+     * @param message request message
+     * @param manager user manager
+     * @param body request body
+     * @return server response, of type any
+     */
+    public static ServerResponse use(String message, UserManager manager, HashMap<String, String> body) {
+        UserController controller = new UserController(message, manager, body);
+        controller.handle();
+        return controller.response;
+    }
+
 
     private ServerResponse getPermissions() {
         return useDbTryCatch(() -> {
@@ -130,11 +156,5 @@ public class UserController extends Controller{
             userManager.createUser(user, key);
             return new ServerResponse("Success! User created", "ok");
         });
-    }
-
-    public static ServerResponse use(String message, UserManager manager, HashMap<String, String> body) {
-        UserController controller = new UserController(message, manager, body);
-        controller.handle();
-        return controller.response;
     }
 }

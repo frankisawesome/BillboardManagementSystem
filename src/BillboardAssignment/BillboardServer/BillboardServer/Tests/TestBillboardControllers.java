@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestBillboardControllers {
     @Test
     void checkGetBillboard() throws Exception{
-        ServerRequest<String> request = new ServerRequest<String>(RequestType.BILLBOARD, "current");
+        ServerRequest<String> request = new ServerRequest<String>(RequestType.BILLBOARD, "get one");
         ServerResponse response = request.getResponse();
         assertEquals("ok", response.status());
     }
