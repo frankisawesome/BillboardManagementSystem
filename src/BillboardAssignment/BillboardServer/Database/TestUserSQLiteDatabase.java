@@ -80,6 +80,31 @@ class TestUserSQLiteDatabase extends FatherTester {
         assertEquals(false, database.objectInDatabase(new User(3, "pwd", "1234", new UserPrivilege[]{UserPrivilege.EditUsers}, "test")));
     }
 
+    @org.junit.jupiter.api.Test
+    void getWhere() throws DatabaseObjectNotFoundException, NoSuchFieldException, DatabaseNotAccessibleException, DatabaseLogicException {
+
+        database.addObject(new User(1, "nice", "salt", new UserPrivilege[0], "that guy"));
+        User firstobs = database.getWhere("salt", "salt", new User(1, "nice", "salt", new UserPrivilege[0], "that guy")).get(0);
+
+        assertEquals(firstobs.getID(), 1);
+
+        assertThrows((DatabaseObjectNotFoundException.class), () -> {
+            database.getWhere("salt", 2,new User(1, "nice", "123", new UserPrivilege[0], "that guy"));
+        });
+
+        assertThrows((NoSuchFieldException.class), () -> {
+            database.getWhere("notinOBJ", 2, new User(1, "nice", "salt", new UserPrivilege[0], "that guy"));
+        });
+
+        database.addObject(new User(3, "nice", "salt", new UserPrivilege[0], "that guy2"));
+
+        assertEquals(database.getWhere("twiceHashedPassword", "nice", new User(1, "nice", "salt", new UserPrivilege[0], "that guy")).size(), 2);
+
+    }
+
+
+
+
     boolean userValuesEqual(User a, User b){
         return a.salt.equals(b.salt) && a.getID() == b.getID() && a.twiceHashedPassword.equals(b.twiceHashedPassword) && a.getUsername().equals(b.getUsername()) && assertSetEquals(a.getPrivileges(), b.getPrivileges());
     }

@@ -138,6 +138,7 @@ public class Login extends JFrame {
         }
     }
 
+    //Fetch permissions for user
     private String[] GetPermissionsRequest(String[] userData) {
         try {
             //Set up Request
@@ -158,7 +159,7 @@ public class Login extends JFrame {
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
                 String[] Error = {"E"};
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n" + response.status());
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + response.status());
                 return (Error);
             }
 
