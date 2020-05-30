@@ -95,6 +95,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[2] = "1";
+                        editingUserData[1] = "1";
                     } else {
                         editingUserData[1] = "1";
                     }
@@ -111,6 +112,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[3] = "1";
+                        editingUserData[2] = "1";
                     } else {
                         editingUserData[2] = "1";
                     }
@@ -127,6 +129,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[4] = "1";
+                        editingUserData[3] = "1";
                     } else {
                         editingUserData[3] = "1";
                     }
@@ -143,6 +146,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[5] = "1";
+                        editingUserData[4] = "1";
                     } else {
                         editingUserData[4] = "1";
                     }
@@ -160,6 +164,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[2] = "0";
+                        editingUserData[1] = "0";
                     } else {
                         editingUserData[1] = "0";
                     }
@@ -177,6 +182,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[3] = "0";
+                        editingUserData[2] = "0";
                     } else {
                         editingUserData[2] = "0";
                     }
@@ -194,6 +200,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[4] = "0";
+                        editingUserData[3] = "0";
                     } else {
                         editingUserData[3] = "0";
                     }
@@ -211,6 +218,7 @@ public class EditUser extends JFrame {
                     //If Admin update admin data, otherwise if other user, update other user data
                     if (adminUserData[1].equals(editingUserData[0])) {
                         adminUserData[5] = "0";
+                        editingUserData[4] = "0";
                     } else {
                         editingUserData[4] = "0";
                     }
