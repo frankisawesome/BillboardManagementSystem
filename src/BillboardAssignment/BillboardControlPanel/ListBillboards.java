@@ -63,10 +63,6 @@ public class ListBillboards extends JFrame {
         this.UserData = userDataInput;
         this.billboardList = FetchBillboards();
         DisplayBillboardsMain(0);
-        buttonEdit.setVisible(false);
-        buttonDelete.setVisible(false);
-        buttonPreview.setVisible(false);
-        buttonRename.setVisible(false);
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -160,6 +156,30 @@ public class ListBillboards extends JFrame {
             }
         });
 
+        buttonDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonRename.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        buttonPreview.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
     //Queries database and returns list of all billboards (id, author, name)
@@ -194,6 +214,7 @@ public class ListBillboards extends JFrame {
         buttonSelect8.setEnabled(true);
         buttonSelect9.setEnabled(true);
         buttonSelect10.setEnabled(true);
+
 
         //Highlight row selected.
         switch (row) {
@@ -239,6 +260,10 @@ public class ListBillboards extends JFrame {
                 break;
         }
 
+        //Sets view preview button visible in case it is hidden (which it is when there is no previous selection)
+        buttonPreview.setVisible(true);
+
+
         //Check which buttons to enable.
         if (UserData[3].equals("1")) {
             buttonDelete.setVisible(true);
@@ -273,6 +298,33 @@ public class ListBillboards extends JFrame {
     //Populate GUI with data from Billboards List
     private void DisplayBillboardsMain(int pageInput) {
         this.page = pageInput;
+
+        //Unhighlight all rows and enable all select buttons, as well as action buttons to erase previous selection
+        boxLabel1.setBackground(new Color(238, 238, 238));
+        boxLabel2.setBackground(new Color(238, 238, 238));
+        boxLabel3.setBackground(new Color(238, 238, 238));
+        boxLabel4.setBackground(new Color(238, 238, 238));
+        boxLabel5.setBackground(new Color(238, 238, 238));
+        boxLabel6.setBackground(new Color(238, 238, 238));
+        boxLabel7.setBackground(new Color(238, 238, 238));
+        boxLabel8.setBackground(new Color(238, 238, 238));
+        boxLabel9.setBackground(new Color(238, 238, 238));
+        boxLabel10.setBackground(new Color(238, 238, 238));
+        buttonSelect1.setEnabled(true);
+        buttonSelect2.setEnabled(true);
+        buttonSelect3.setEnabled(true);
+        buttonSelect4.setEnabled(true);
+        buttonSelect5.setEnabled(true);
+        buttonSelect6.setEnabled(true);
+        buttonSelect7.setEnabled(true);
+        buttonSelect8.setEnabled(true);
+        buttonSelect9.setEnabled(true);
+        buttonSelect10.setEnabled(true);
+        buttonEdit.setVisible(false);
+        buttonDelete.setVisible(false);
+        buttonPreview.setVisible(false);
+        buttonRename.setVisible(false);
+
 
         //Check if billboard exists to be displayed, if so display it, else display blank field.
         //Billboard 1
