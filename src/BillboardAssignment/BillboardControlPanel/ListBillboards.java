@@ -175,7 +175,8 @@ public class ListBillboards extends JFrame {
         buttonRename.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                dispose();
+                RenameBillboard.create(UserData, billboardList[selection][0], billboardList[selection][2]);
             }
         });
         buttonEdit.addActionListener(new ActionListener() {
