@@ -1,6 +1,7 @@
 package BillboardAssignment.BillboardServer.Database;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -233,6 +234,96 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             throw new DatabaseNotAccessibleException(getEntityName());
         }
 
+    }
+
+    /**
+     * Gets the given object, which's parameterName parameter's value matched parameterValue.
+     * E.G. select * from db where parameterName = parameterValue
+     * @param parameterName The name of the object's parameter
+     * @param parameterValue The value of said parameter we want to search for
+     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @return The object(s) that satisfy the condition
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseMultipleMatchException
+     */
+    @Override
+    public ArrayList<E> getWhere(String parameterName, String parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
+        if (!databaseInitialised) {
+            throw new DatabaseNotAccessibleException(entityName, "The database array hasn't been initialised yet!");
+        }
+
+        /* This will error if the field doesn't exist */
+        Field field = dummyObject.getClass().getField(parameterName);
+
+        E obj;
+        ArrayList<E> output = new ArrayList<E>();
+
+        try {
+            PreparedStatement get = connection.prepareStatement(String.format("SELECT * FROM %s WHERE %s = ?", getEntityName(), parameterName)); /* No need for sql injection projection when just using ID */
+            get.setString(1, parameterValue);
+            ResultSet rows = get.executeQuery();
+            while (rows.next()) {
+                output.add(mapResultSetToObject(rows));
+            }
+            get.close();
+        } catch (java.sql.SQLException e) {
+            /* This should never happen, getting a record should never error if the database is set up correctly. */
+            e.printStackTrace();
+            System.err.println("ERROR, A DELETE OPERATION FAILED! SOMETHING IS WRONG!");
+            throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
+        }
+
+        if (output.size() == 0){
+            throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
+        }
+
+        return output;
+    }
+
+    /**
+     * Gets the given object, which's parameterName parameter's value matched parameterValue.
+     * E.G. select * from db where parameterName = parameterValue
+     * @param parameterName The name of the object's parameter
+     * @param parameterValue The value of said parameter we want to search for
+     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @return The object(s) that satisfy the condition
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseMultipleMatchException
+     */
+    @Override
+    public ArrayList<E> getWhere(String parameterName, int parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
+        if (!databaseInitialised) {
+            throw new DatabaseNotAccessibleException(entityName, "The database array hasn't been initialised yet!");
+        }
+
+        /* This will error if the field doesn't exist */
+        Field field = dummyObject.getClass().getField(parameterName);
+
+        E obj;
+        ArrayList<E> output = new ArrayList<E>();
+
+        try {
+            PreparedStatement get = connection.prepareStatement(String.format("SELECT * FROM %s WHERE %s = ?", getEntityName(), parameterName)); /* No need for sql injection projection when just using ID */
+            get.setInt(1, parameterValue);
+            ResultSet rows = get.executeQuery();
+            while (rows.next()) {
+                output.add(mapResultSetToObject(rows));
+            }
+            get.close();
+        } catch (java.sql.SQLException e) {
+            /* This should never happen, getting a record should never error if the database is set up correctly. */
+            e.printStackTrace();
+            System.err.println("ERROR, A DELETE OPERATION FAILED! SOMETHING IS WRONG!");
+            throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
+        }
+
+        if (output.size() == 0){
+            throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
+        }
+
+        return output;
     }
 
     /**

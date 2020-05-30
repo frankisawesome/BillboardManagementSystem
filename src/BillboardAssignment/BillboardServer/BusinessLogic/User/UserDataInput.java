@@ -25,7 +25,7 @@ public class UserDataInput implements Identifiable {
     /**
      *  The username of the user, unique, but we don't use it as the primary key as that would be inefficient.
      */
-    private String username;
+    public String username;
 
     public UserDataInput(int userID, String onceHashedPassword, UserPrivilege[] privileges, String username) {
         this.userID = userID;
