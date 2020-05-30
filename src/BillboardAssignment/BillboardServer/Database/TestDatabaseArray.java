@@ -70,4 +70,24 @@ class TestDatabaseArray {
 
     }
 
+    @org.junit.jupiter.api.Test
+    void getWhere() throws DatabaseObjectNotFoundException, NoSuchFieldException, DatabaseNotAccessibleException, DatabaseLogicException {
+
+        database.addObject(new DummyDatabaseObject(1));
+        DummyDatabaseObject firstobs = database.getWhere("ID", 1, new DummyDatabaseObject(1)).get(0);
+
+        assertThrows((DatabaseObjectNotFoundException.class), () -> {
+            database.getWhere("ID", 2, new DummyDatabaseObject(1));
+        });
+
+        assertThrows((NoSuchFieldException.class), () -> {
+            database.getWhere("notinOBJ", 2, new DummyDatabaseObject(1));
+        });
+
+        database.addObject(new DummyDatabaseObject(2));
+
+        assertEquals(database.getWhere("dummy", "test", new DummyDatabaseObject(1)).size(), 2);
+
+    }
+
 }

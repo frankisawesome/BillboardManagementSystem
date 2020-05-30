@@ -91,4 +91,32 @@ public interface Queryable<E extends Identifiable> {
      * @throws DatabaseNotAccessibleException
      */
     void removeAllData() throws DatabaseNotAccessibleException;
+
+    /**
+     * Gets the given object, which's parameterName parameter's value matched parameterValue.
+     * E.G. select * from db where parameterName = parameterValue
+     * @param parameterName The name of the object's parameter
+     * @param parameterValue The value of said parameter we want to search for
+     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @return The object(s) that satisfy the condition
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseMultipleMatchException
+     */
+    ArrayList<E> getWhere(String parameterName, int parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException;
+
+    /**
+     * Gets the given object, which's parameterName parameter's value matched parameterValue.
+     * E.G. select * from db where parameterName = parameterValue
+     * @param parameterName The name of the object's parameter
+     * @param parameterValue The value of said parameter we want to search for
+     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @return The object(s) that satisfy the condition
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws DatabaseMultipleMatchException
+     */
+    ArrayList<E> getWhere(String parameterName, String parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException;
+
+
 }

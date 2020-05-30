@@ -1,6 +1,8 @@
 package BillboardAssignment.BillboardServer.BusinessLogic.User;
 
-public class User extends UserDataInput implements Comparable{
+import java.io.Serializable;
+
+public class User extends UserDataInput implements Comparable, Serializable {
 
     public String twiceHashedPassword;
 
@@ -23,6 +25,10 @@ public class User extends UserDataInput implements Comparable{
         this.twiceHashedPassword = twiceHashedPassword;
 
         this.salt = salt;
+    }
+
+    public User() {
+        super();
     }
 
     /**

@@ -6,7 +6,9 @@ package BillboardAssignment.BillboardServer.Database;
 
 public class DummyDatabaseObject implements Identifiable {
 
-    private int ID;
+    public int ID;
+
+    public String dummy = "test";
 
     public DummyDatabaseObject(int ID) {
         this.ID = ID;
