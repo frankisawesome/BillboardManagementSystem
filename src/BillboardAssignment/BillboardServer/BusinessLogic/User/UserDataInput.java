@@ -27,6 +27,10 @@ public class UserDataInput implements Identifiable {
      */
     public String username;
 
+    public UserDataInput() {
+
+    }
+
     public UserDataInput(int userID, String onceHashedPassword, UserPrivilege[] privileges, String username) {
         this.userID = userID;
 

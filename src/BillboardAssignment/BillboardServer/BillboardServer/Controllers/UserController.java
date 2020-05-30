@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
@@ -12,14 +13,26 @@ import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundExcept
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Controller for all user related requests
+ */
 public class UserController extends Controller{
     private UserManager userManager;
 
+    /**
+     * Constructor, only used with the use static method
+     * @param message request message
+     * @param userManager user manager containing related db information
+     * @param body request body
+     */
     private UserController(String message, UserManager userManager, HashMap<String, String> body) {
         super(message, body);
         this.userManager = userManager;
     }
 
+    /**
+     * Invoke relevant private methods based on the request message, to populate the response field
+     */
     @Override
     protected void handle() {
         switch (message) {
@@ -44,10 +57,30 @@ public class UserController extends Controller{
             case "change password":
                 response = changePassword();
                 break;
+            case "list users":
+                response = listUsers();
+                break;
+            case "delete user":
+                response = deleteUser();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
     }
+
+    /**
+     * Static method for this singleton class, takes request stuff and returns response
+     * @param message request message
+     * @param manager user manager
+     * @param body request body
+     * @return server response, of type any
+     */
+    public static ServerResponse use(String message, UserManager manager, HashMap<String, String> body) {
+        UserController controller = new UserController(message, manager, body);
+        controller.handle();
+        return controller.response;
+    }
+
 
     private ServerResponse getPermissions() {
         return useDbTryCatch(() -> {
@@ -132,9 +165,20 @@ public class UserController extends Controller{
         });
     }
 
-    public static ServerResponse use(String message, UserManager manager, HashMap<String, String> body) {
-        UserController controller = new UserController(message, manager, body);
-        controller.handle();
-        return controller.response;
+    private ServerResponse deleteUser() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
+            userManager.deleteUser(user, key);
+            return new ServerResponse("Success! User created", "ok");
+        });
+    }
+
+    private ServerResponse listUsers() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            User[] users = userManager.listUsers(key);
+            return new ServerResponse(users, "ok");
+        });
     }
 }
