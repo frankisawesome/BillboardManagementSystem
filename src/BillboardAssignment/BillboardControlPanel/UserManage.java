@@ -330,7 +330,7 @@ public class UserManage extends JFrame {
         }
     }
 
-    //Displays users in GUI Elements
+    //Populate GUI with data from users list
     private void DisplayUsersMain(int pageInput) {
         String[] blank = {"", "", "", "", ""};
         this.page = pageInput;

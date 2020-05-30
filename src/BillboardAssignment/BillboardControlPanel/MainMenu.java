@@ -80,7 +80,8 @@ public class MainMenu extends JFrame {
         buttonView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                dispose();
+                ListBillboards.create(userData);
             }
         });
 
