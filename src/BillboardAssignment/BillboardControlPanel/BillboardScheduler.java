@@ -291,7 +291,7 @@ public class BillboardScheduler {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args)
+    public static void create(String[] args, String[] UserData)
     {
         new BillboardScheduler();
     }
