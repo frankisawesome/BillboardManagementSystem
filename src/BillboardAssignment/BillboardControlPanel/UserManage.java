@@ -1,5 +1,11 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +14,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserManage extends JFrame {
     private JPanel panel1;
@@ -196,15 +205,129 @@ public class UserManage extends JFrame {
 
     //Method to create GUI
     protected static void create(String[] userDataInput) {
-        JFrame frame = new UserManage("Billboard Client", userDataInput, ListUsers(userDataInput));
-        frame.setVisible(true);
+        String[][] userList = ListUsers(userDataInput);
+        if (userList[0][0].equals("E")) {
+            MainMenu.create(userDataInput);
+        } else {
+            JFrame frame = new UserManage("Billboard Client", userDataInput, userList);
+            frame.setVisible(true);
+        }
     }
 
     //Returns list of users and their existing permissions
     private static String[][] ListUsers(String[] userDataInput) {
-        String[][] returnVal = {{"69420", "0", "1", "1", "1"}, {"694201", "1", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"},};
-        System.out.println(returnVal.length);
-        return (returnVal);
+        try {
+            //Set up request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("key", userDataInput[0]);
+            requestBody.put("keyId", userDataInput[1]);
+
+            //Send Request
+            ServerRequest<User[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
+            ServerResponse<User[]> response = request.getResponse();
+
+            //Check that response is ok, if not display error message and return error.
+            if (!response.status().equals("ok")) {
+                String[][] Error = {{"E"}};
+                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Users |" + response.status());
+                return (Error);
+            }
+            User[] returnedID = response.body();
+            String[][] returnVal = new String[returnedID.length][5];
+            returnVal[0][0] = "E";
+
+            //Loop through returned ID's and fetch permissions for each
+            for (int i = 0; i < returnedID.length; i++) {
+                //Fetch Permission
+                System.out.println(returnedID[i].getID());
+                String[] permissionReturned = GetPermissionsRequest(userDataInput, String.valueOf(returnedID[i].getID()));
+
+                //If error code returned, return error code for ListUsers
+                if (permissionReturned[0].equals("E")) {
+                    String[][] Error = new String[1][1];
+                    Error[0][0] = "E";
+                    return (Error);
+                }
+             //If no error returned, add to array.
+             returnVal[i] = permissionReturned;
+             }
+            return (returnVal);
+
+        }
+        //Catch exception and return error message
+        catch (Exception e) {
+            String[][] Error = new String[1][1];
+            Error[0][0] = "E";
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Fetch Users | " + e.getMessage());
+            return (Error);
+        }
+        //String[][] returnVal = {{"69420", "0", "1", "1", "1"}, {"694201", "1", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"},};
+        //System.out.println(returnVal.length);
+        //return (returnVal);
+    }
+
+    //Fetch permissions for user
+    private static String[] GetPermissionsRequest(String[] userData, String targetID) {
+        try {
+            //Handle error if a targetID of null is entered.
+            if (targetID == null) {
+                String[] ErrorR = {"E"};
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions user of ID null passed to get permissions function.");
+                return (ErrorR);
+            }
+            //Set up Request
+            System.out.println(targetID);
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("idToFind", targetID);
+            requestBody.put("key", userData[0]);
+            requestBody.put("keyId", userData[1]);
+
+            //Send Request
+            ServerRequest<UserPrivilege[]> request = new ServerRequest<>(RequestType.USER, "get privileges", requestBody);
+            ServerResponse<UserPrivilege[]> response = request.getResponse();
+
+            //Fetch response and convert to string format
+            UserPrivilege[] perms = response.body();
+            String[] stringPerms = {targetID, "0", "0", "0", "0"};
+            String tempPerm;
+
+            //Check that response is ok, if not display error message.
+            if (!response.status().equals("ok")) {
+                String[] ErrorR = {"E"};
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: Get Permissions\n Get Permissions |" + response.status());
+                return (ErrorR);
+            }
+
+            //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
+            for (int i = 0; i < perms.length; i++) {
+                tempPerm = String.valueOf(perms[i]);
+                switch (tempPerm) {
+                    case "CreateBillboards":
+                        stringPerms[1] = "1";
+                        break;
+                    case "EditAllBillboards":
+                        stringPerms[2] = "1";
+                        break;
+                    case "ScheduleBillboards":
+                        stringPerms[3] = "1";
+                        break;
+                    case "EditUsers":
+                        stringPerms[4] = "1";
+                        break;
+                    default:
+                        //Return an element E if error occurs as a flag to login, error is handled here however with a prompt.
+                        String[] ErrorR = {"E"};
+                        JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Invalid Permission returned by server");
+                        return (ErrorR);
+                }
+            }
+            return (stringPerms);
+        } catch (Exception e) {
+            //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
+            String[] ErrorR = {"E"};
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
+            return (ErrorR);
+        }
     }
 
     //Displays users in GUI Elements

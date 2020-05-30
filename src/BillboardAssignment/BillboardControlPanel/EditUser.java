@@ -303,31 +303,31 @@ public class EditUser extends JFrame {
     //Method to Delete User
     private void DeleteUser() {
         //If Successful, inform user, dispose and return to user management menu.
-        try{
+        try {
             //Set up Request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("idToFind", editingUserData[0]);
             requestBody.put("key", adminUserData[0]);
-            requestBody.put("keyId", adminUserData[1] );
+            requestBody.put("keyId", adminUserData[1]);
 
             //Send Request
             ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "delete user", requestBody);
             ServerResponse<String> response = request.getResponse();
 
             //If successful, inform user, dispose, return to user management menu
-            if(response.status().equals("ok")) {
+            if (response.status().equals("ok")) {
                 JOptionPane.showMessageDialog(null, "User has been deleted!");
                 dispose();
                 UserManage.create(adminUserData);
             }
             //If unsuccessful display error
-            else{
+            else {
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete User |" + response.status());
             }
 
         }
         //If exception thrown, catch and display for user
-        catch(Exception e){
+        catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Delete User | " + e.getMessage());
         }
 
