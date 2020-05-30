@@ -50,9 +50,11 @@ public class ListBillboards extends JFrame {
     private JPanel boxLabel8;
     private JPanel boxLabel9;
     private JPanel boxLabel10;
+    private JButton buttonRename;
     private String[] UserData;
     private String[][] billboardList;
     private int page;
+    private int selection;
 
     public ListBillboards(String titles, String[] userDataInput) {
         super(titles);
@@ -61,6 +63,10 @@ public class ListBillboards extends JFrame {
         this.UserData = userDataInput;
         this.billboardList = FetchBillboards();
         DisplayBillboardsMain(0);
+        buttonEdit.setVisible(false);
+        buttonDelete.setVisible(false);
+        buttonPreview.setVisible(false);
+        buttonRename.setVisible(false);
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -73,12 +79,70 @@ public class ListBillboards extends JFrame {
                 MainMenu.create(UserData);
             }
         });
+
+        //--
+        //Listeners for Presses of the Select Buttons
         buttonSelect1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                SelectBillboard(0);
             }
         });
+        buttonSelect2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(1);
+            }
+        });
+        buttonSelect3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(2);
+            }
+        });
+        buttonSelect4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(3);
+            }
+        });
+        buttonSelect5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(4);
+            }
+        });
+        buttonSelect6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(5);
+            }
+        });
+        buttonSelect7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(6);
+            }
+        });
+        buttonSelect8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(7);
+            }
+        });
+        buttonSelect9.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(8);
+            }
+        });
+        buttonSelect10.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SelectBillboard(9);
+            }
+        });
+        //-------------------
 
         //Listener for next button, if clicksed display next page
         buttonNext.addActionListener(new ActionListener() {
@@ -88,7 +152,7 @@ public class ListBillboards extends JFrame {
             }
         });
 
-        //Listener for previous button, if clicked display previouspage
+        //Listener for previous button, if clicked display previous page
         buttonPrevious.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -102,6 +166,108 @@ public class ListBillboards extends JFrame {
     private String[][] FetchBillboards() {
         String[][] returnVal = {{"1", "69420", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
         return (returnVal);
+    }
+
+    //Selects billboard according to user selection.
+    private void SelectBillboard(int row) {
+        //Store Selection
+        selection = (page * 10) + row;
+
+        //Unhighlight all rows and enable all select buttons to erase previous selection
+        boxLabel1.setBackground(new Color(238, 238, 238));
+        boxLabel2.setBackground(new Color(238, 238, 238));
+        boxLabel3.setBackground(new Color(238, 238, 238));
+        boxLabel4.setBackground(new Color(238, 238, 238));
+        boxLabel5.setBackground(new Color(238, 238, 238));
+        boxLabel6.setBackground(new Color(238, 238, 238));
+        boxLabel7.setBackground(new Color(238, 238, 238));
+        boxLabel8.setBackground(new Color(238, 238, 238));
+        boxLabel9.setBackground(new Color(238, 238, 238));
+        boxLabel10.setBackground(new Color(238, 238, 238));
+        buttonSelect1.setEnabled(true);
+        buttonSelect2.setEnabled(true);
+        buttonSelect3.setEnabled(true);
+        buttonSelect4.setEnabled(true);
+        buttonSelect5.setEnabled(true);
+        buttonSelect6.setEnabled(true);
+        buttonSelect7.setEnabled(true);
+        buttonSelect8.setEnabled(true);
+        buttonSelect9.setEnabled(true);
+        buttonSelect10.setEnabled(true);
+
+        //Highlight row selected.
+        switch (row) {
+            case 0:
+                boxLabel1.setBackground(new Color(125, 125, 125));
+                buttonSelect1.setEnabled(false);
+                break;
+            case 1:
+                boxLabel2.setBackground(new Color(125, 125, 125));
+                buttonSelect2.setEnabled(false);
+                break;
+            case 2:
+                boxLabel3.setBackground(new Color(125, 125, 125));
+                buttonSelect3.setEnabled(false);
+                break;
+            case 3:
+                boxLabel4.setBackground(new Color(125, 125, 125));
+                buttonSelect4.setEnabled(false);
+                break;
+            case 4:
+                boxLabel5.setBackground(new Color(125, 125, 125));
+                buttonSelect5.setEnabled(false);
+                break;
+            case 5:
+                boxLabel6.setBackground(new Color(125, 125, 125));
+                buttonSelect6.setEnabled(false);
+                break;
+            case 6:
+                boxLabel7.setBackground(new Color(125, 125, 125));
+                buttonSelect7.setEnabled(false);
+                break;
+            case 7:
+                boxLabel8.setBackground(new Color(125, 125, 125));
+                buttonSelect8.setEnabled(false);
+                break;
+            case 8:
+                boxLabel9.setBackground(new Color(125, 125, 125));
+                buttonSelect9.setEnabled(false);
+                break;
+            case 9:
+                boxLabel10.setBackground(new Color(125, 125, 125));
+                buttonSelect10.setEnabled(false);
+                break;
+        }
+
+        //Check which buttons to enable.
+        if (UserData[3].equals("1")) {
+            buttonDelete.setVisible(true);
+            buttonEdit.setVisible(true);
+            buttonRename.setVisible(true);
+        } else {
+            if (billboardList[selection][1].equals(UserData[1])) {
+                if (!CheckScheduled()) {
+                    buttonDelete.setVisible(true);
+                    buttonEdit.setVisible(true);
+                    buttonRename.setVisible(true);
+                } else {
+                    buttonDelete.setVisible(false);
+                    buttonEdit.setVisible(false);
+                    buttonRename.setVisible(false);
+                }
+            } else {
+                buttonDelete.setVisible(false);
+                buttonEdit.setVisible(false);
+                buttonRename.setVisible(false);
+            }
+        }
+    }
+
+    //Check if a billboard is currently scheduled
+    private boolean CheckScheduled() {
+        //METHOD TO BE COMPLETED
+        JOptionPane.showMessageDialog(null, "CHECK FOR IF BILLBOARD IS SCHEDULED OR NOT HAS NOT BEEN IMPLEMENTED PLEASE DO BEFORE SUBMISSION");
+        return (false);
     }
 
     //Populate GUI with data from Billboards List
@@ -362,7 +528,7 @@ public class ListBillboards extends JFrame {
         final Spacer spacer14 = new Spacer();
         panel1.add(spacer14, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(10, -1), null, null, 0, false));
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(9, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(11, 3, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(5, 6, 15, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$(null, Font.BOLD, 14, label1.getFont());
@@ -380,10 +546,11 @@ public class ListBillboards extends JFrame {
         buttonEdit.setText("Edit");
         panel3.add(buttonEdit, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer17 = new Spacer();
-        panel3.add(spacer17, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        panel3.add(spacer17, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
         buttonDelete = new JButton();
+        buttonDelete.setForeground(new Color(-4517878));
         buttonDelete.setText("Delete");
-        panel3.add(buttonDelete, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(buttonDelete, new GridConstraints(9, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         labelSelectedName = new JLabel();
         labelSelectedName.setText("Please Select a Billboard");
         panel3.add(labelSelectedName, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -392,13 +559,18 @@ public class ListBillboards extends JFrame {
         final Spacer spacer19 = new Spacer();
         panel3.add(spacer19, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(3, 3), null, null, 0, false));
         final Spacer spacer20 = new Spacer();
-        panel3.add(spacer20, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        panel3.add(spacer20, new GridConstraints(10, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        buttonRename = new JButton();
+        buttonRename.setText("Rename");
+        panel3.add(buttonRename, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer21 = new Spacer();
-        panel1.add(spacer21, new GridConstraints(5, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(3, -1), null, null, 0, false));
+        panel3.add(spacer21, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
         final Spacer spacer22 = new Spacer();
-        panel1.add(spacer22, new GridConstraints(26, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        panel1.add(spacer22, new GridConstraints(5, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(3, -1), null, null, 0, false));
         final Spacer spacer23 = new Spacer();
-        panel1.add(spacer23, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 7), null, null, 0, false));
+        panel1.add(spacer23, new GridConstraints(26, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        final Spacer spacer24 = new Spacer();
+        panel1.add(spacer24, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 7), null, null, 0, false));
     }
 
     /**
