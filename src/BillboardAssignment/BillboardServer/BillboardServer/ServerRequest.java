@@ -46,7 +46,8 @@ public class ServerRequest<T> implements Serializable {
 
             InputStream input = socket.getInputStream();
             ObjectInputStream objectInputStream = new ObjectInputStream(input);
-            return (ServerResponse<T>) objectInputStream.readObject();
+            ServerResponse response = (ServerResponse) objectInputStream.readObject();
+            return response;
         } catch (UnknownHostException ex) {
             throw new Exception("Server not found: " + ex.getMessage());
         } catch (IOException ex) {

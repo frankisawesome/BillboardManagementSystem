@@ -5,7 +5,10 @@ import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.Incorrec
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.RemoveOwnEditUsersPrivilegeException;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.RemoveOwnUserException;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
+import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
 import java.util.HashMap;
 
@@ -89,7 +92,14 @@ public abstract class Controller {
             return errorResponse("Session key invalid");
         } catch (OutOfDateSessionKeyException e) {
             return errorResponse("Session key has expired");
-        } catch (Exception e) {
+        } catch (DatabaseObjectNotFoundException e) {
+            return errorResponse("User id doesn't appear to be associated with a session key");
+        } catch (RemoveOwnUserException e) {
+            return errorResponse("You appear to be trying to delete yourself as a user, that's a no-op");
+        } catch (RemoveOwnEditUsersPrivilegeException e) {
+            return errorResponse("You appear to be trying to remove your own EditUser privilege, that's a no-op");
+        }
+        catch (Exception e) {
             return errorResponse(e.getMessage());
         }
     }

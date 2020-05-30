@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
@@ -55,6 +56,12 @@ public class UserController extends Controller{
                 break;
             case "change password":
                 response = changePassword();
+                break;
+            case "list users":
+                response = listUsers();
+                break;
+            case "delete user":
+                response = deleteUser();
                 break;
             default:
                 response = new ServerResponse("", "Request message invalid");
@@ -155,6 +162,23 @@ public class UserController extends Controller{
             UserDataInput user = new UserDataInput(Integer.parseInt(body.get("newUserId")), body.get("password"));
             userManager.createUser(user, key);
             return new ServerResponse("Success! User created", "ok");
+        });
+    }
+
+    private ServerResponse deleteUser() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")));
+            userManager.deleteUser(user, key);
+            return new ServerResponse("Success! User created", "ok");
+        });
+    }
+
+    private ServerResponse listUsers() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            User[] users = userManager.listUsers(key);
+            return new ServerResponse(users, "ok");
         });
     }
 }
