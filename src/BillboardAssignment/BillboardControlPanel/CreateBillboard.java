@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CreateMenu extends JFrame {
+public class CreateBillboard extends JFrame {
     private JButton buttonBack;
     private JPanel panel1;
     private JButton buttonCreate;
@@ -18,7 +18,7 @@ public class CreateMenu extends JFrame {
     private JLabel labelName;
     private String[] UserData;
 
-    public CreateMenu(String titles, String[] userDataInput) {
+    public CreateBillboard(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
@@ -47,7 +47,7 @@ public class CreateMenu extends JFrame {
 
     //Method to create GUI
     protected static void create(String[] userDataInput) {
-        JFrame frame = new CreateMenu("Billboard Client", userDataInput);
+        JFrame frame = new CreateBillboard("Billboard Client", userDataInput);
         frame.setVisible(true);
     }
 
