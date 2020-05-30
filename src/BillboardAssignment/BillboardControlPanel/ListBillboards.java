@@ -156,10 +156,20 @@ public class ListBillboards extends JFrame {
             }
         });
 
+        //Listener for delete button. Will ask for confirmation, then send request to server to delete billboard
         buttonDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Dialog for user confirmation that they really want to delete the billboard.
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to " +
+                        "PERMANENTLY delete this billboard?\n Billboard- " + billboardList[selection][2], "Warning",
+                        dialogButton);
 
+                //If user confirms, call function to delete User
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    DeleteBillboard();
+                }
             }
         });
         buttonRename.addActionListener(new ActionListener() {
@@ -171,15 +181,19 @@ public class ListBillboards extends JFrame {
         buttonEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML EDITOR BILLY");
             }
         });
         buttonPreview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML VIEWER BILLY");
             }
         });
+    }
+
+    private void DeleteBillboard() {
+        JOptionPane.showMessageDialog(null, "Billboard successfully deleted! NOT REALLY, NOT LINKED TO SERVER");
     }
 
     //Queries database and returns list of all billboards (id, author, name)
