@@ -104,13 +104,17 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //Permission Check
                 if (userData[5].equals("1")) {
-
-                } else {
+                    dispose();
+                    UserManage.create(userData);
+                }
+                else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
                             "\n If this is an error please retry, or contact system administrator.");
                 }
             }
         });
+
+        //Listener for change password button
         buttonChangePwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
