@@ -68,7 +68,7 @@ public class MainMenu extends JFrame {
                 //Check if user has required permissions
                 if (userData[2].equals("1")) {
                     dispose();
-                    CreateMenu.create(userData);
+                    CreateBillboard.create(userData);
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
                             "\n If this is an error please retry, or contact system administrator.");
