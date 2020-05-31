@@ -35,6 +35,14 @@ public class ChangePassword extends JFrame {
     private int requestType; //Type = 0, change own password, Type = 1, Change another user's password
     private String changeTargetID;
 
+    /**
+     * Change password window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @param type - Type of request 0 - Changing own password, 1 - Changing another user's password
+     * @param changeTarget  - If request is of type 1, this is the ID of the user which's password is to be changed.
+     * @return N/A
+     */
     public ChangePassword(String titles, String[] userDataInput, int type, String changeTarget) {
         super(titles);
         //Setup GUI
@@ -63,7 +71,8 @@ public class ChangePassword extends JFrame {
                 char[] pwdChar2 = passwordNew2.getPassword();
                 String pwd2 = new String(pwdChar2);
 
-                //Checks validity of password change, first that a password has been entered, then that new passwords match, then that existing password is correct.
+                //Checks validity of password change, first that a password has been entered,
+                // after that new passwords match, then that existing password is correct.
                 if (pwd1.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please Enter a New Password, Field Cannot Be Blank");
                 } else {
@@ -105,6 +114,11 @@ public class ChangePassword extends JFrame {
         });
     }
 
+    /**
+     * Performs a check for whether the existing password entered by the user is correct.
+     * @param password - Password Entered by the user, that is to be verified.
+     * @return int, 0 if request failed, 1 is request successful.
+     */
     protected int checkPassword(String password) {
         String[] loginReturn;
         loginReturn = LoginRequest(UserData[1], password);
@@ -128,7 +142,11 @@ public class ChangePassword extends JFrame {
         }
     }
 
-    //Personalises GUI to Specific Request
+    /**
+     * Changes the GUI according to the type of request. If request type is 0, box to insert existing password is shown,
+     * otherwise it is hidden. Label displaying the username of the user having it's password changed is also set here.
+     * @return void
+     */
     private void PersonaliseGUI() {
         if (requestType == 0) {
             this.labelUsername.setText(("User - " + UserData[1]));
@@ -139,10 +157,14 @@ public class ChangePassword extends JFrame {
         }
     }
 
+    /**
+     * Sends a request to the server to change a user's password. All possible exceptions occuring as a result are handled
+     * internally. If request is successful, the change password window is disposed.
+     * @param Password - Unhashed of what the password is to be changed to.
+     * @return void
+     */
     protected void changePassword(String Password) {
         try {
-            int requestTarget;
-
             //Set up Request
             HashMap<String, String> requestBody = new HashMap<>();
 
@@ -179,6 +201,12 @@ public class ChangePassword extends JFrame {
         }
     }
 
+    /**
+     * Create function for a request of type 0 - Changing own password
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @param type - Request Type 0 - Self Change, 1 - Change another user.
+     * @return void
+     */
     //Type = 0, change own password, Type = 1, Change another user's password.
     // Overload - Change target only required if type = 1, otherwise blank.
     protected static void create(String[] userDataInput, int type) {
@@ -186,16 +214,29 @@ public class ChangePassword extends JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Create function for a request of type 1 - Changing another user's password
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @param type - Request Type 0 - Self Change, 1 - Change another user.
+     * @param changeTarget - The user ID for the user who's password is to be changed.
+     * @return void
+     */
     protected static void create(String[] userDataInput, int type, String changeTarget) {
         JFrame frame = new ChangePassword("Billboard Client", userDataInput, type, changeTarget);
         frame.setVisible(true);
     }
 
+    /**
+     * Performs a log in request to the server to verify whether the entered credentials are correct.
+     * @param id The  user ID for the user who's credentials are being verified.
+     * @param pwd - Unhashed password for user being verified.
+     * @return String[0] - Verification outcome (1 = success, 2 = exception thrown, 3 = response recieved but not successful) String[1] - Session key if successful, else error message.
+     *
+     */
     //Login Function for creating a dummy login request to check correctness of existing password.
     private String[] LoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
-
         //Hash the new password according to a generic salt
         String saltString = "mahna mahna";
         pwd = hashPassword(pwd, saltString);
