@@ -32,8 +32,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     String subtext;
 
     Color backgroundColor;
-    Color titleColor;
-    Color subtextColor;
+    String titleColor;
+    String subtextColor;
 
     JPanel pnl1;
     JPanel pnl2;
@@ -92,6 +92,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
                     title = element.getTextContent();
+                    titleColor = element.getAttribute("colour");
+                    System.out.println(titleColor);
                 } else if (element.getTagName() == "picture") {
                     if (element.hasAttribute("url")) {
                         imagePath = element.getAttribute("url");
@@ -102,6 +104,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                     }
                 } else if (element.getTagName() == "information") {
                     subtext = element.getTextContent();
+                    subtextColor = element.getAttribute("colour");
+                    System.out.println(subtextColor);
                 }
             }
         }
@@ -147,7 +151,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
         // Set Top pane to title
         JLabel htmlTitle = new JLabel();
-        htmlTitle.setText(String.format("<html><font size='12'>%s</font></html>", title));
+        htmlTitle.setText(String.format("<html><font size='12' color='%s'>%s</font></html>", titleColor, title));
         htmlTitle.setHorizontalAlignment(JLabel.CENTER);
         htmlTitle.setVerticalAlignment(JLabel.CENTER);
         htmlTitle.setBounds(0, 20, 200, 50);
@@ -155,7 +159,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
 
         JLabel htmlTitle1 = new JLabel();
-        htmlTitle1.setText(String.format("<html><body style='width: 1000px; text-align:center'><font size='6'>%s</font></html>", subtext));
+        htmlTitle1.setText(String.format("<html><body style='width: 1000px; text-align:center'><font size='6' color='%s'>%s</font></html>", subtextColor, subtext));
         htmlTitle1.setHorizontalAlignment(JLabel.CENTER);
         htmlTitle1.setVerticalAlignment(JLabel.CENTER);
         pnl5.add(htmlTitle1);
