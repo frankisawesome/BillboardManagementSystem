@@ -235,7 +235,19 @@ public class UserManager{
         sessionKeys.removeSessionKey(userToDelete);
     }
 
-    private User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    protected User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+        User adminUser = null;
+
+        if (sessionKeys.checkSessionKeyStatus(key)) {
+            adminUser = getUser(key.getID());
+        }
+
+        adminUser.checkUserHasPriv(privileges);
+        // We only get to this section if the password and permissions are correct, will throw error above if they aren't
+        return adminUser;
+    }
+
+    protected User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         User adminUser = null;
 
         if (sessionKeys.checkSessionKeyStatus(key)) {
