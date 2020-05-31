@@ -1,27 +1,44 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class BillboardViewer extends JFrame implements ActionListener, Runnable {
     private int WIDTH = 800;
     private int HEIGHT = 450;
 
-    public BillboardViewer (String title) throws HeadlessException {
-        super(title);
+    String xmlBillboard;
 
-        setVisible(true);
-        setSize(WIDTH, HEIGHT);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    public BillboardViewer (String title, String xmlBillboard) throws HeadlessException {
+        super(title);
+        this.xmlBillboard = xmlBillboard;
     }
 
-    public void SetGUI () {
+    public void SetGUI() throws ParserConfigurationException, IOException, SAXException {
         // Set preliminaries
         setVisible(true);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
+
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(xmlBillboard.getBytes());
+        Document document = builder.parse(bais);
+        bais.close();
+
+        Element documentElement = document.getDocumentElement();
     }
 
     @Override
