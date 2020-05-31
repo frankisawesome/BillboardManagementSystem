@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BillboardServer.UserData;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
@@ -223,8 +224,8 @@ public class UserManage extends JFrame {
             requestBody.put("keyId", userDataInput[1]);
 
             //Send Request
-            ServerRequest<User[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
-            ServerResponse<User[]> response = request.getResponse();
+            ServerRequest<BillboardAssignment.BillboardServer.BillboardServer.UserData[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
+            ServerResponse<UserData[]> response = request.getResponse();
 
             //Check that response is ok, if not display error message and return error.
             if (!response.status().equals("ok")) {
@@ -232,15 +233,15 @@ public class UserManage extends JFrame {
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Users |" + response.status());
                 return (Error);
             }
-            User[] returnedID = response.body();
+            UserData[] returnedID = response.body();
             String[][] returnVal = new String[returnedID.length][5];
             returnVal[0][0] = "E";
 
             //Loop through returned ID's and fetch permissions for each
             for (int i = 0; i < returnedID.length; i++) {
                 //Fetch Permission
-                System.out.println(returnedID[i].getID());
-                String[] permissionReturned = GetPermissionsRequest(userDataInput, String.valueOf(returnedID[i].getID()));
+                System.out.println(returnedID[i].id);
+                String[] permissionReturned = GetPermissionsRequest(userDataInput, String.valueOf(returnedID[i].id));
 
                 //If error code returned, return error code for ListUsers
                 if (permissionReturned[0].equals("E")) {
@@ -251,6 +252,7 @@ public class UserManage extends JFrame {
                 //If no error returned, add to array.
                 returnVal[i] = permissionReturned;
             }
+
             return (returnVal);
 
         }
