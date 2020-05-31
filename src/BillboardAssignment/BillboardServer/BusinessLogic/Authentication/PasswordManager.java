@@ -40,7 +40,7 @@ public class PasswordManager {
 
         /* Create a new random salt generator and use it to generate a salt for the given user */
         SecureRandom randomNumGenerator = new SecureRandom();
-        byte[] passwordSalt = new byte[16];
+        byte[] passwordSalt = new byte[3];
         randomNumGenerator.nextBytes(passwordSalt);
         String passwordSaltString = null;
         try {
