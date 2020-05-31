@@ -35,10 +35,15 @@ public class Login extends JFrame {
     private JPasswordField passwordField;
     private String SessionKey;
 
+    /**
+     * Login window object constructor. Sets up GUI and also contains listeners
+     * @param title - Window Title
+     * @return N/A
+     */
     public Login(String title) {
         super(title);
         $$$setupUI$$$();
-        //Completes GUI seyup after all components added to background in $$$setupUI$$$
+        //Completes GUI setup after all components added to background in $$$setupUI$$$
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -90,9 +95,8 @@ public class Login extends JFrame {
                 }
             }
         });
-        /**
-         * Key Listeners for User Enter Press In Login Page = Pressing Login Button
-         */
+        //------------------------
+         // Key Listeners for User Enter Press In Login Page = Pressing Login Button
         buttonlogin.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -119,7 +123,12 @@ public class Login extends JFrame {
         });
     }
 
-    //Function for Sending Request to Server
+    /**
+     * Sets up and sends login request to server
+     * @param id - User ID to login
+     * @param pwd - Password to login
+     * @return String[] {Status(1 - successful, 2 - fail), sessionKey if pass or error message if fail}
+     */
     private String[] SendLoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
@@ -147,7 +156,11 @@ public class Login extends JFrame {
         }
     }
 
-    //Fetch permissions for user
+    /**
+     * Sets up and sends permissions fetch request to server
+     * @param userData - Session key and user ID
+     * @return String[] Permissions in binary format 1 - has, 0 - doesnt have {create, edit, schedule, user admin}
+     */
     private String[] GetPermissionsRequest(String[] userData) {
         try {
             //Set up Request
@@ -233,6 +246,10 @@ public class Login extends JFrame {
         return hashedPassword;
     }
 
+    /**
+     * Create function. Creates instance of GUI
+     * @return void
+     */
     protected static void create() {
         //Creates new frame for Login and sets Visible.
         JFrame frame = new Login("Billboard Client");

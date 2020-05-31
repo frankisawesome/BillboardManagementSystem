@@ -12,6 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -28,6 +31,12 @@ public class CreateUser extends JFrame {
     private JPanel Background;
     private String[] UserData;
 
+    /**
+     * Change user window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     public CreateUser(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
@@ -63,6 +72,7 @@ public class CreateUser extends JFrame {
                                 JOptionPane.showMessageDialog(null, "User successfully created!\n" +
                                         "Please give user permissions via Edit User in the User Management Tool");
                                 dispose();
+                                UserManage.create(UserData);
                             }
                         } else {
                             JOptionPane.showMessageDialog(null, "Error! Password cannot be blank.");
@@ -77,9 +87,18 @@ public class CreateUser extends JFrame {
         });
     }
 
-
+    /**
+     * Sends a request to create a new user to the server. All exceptions occuring as a result are handled in the method.
+     * @param id - User ID for the new user
+     * @param pwd - Unhashed password for the new user.
+     * @return int 1 - Successful 2 - Fail
+     */
     private int CreateUserRequest(String id, String pwd) {
         try {
+            //Hash the new password according to a generic salt
+            String saltString = "mahna mahna";
+            pwd = hashPassword(pwd, saltString);
+
             //Setup Server Request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("keyId", UserData[1]);
@@ -105,10 +124,44 @@ public class CreateUser extends JFrame {
         }
     }
 
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     //Method to create GUI
     protected static void create(String[] userDataInput) {
         JFrame frame = new CreateUser("Billboard Client", userDataInput);
         frame.setVisible(true);
+    }
+
+    /**
+     * Hash a given password using the SHA-512 algorithm
+     *
+     * @param password
+     * @param salt
+     * @return A byte array of the hashed password
+     */
+    private String hashPassword(String password, String salt) {
+
+        /* Initialise the algorithm data or the IDE will get mad */
+        MessageDigest md = null;
+
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) { /* This will never happen as SHA-512 is definitely an algorithm */
+            e.printStackTrace();
+        }
+
+        /* Set the hashing algo to use our salt */
+        md.update(salt.getBytes());
+        String hashedPassword = null;
+        try {
+            hashedPassword = new String(md.digest(password.getBytes()), "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace(); /* Will never happen */
+        }
+        return hashedPassword;
     }
 
     /**

@@ -86,7 +86,8 @@ public class BillboardServer {
      * @throws Exception
      */
     private void setUpDbs() throws Exception {
-        Queryable<User> database = new UserSQLiteDatabase();
+        //Queryable<User> database = new UserSQLiteDatabase();
+        Queryable<User> database = new DatabaseArray<>();
         database.initialiseDatabase("Users");
 
         Queryable<UserSessionKey> database2 = new DatabaseArray<UserSessionKey>();

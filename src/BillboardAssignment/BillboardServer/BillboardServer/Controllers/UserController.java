@@ -1,6 +1,7 @@
 package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BillboardServer.UserData;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
@@ -178,7 +179,11 @@ public class UserController extends Controller{
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
             User[] users = userManager.listUsers(key);
-            return new ServerResponse(users, "ok");
+            UserData[] userData = new UserData[users.length];
+            for (int i = 0; i < users.length; i++) {
+                userData[i] = new UserData(users[i].getID(), users[i].username, users[i].getPrivileges());
+            }
+            return new ServerResponse(userData, "ok");
         });
     }
 }
