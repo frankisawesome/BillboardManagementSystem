@@ -248,9 +248,9 @@ public class UserManage extends JFrame {
                     Error[0][0] = "E";
                     return (Error);
                 }
-             //If no error returned, add to array.
-             returnVal[i] = permissionReturned;
-             }
+                //If no error returned, add to array.
+                returnVal[i] = permissionReturned;
+            }
             return (returnVal);
 
         }

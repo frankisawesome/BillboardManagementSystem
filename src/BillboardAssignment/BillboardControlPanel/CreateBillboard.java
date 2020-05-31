@@ -40,9 +40,20 @@ public class CreateBillboard extends JFrame {
         buttonCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String billboardName = fieldName.getText();
+                if (!billboardName.equals("")) {
+                    if (!CheckBillboardExists(billboardName)) {
+                        dispose();
+                        BillboardEditor.create(UserData, billboardName);
+                    }
+                }
             }
         });
+    }
+
+    private static boolean CheckBillboardExists(String billboardName) {
+        JOptionPane.showMessageDialog(null, "PLEASE INTEGRATE A CHECK IF BILLBOARD NAME IS ALREADY IN USE");
+        return (false);
     }
 
     //Method to create GUI
