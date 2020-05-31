@@ -9,6 +9,7 @@ import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseArray;
 import BillboardAssignment.BillboardServer.Database.Queryable;
+import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -80,7 +81,7 @@ public class BillboardServer {
     }
 
     private void setUpDbs() throws Exception {
-        Queryable<User> database = new DatabaseArray<User>();
+        Queryable<User> database = new UserSQLiteDatabase();
         database.initialiseDatabase("Users");
 
         Queryable<UserSessionKey> database2 = new DatabaseArray<UserSessionKey>();
