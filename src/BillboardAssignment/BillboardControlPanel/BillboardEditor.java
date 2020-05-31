@@ -10,17 +10,31 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.net.URL;
+import java.util.Base64;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
     public static int WIDTH = 640;
     public static int HEIGHT = 480;
 
+    // Boolean deciding if new billboard or existing
+    Boolean newBillboard;
     // Strings of text defining Billboard
     String titleBillboard;
     String imagePathBillboard;
@@ -42,6 +56,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JButton btnPreview;
     JButton btnSave;
 
+    JTextField name;
+    JLabel nameLabel;
+
     JTextField title;
     JLabel titleLabel;
     JTextField titleColorR;
@@ -51,6 +68,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JTextField imagePath;
     JLabel imagePathLabel;
     JCheckBox imagePathCheckBox;
+    JButton searchComputer;
 
     JTextArea subtext;
     JLabel subtextLabel;
@@ -70,10 +88,11 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     String billboardName;
 
 
-    public BillboardEditor (String title, String[] userDataInput, String billboardNameInput) throws HeadlessException {
+    public BillboardEditor (String title, String[] userDataInput, String billboardNameInput, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
         this.billboardName = billboardNameInput;
+        this.newBillboard = newBillboard;
     }
 
     public void SetGUI () {
@@ -135,10 +154,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         constraints1.anchor = GridBagConstraints.NORTHWEST;
         constraints1.insets = new Insets(6,3,6,3);
 
+        name = createTextField(billboardName);
+        name.setEnabled(false);
+        name.setColumns(20);
+        JLabel nameLabel = new JLabel("Name");
+
         title = createTextField("Insert billboard title");
         title.setColumns(20);
-        title.setEnabled(false);
-        title.setText(billboardName);
         JLabel titleLabel = new JLabel("Title");
         titleColorR = createTextField("R");
         titleColorR.setColumns(3);
@@ -150,6 +172,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         imagePath = createTextField("Specify the images path");
         imagePath.setColumns(20);
         imagePathLabel = new JLabel("Image Path");
+        searchComputer = createButton("Browse PC");
+
 
         subtext = createTextArea("Billboard subtext");
         subtextLabel = new JLabel("Billboard Subtext");
@@ -170,32 +194,45 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         backgroundColorB = createTextField("B");
         backgroundColorB.setColumns(3);
 
-        addToPanel(pnl3, title, constraints1,3, 1, 2, 1);
-        addToPanel(pnl3, titleLabel, constraints1, 0, 1, 2, 1);
-        addToPanel(pnl3, titleColorR, constraints1, 5, 1, 2, 1);
-        addToPanel(pnl3, titleColorG, constraints1, 7, 1, 2, 1);
-        addToPanel(pnl3, titleColorB, constraints1, 9, 1, 2, 1);
+
+        addToPanel(pnl3, name, constraints1,3, 1, 2, 1);
+        addToPanel(pnl3, nameLabel, constraints1, 0, 1, 2, 1);
+
+        addToPanel(pnl3, title, constraints1,3, 2, 2, 1);
+        addToPanel(pnl3, titleLabel, constraints1, 0, 2, 2, 1);
+        addToPanel(pnl3, titleColorR, constraints1, 5, 2, 2, 1);
+        addToPanel(pnl3, titleColorG, constraints1, 7, 2, 2, 1);
+        addToPanel(pnl3, titleColorB, constraints1, 9, 2, 2, 1);
 
         addToPanel(pnl3, colorLabel, constraints1, 7, 0, 2, 1);
 
-        addToPanel(pnl3, imagePath, constraints1, 3, 2, 2, 1);
-        addToPanel(pnl3, imagePathLabel, constraints1, 0, 2, 2, 1);
+        addToPanel(pnl3, imagePath, constraints1, 3, 3, 2, 1);
+        addToPanel(pnl3, imagePathLabel, constraints1, 0, 3, 2, 1);
+        addToPanel(pnl3, searchComputer, constraints1, 3, 4, 2,1);
 
-        addToPanel(pnl3, subtext, constraints1, 3, 3, 2, 1);
-        addToPanel(pnl3, subtextLabel, constraints1, 0, 3, 2, 1);
-        addToPanel(pnl3, subtextColorR, constraints1, 5, 3, 2, 1);
-        addToPanel(pnl3, subtextColorG, constraints1, 7, 3, 2, 1);
-        addToPanel(pnl3, subtextColorB, constraints1, 9, 3, 2, 1);
+        addToPanel(pnl3, subtext, constraints1, 3, 5, 2, 1);
+        addToPanel(pnl3, subtextLabel, constraints1, 0, 5, 2, 1);
+        addToPanel(pnl3, subtextColorR, constraints1, 5, 5, 2, 1);
+        addToPanel(pnl3, subtextColorG, constraints1, 7, 5, 2, 1);
+        addToPanel(pnl3, subtextColorB, constraints1, 8, 5, 2, 1);
 
-        addToPanel(pnl3, backgroundColorLabel, constraints1, 0, 4, 2, 1);
-        addToPanel(pnl3, backgroundColorR, constraints1, 5, 4, 2, 1);
-        addToPanel(pnl3, backgroundColorG, constraints1, 7, 4, 2, 1);
-        addToPanel(pnl3, backgroundColorB, constraints1, 9, 4, 2, 1);
+        addToPanel(pnl3, backgroundColorLabel, constraints1, 0, 6, 2, 1);
+        addToPanel(pnl3, backgroundColorR, constraints1, 5, 6, 2, 1);
+        addToPanel(pnl3, backgroundColorG, constraints1, 7, 6, 2, 1);
+        addToPanel(pnl3, backgroundColorB, constraints1, 9, 6, 2, 1);
 
         editorTitle = new JLabel();
         editorTitle.setText("<html><h1>Billboard Editor</h1></html>");
         editorTitle.setBounds(0, 20, 200, 50);
-        addToPanel(pnl4, editorTitle, constraints1, 9, 4, 2, 1);
+        addToPanel(pnl4, editorTitle, constraints1, 9, 5, 2, 1);
+
+        if (newBillboard == false) {
+            existingBillboardText();
+        }
+    }
+
+    private void existingBillboardText () {
+        return;
     }
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
@@ -233,6 +270,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         return panel;
     }
 
+
     @Override
     public void run() {
         SetGUI();
@@ -252,11 +290,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                     "<billboard background = \"#0000FF\">\n" +
                     "    <message>Billboard with message, GIF and information</message>\n" +
                     "    <picture url=\"https://cloudstor.aarnet.edu.au/plus/s/A26R8MYAplgjUhL/download\" />\n" +
-                    "    <information colour=\>This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                    "</billboard>\n"
-            SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
-        }
-        else if (source == btnCreateBillboard){
+                    "    <information colour=\"#60B9FF\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
+                    "</billboard>\n";
+            BillboardViewer.create(billboard);
+        } else if (source == searchComputer) {
+             System.out.println("TODO: Search Computer files");
+             
+        } else if (source == btnCreateBillboard){
             JOptionPane.showMessageDialog(null, "Billboard Created Successfully!\n" +
                     "NOT REALLY, PLEASE INTEGRATE TO SERVER");
             dispose();
@@ -264,7 +304,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
-    public static void create(String[] userData, String billboardName) {
-        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName));
+    public static void create(String[] userData, String billboardName, boolean newBillboard) {
+        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
     }
 }
