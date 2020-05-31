@@ -19,6 +19,12 @@ public class RenameBillboard extends JFrame {
     private String[] UserData;
     private String billboardID;
 
+    /**
+     * Rename Billboard window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     public RenameBillboard(String titles, String[] userDataInput, String billboardIDInput, String currentNameInput) {
         super(titles);
         //Setup GUI
@@ -50,7 +56,11 @@ public class RenameBillboard extends JFrame {
         });
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput, String billboardID, String currentName) {
         JFrame frame = new RenameBillboard("Billboard Client", userDataInput, billboardID, currentName);
         frame.setVisible(true);
@@ -129,7 +139,4 @@ public class RenameBillboard extends JFrame {
         return panel1;
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

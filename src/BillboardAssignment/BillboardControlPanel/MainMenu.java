@@ -25,6 +25,12 @@ public class MainMenu extends JFrame {
     private JButton buttonChangePwd;
     private String[] userData;
 
+    /**
+     * Main Menu window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     public MainMenu(String titles, String[] userDataInput) {
         super(titles);
         $$$setupUI$$$();
@@ -127,10 +133,11 @@ public class MainMenu extends JFrame {
     }
 
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
-
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput) {
         //Create Menu Frame & Pass User Data
         JFrame frame = new MainMenu("Billboard Client", userDataInput);

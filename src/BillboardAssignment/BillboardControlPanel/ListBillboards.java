@@ -56,6 +56,12 @@ public class ListBillboards extends JFrame {
     private int page;
     private int selection;
 
+    /**
+     * List Billboards window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     public ListBillboards(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
@@ -172,6 +178,8 @@ public class ListBillboards extends JFrame {
                 }
             }
         });
+
+        //Listener for rename button
         buttonRename.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,12 +187,16 @@ public class ListBillboards extends JFrame {
                 RenameBillboard.create(UserData, billboardList[selection][0], billboardList[selection][2]);
             }
         });
+
+        //Listener for edit button
         buttonEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML EDITOR BILLY");
             }
         });
+
+        //Listener for previwer button
         buttonPreview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -193,17 +205,28 @@ public class ListBillboards extends JFrame {
         });
     }
 
+    /**
+     * Sends a request to delete the currently selected billboard to server.
+     * @return void
+     */
     private void DeleteBillboard() {
         JOptionPane.showMessageDialog(null, "Billboard successfully deleted! NOT REALLY, NOT LINKED TO SERVER");
     }
 
-    //Queries database and returns list of all billboards (id, author, name)
+    /**
+     * Queries database and returns list of all billboards (id, author, name)
+     * @return String[][] list of all billboards (id, author, name)
+     */
     private String[][] FetchBillboards() {
         String[][] returnVal = {{"1", "69420", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
         return (returnVal);
     }
 
-    //Selects billboard according to user selection.
+    /**
+     * Selects billboard according to user selection.
+     * @param row The row of the billboard in list in GUI which was selected.
+     * @return void
+     */
     private void SelectBillboard(int row) {
         //Store Selection
         selection = (page * 10) + row;
@@ -303,14 +326,20 @@ public class ListBillboards extends JFrame {
         }
     }
 
-    //Check if a billboard is currently scheduled
+    /**
+     * Queries server and checks if billboard already scheduled at any time
+     * @return boolean - True if scheduled, false if not.
+     */
     private boolean CheckScheduled() {
         //METHOD TO BE COMPLETED
         JOptionPane.showMessageDialog(null, "CHECK FOR IF BILLBOARD IS SCHEDULED OR NOT HAS NOT BEEN IMPLEMENTED PLEASE DO BEFORE SUBMISSION");
         return (false);
     }
 
-    //Populate GUI with data from Billboards List
+    /**
+     * Populates GUI with data from the list of billboards.
+     * @param pageInput - Page Number of the GUI Displayed
+     */
     private void DisplayBillboardsMain(int pageInput) {
         this.page = pageInput;
 
@@ -432,7 +461,11 @@ public class ListBillboards extends JFrame {
         labelPage.setText("(Page " + (page + 1) + " of " + numPages + ")");
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput) {
         JFrame frame = new ListBillboards("Billboard Client", userDataInput);
         frame.setVisible(true);
