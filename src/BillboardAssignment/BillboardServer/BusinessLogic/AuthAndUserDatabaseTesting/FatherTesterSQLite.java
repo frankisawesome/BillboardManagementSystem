@@ -17,7 +17,7 @@ public class FatherTesterSQLite {
 
     protected UserSessionKey adminKey;
 
-    protected UserDataInput adminUser = new UserDataInput(69420, "pwd");
+    protected UserDataInput adminUser = new UserDataInput(69420, "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ");
 
     protected SessionKeyManager sessionKeyManager;
 
@@ -36,7 +36,7 @@ public class FatherTesterSQLite {
         userManager = new UserManager(passwordManager, sessionKeyManager, userDatabase);
         userManager.createFirstUser();
 
-        String sessionKey = userManager.login(new UserDataInput(69420, "pwd")).sessionKey;
+        String sessionKey = userManager.login(new UserDataInput(69420, "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ")).sessionKey;
         adminKey = new UserSessionKey(69420, sessionKey);
     }
 
