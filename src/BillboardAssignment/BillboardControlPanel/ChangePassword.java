@@ -13,6 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -149,6 +152,11 @@ public class ChangePassword extends JFrame {
             } else {
                 requestBody.put("idToFind", changeTargetID);
             }
+
+            //Hash the new password according to a generic salt
+            String saltString = "mahna mahna";
+            Password = hashPassword(Password, saltString);
+
             requestBody.put("newPassword", Password);
             requestBody.put("key", UserData[0]);
             requestBody.put("keyId", UserData[1]);
@@ -187,6 +195,11 @@ public class ChangePassword extends JFrame {
     private String[] LoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
+
+        //Hash the new password according to a generic salt
+        String saltString = "mahna mahna";
+        pwd = hashPassword(pwd, saltString);
+
         requestBody.put("id", id);
         requestBody.put("password", pwd);
         //Send Request
@@ -209,6 +222,35 @@ public class ChangePassword extends JFrame {
             String[] returnVal = {"2", "Please Contact IT Support and Quote the Following: \n" + "Error in dummy login for existing check \n" + e.getMessage()};
             return (returnVal);
         }
+    }
+
+    /**
+     * Hash a given password using the SHA-512 algorithm
+     *
+     * @param password
+     * @param salt
+     * @return A byte array of the hashed password
+     */
+    private String hashPassword(String password, String salt) {
+
+        /* Initialise the algorithm data or the IDE will get mad */
+        MessageDigest md = null;
+
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) { /* This will never happen as SHA-512 is definitely an algorithm */
+            e.printStackTrace();
+        }
+
+        /* Set the hashing algo to use our salt */
+        md.update(salt.getBytes());
+        String hashedPassword = null;
+        try {
+            hashedPassword = new String(md.digest(password.getBytes()), "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace(); /* Will never happen */
+        }
+        return hashedPassword;
     }
 
 

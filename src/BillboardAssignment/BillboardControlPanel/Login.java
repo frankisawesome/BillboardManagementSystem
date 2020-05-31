@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -15,6 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,6 +50,11 @@ public class Login extends JFrame {
                 String id = fieldUsername.getText();
                 char[] pwdChar = passwordField.getPassword();
                 String pwd = new String(pwdChar);
+
+                //Hash the password according to a generic salt
+                String saltString = "mahna mahna";
+                pwd = hashPassword(pwd, saltString);
+
                 String[] loginReturn;
                 //Call sendrequest function to send info to server.
                 //In loginReturn array 0 - Return Code from Server 1 - Any Message from Server
@@ -187,13 +196,41 @@ public class Login extends JFrame {
                 }
             }
             return (stringPerms);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
             String[] Error = {"E"};
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
             return (Error);
         }
+    }
+
+    /**
+     * Hash a given password using the SHA-512 algorithm
+     *
+     * @param password
+     * @param salt
+     * @return A byte array of the hashed password
+     */
+    private String hashPassword(String password, String salt) {
+
+        /* Initialise the algorithm data or the IDE will get mad */
+        MessageDigest md = null;
+
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) { /* This will never happen as SHA-512 is definitely an algorithm */
+            e.printStackTrace();
+        }
+
+        /* Set the hashing algo to use our salt */
+        md.update(salt.getBytes());
+        String hashedPassword = null;
+        try {
+            hashedPassword = new String(md.digest(password.getBytes()), "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace(); /* Will never happen */
+        }
+        return hashedPassword;
     }
 
     protected static void create() {
