@@ -39,7 +39,6 @@ public class User extends UserDataInput implements Comparable, Serializable {
      */
     public static String getEntityName() {
         return "User";
-        // TODO: Fix the whole automatic database name thingo
     }
 
     public void checkUserHasPriv(UserPrivilege[] privileges) throws InsufficentPrivilegeException {

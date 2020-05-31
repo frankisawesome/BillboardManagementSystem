@@ -13,6 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,42 +30,54 @@ public class ChangePassword extends JFrame {
     private JPasswordField passwordNew2;
     private JPanel Background;
     private JLabel labelUsername;
+    private JLabel labelExisting;
     private String[] UserData;
-    private int requestType;
+    private int requestType; //Type = 0, change own password, Type = 1, Change another user's password
+    private String changeTargetID;
 
-    public ChangePassword(String titles, String[] userDataInput, int type) {
+    public ChangePassword(String titles, String[] userDataInput, int type, String changeTarget) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
         this.requestType = type;
+        this.changeTargetID = changeTarget;
+        PersonaliseGUI();
         this.setContentPane(Background);
-        this.labelUsername.setText(("User - " + UserData[1]));
         this.pack();
 
         //Listener for confirm button
         buttonConfirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String pwdE = "";
                 //Fetch existing password
-                char[] pwdChar = passwordExisting.getPassword();
-                String pwdE = new String(pwdChar);
+                if (requestType == 0) {
+                    char[] pwdCharE = passwordExisting.getPassword();
+                    pwdE = new String(pwdCharE);
+                }
                 //Fetch new password 1
-                pwdChar = passwordNew1.getPassword();
-                String pwd1 = new String(pwdChar);
+                char[] pwdChar1 = passwordNew1.getPassword();
+                String pwd1 = new String(pwdChar1);
                 //Fetch new password 2
-                pwdChar = passwordNew2.getPassword();
-                String pwd2 = new String(pwdChar);
+                char[] pwdChar2 = passwordNew2.getPassword();
+                String pwd2 = new String(pwdChar2);
 
                 //Checks validity of password change, first that a password has been entered, then that new passwords match, then that existing password is correct.
                 if (pwd1.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please Enter a New Password, Field Cannot Be Blank");
-                }
-                else {
+                } else {
                     if (pwd1.equals(pwd2)) {
-                        int checkResult = checkPassword(pwdE);
-                        // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
+                        int checkResult;
+                        //If changing own password check validity of existing password
+                        if (requestType == 0) {
+                            checkResult = checkPassword(pwdE);
+                            // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
+                        }
+                        //If changing another user's password as admin then this check is not required so return a result of 1.
+                        else {
+                            checkResult = 1;
+                        }
                         if (checkResult == 1) {
                             changePassword(pwd1);
                         } else {
@@ -113,11 +128,35 @@ public class ChangePassword extends JFrame {
         }
     }
 
+    //Personalises GUI to Specific Request
+    private void PersonaliseGUI() {
+        if (requestType == 0) {
+            this.labelUsername.setText(("User - " + UserData[1]));
+        } else {
+            this.labelUsername.setText(("User - " + changeTargetID));
+            labelExisting.setVisible(false);
+            passwordExisting.setVisible(false);
+        }
+    }
+
     protected void changePassword(String Password) {
         try {
+            int requestTarget;
+
             //Set up Request
             HashMap<String, String> requestBody = new HashMap<>();
-            requestBody.put("idToFind", UserData[1]);
+
+            //Set up target of password change
+            if (requestType == 0) {
+                requestBody.put("idToFind", UserData[1]);
+            } else {
+                requestBody.put("idToFind", changeTargetID);
+            }
+
+            //Hash the new password according to a generic salt
+            String saltString = "mahna mahna";
+            Password = hashPassword(Password, saltString);
+
             requestBody.put("newPassword", Password);
             requestBody.put("key", UserData[0]);
             requestBody.put("keyId", UserData[1]);
@@ -140,8 +179,15 @@ public class ChangePassword extends JFrame {
         }
     }
 
+    //Type = 0, change own password, Type = 1, Change another user's password.
+    // Overload - Change target only required if type = 1, otherwise blank.
     protected static void create(String[] userDataInput, int type) {
-        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type);
+        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type, "");
+        frame.setVisible(true);
+    }
+
+    protected static void create(String[] userDataInput, int type, String changeTarget) {
+        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type, changeTarget);
         frame.setVisible(true);
     }
 
@@ -149,6 +195,11 @@ public class ChangePassword extends JFrame {
     private String[] LoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
+
+        //Hash the new password according to a generic salt
+        String saltString = "mahna mahna";
+        pwd = hashPassword(pwd, saltString);
+
         requestBody.put("id", id);
         requestBody.put("password", pwd);
         //Send Request
@@ -173,6 +224,35 @@ public class ChangePassword extends JFrame {
         }
     }
 
+    /**
+     * Hash a given password using the SHA-512 algorithm
+     *
+     * @param password
+     * @param salt
+     * @return A byte array of the hashed password
+     */
+    private String hashPassword(String password, String salt) {
+
+        /* Initialise the algorithm data or the IDE will get mad */
+        MessageDigest md = null;
+
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) { /* This will never happen as SHA-512 is definitely an algorithm */
+            e.printStackTrace();
+        }
+
+        /* Set the hashing algo to use our salt */
+        md.update(salt.getBytes());
+        String hashedPassword = null;
+        try {
+            hashedPassword = new String(md.digest(password.getBytes()), "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace(); /* Will never happen */
+        }
+        return hashedPassword;
+    }
+
 
     /**
      * Method generated by IntelliJ IDEA GUI Designer
@@ -183,7 +263,7 @@ public class ChangePassword extends JFrame {
      */
     private void $$$setupUI$$$() {
         Background = new JPanel();
-        Background.setLayout(new GridLayoutManager(13, 4, new Insets(0, 0, 0, 0), -1, -1));
+        Background.setLayout(new GridLayoutManager(14, 4, new Insets(0, 0, 0, 0), -1, -1));
         Background.setBackground(new Color(-5461075));
         labelTitle = new JLabel();
         Font labelTitleFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 18, labelTitle.getFont());
@@ -203,22 +283,22 @@ public class ChangePassword extends JFrame {
         labelName.setHorizontalTextPosition(0);
         labelName.setText("New Password");
         Background.add(labelName, new GridConstraints(6, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label1 = new JLabel();
-        label1.setForeground(new Color(-11578538));
-        label1.setHorizontalAlignment(0);
-        label1.setHorizontalTextPosition(0);
-        label1.setText("Existing Password");
-        Background.add(label1, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        labelExisting = new JLabel();
+        labelExisting.setForeground(new Color(-11578538));
+        labelExisting.setHorizontalAlignment(0);
+        labelExisting.setHorizontalTextPosition(0);
+        labelExisting.setText("Existing Password");
+        Background.add(labelExisting, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordNew1 = new JPasswordField();
         Background.add(passwordNew1, new GridConstraints(7, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final Spacer spacer3 = new Spacer();
         Background.add(spacer3, new GridConstraints(8, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 8), null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setForeground(new Color(-11578538));
-        label2.setHorizontalAlignment(0);
-        label2.setHorizontalTextPosition(0);
-        label2.setText("Re-Enter New Password");
-        Background.add(label2, new GridConstraints(9, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setForeground(new Color(-11578538));
+        label1.setHorizontalAlignment(0);
+        label1.setHorizontalTextPosition(0);
+        label1.setText("Re-Enter New Password");
+        Background.add(label1, new GridConstraints(9, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordNew2 = new JPasswordField();
         Background.add(passwordNew2, new GridConstraints(10, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final Spacer spacer4 = new Spacer();
@@ -229,16 +309,18 @@ public class ChangePassword extends JFrame {
         buttonCancel = new JButton();
         buttonCancel.setText("Cancel");
         Background.add(buttonCancel, new GridConstraints(12, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer5 = new Spacer();
-        Background.add(spacer5, new GridConstraints(4, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(15, -1), null, null, 0, false));
-        final Spacer spacer6 = new Spacer();
-        Background.add(spacer6, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(15, -1), null, null, 0, false));
         labelUsername = new JLabel();
         Font labelUsernameFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, labelUsername.getFont());
         if (labelUsernameFont != null) labelUsername.setFont(labelUsernameFont);
         labelUsername.setForeground(new Color(-12828863));
         labelUsername.setText("Error");
         Background.add(labelUsername, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer5 = new Spacer();
+        Background.add(spacer5, new GridConstraints(13, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        final Spacer spacer6 = new Spacer();
+        Background.add(spacer6, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(15, -1), null, null, 0, false));
+        final Spacer spacer7 = new Spacer();
+        Background.add(spacer7, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(15, -1), null, null, 0, false));
     }
 
     /**
