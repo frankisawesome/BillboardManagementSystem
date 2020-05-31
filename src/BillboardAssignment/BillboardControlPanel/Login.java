@@ -38,7 +38,7 @@ public class Login extends JFrame {
     public Login(String title) {
         super(title);
         $$$setupUI$$$();
-        //Completes GUI seyup after all components added to background in $$$setupUI$$$
+        //Completes GUI setup after all components added to background in $$$setupUI$$$
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
