@@ -1,9 +1,6 @@
 package BillboardAssignment.BillboardServer.BillboardServer.Tests;
 
-import BillboardAssignment.BillboardServer.BillboardServer.BillboardServer;
-import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BillboardServer.*;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
@@ -46,7 +43,7 @@ public class TestUserControllers {
     @Order(1)
     void checkLogin() throws Exception {
         UserSessionKey key = loginWithAdmin();
-        assertNotEquals("",key.sessionKey);
+        assertNotEquals("", key.sessionKey);
     }
 
     @Test
@@ -153,12 +150,12 @@ public class TestUserControllers {
         HashMap<String, String> requestBody = new HashMap<>();
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
-        ServerRequest<User[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
-        ServerResponse<User[]> response = request.getResponse();
+        ServerRequest<UserData[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
+        ServerResponse<UserData[]> response = request.getResponse();
         assertEquals("ok", response.status());
         assertEquals(2, response.body().length);
-        System.out.println(response.body()[0].getID());
-        System.out.println(response.body()[1].getID());
+        System.out.println(response.body()[0].id);
+        System.out.println(response.body()[1].id);
 
 
     }
