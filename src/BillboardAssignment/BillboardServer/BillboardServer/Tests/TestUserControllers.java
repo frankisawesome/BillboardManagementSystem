@@ -46,7 +46,7 @@ public class TestUserControllers {
     @Order(1)
     void checkLogin() throws Exception {
         UserSessionKey key = loginWithAdmin();
-        assertNotEquals("",key.sessionKey);
+        assertNotEquals("", key.sessionKey);
     }
 
     @Test
