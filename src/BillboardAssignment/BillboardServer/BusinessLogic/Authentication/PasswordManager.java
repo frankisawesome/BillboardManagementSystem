@@ -95,7 +95,7 @@ public class PasswordManager {
             e.printStackTrace();
         }
 
-        /* Set the hashing algo to use our salt */
+        /* Set the hashing also to use our salt */
         md.update(salt.getBytes());
         String hashedPassword = null;
         try {
