@@ -1,6 +1,8 @@
 package BillboardAssignment.BillboardServer.BusinessLogic.User;
 
-public class User extends UserDataInput implements Comparable{
+import java.io.Serializable;
+
+public class User extends UserDataInput implements Comparable, Serializable {
 
     public String twiceHashedPassword;
 
@@ -25,6 +27,10 @@ public class User extends UserDataInput implements Comparable{
         this.salt = salt;
     }
 
+    public User() {
+        super();
+    }
+
     /**
      * Get the name of the object entity. E.G. If user data is being stored, then this should return "User".
      * This will be used to choose what database the object will be stored in.
@@ -33,7 +39,6 @@ public class User extends UserDataInput implements Comparable{
      */
     public static String getEntityName() {
         return "User";
-        // TODO: Fix the whole automatic database name thingo
     }
 
     public void checkUserHasPriv(UserPrivilege[] privileges) throws InsufficentPrivilegeException {

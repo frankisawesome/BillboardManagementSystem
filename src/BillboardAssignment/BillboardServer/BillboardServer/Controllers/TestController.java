@@ -1,4 +1,6 @@
-package BillboardAssignment.BillboardServer.BillboardServer;
+package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
+
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 
 /**
  * Singleton class that handles test requests - only the static method .use should be called

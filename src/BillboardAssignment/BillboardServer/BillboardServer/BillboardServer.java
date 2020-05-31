@@ -1,13 +1,16 @@
 package BillboardAssignment.BillboardServer.BillboardServer;
 
+import BillboardAssignment.BillboardServer.BillboardServer.Controllers.BillboardController;
+import BillboardAssignment.BillboardServer.BillboardServer.Controllers.TestController;
+import BillboardAssignment.BillboardServer.BillboardServer.Controllers.UserController;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.SessionKeyManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseArray;
 import BillboardAssignment.BillboardServer.Database.Queryable;
+import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -78,8 +81,12 @@ public class BillboardServer {
         server = new ServerSocket(port);
     }
 
+    /**
+     * Set up in memory db arrays for session keys and users for testing, also creating 'first user' for testing
+     * @throws Exception
+     */
     private void setUpDbs() throws Exception {
-        Queryable<User> database = new DatabaseArray<User>();
+        Queryable<User> database = new UserSQLiteDatabase();
         database.initialiseDatabase("Users");
 
         Queryable<UserSessionKey> database2 = new DatabaseArray<UserSessionKey>();
@@ -89,12 +96,19 @@ public class BillboardServer {
         userManager.createFirstUser();
     }
 
+    /**
+     * Get the serverrequest object from input stream, and use one of the controller classes
+     * @param input input stream received from socket connection
+     * @return a server response to be sent back
+     */
     private ServerResponse useControllers(InputStream input) {
         ServerResponse<String> response;
         try {
+            //Parse the input stream into a request object
             ObjectInputStream objectInputStream = new ObjectInputStream(input);
             ServerRequest request = (ServerRequest) objectInputStream.readObject();
             System.out.println("Request received, message: " + request.requestMessage);
+            //Use controllers' static use method
             switch (request.requestType) {
                 case TEST:
                     response = TestController.use(request.requestMessage);
@@ -102,10 +116,14 @@ public class BillboardServer {
                 case USER:
                     response = UserController.use(request.requestMessage, userManager, request.requestBody);
                     break;
+                case BILLBOARD:
+                    response = BillboardController.use(request.requestMessage, request.requestBody);
+                    break;
                 default:
                     response = new ServerResponse<String>("", "Request type must be of requestType enum");
             }
         } catch (Exception e) {
+            //Return exception message - note that invalid requests are handled by each controller and a valid response will be returned, so this theoratically should only catch errors if the program really breaks.
             response = new ServerResponse<String>("", e.getMessage());
         }
         return response;

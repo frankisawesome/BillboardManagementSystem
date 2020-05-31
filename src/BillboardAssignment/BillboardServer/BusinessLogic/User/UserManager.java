@@ -1,10 +1,9 @@
 package BillboardAssignment.BillboardServer.BusinessLogic.User;
 
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.*;
-import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
-import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
-import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
-import BillboardAssignment.BillboardServer.Database.Queryable;
+import BillboardAssignment.BillboardServer.Database.*;
+
+import java.util.ArrayList;
 
 public class UserManager{
 
@@ -83,8 +82,8 @@ public class UserManager{
      * @throws DatabaseLogicException
      */
     public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException {
-
-        UserDataInput userToAdd = new UserDataInput(69420, "pwd", new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
+        String onceHashedPassword = "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ";
+        UserDataInput userToAdd = new UserDataInput(69420, onceHashedPassword, new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
         userDatabase.addObject(userWithNewPassword);
@@ -258,5 +257,40 @@ public class UserManager{
 
        return sessionKeys.removeSessionKey(new UserDataInput(key.getID()));
 
+    }
+
+    /**
+     * Map a given username to an integer ID in the database. Will error out if nobody has a given username
+     * @param username
+     * @return the ID of the user with said username
+     * @throws DatabaseObjectNotFoundException
+     * @throws NoSuchFieldException
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseMultipleMatchException
+     */
+    public int mapUsernameToID(String username) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseMultipleMatchException {
+        ArrayList<User> result;
+        try{
+            result = userDatabase.getWhere("username", username, new User(1, "", "", new UserPrivilege[0], ""));
+        }
+        catch (NoSuchFieldException e){
+            // This will never happen
+            throw new DatabaseNotAccessibleException("user");
+        }
+
+        if (result.size() > 1){
+            throw new DatabaseMultipleMatchException();
+        }
+
+        return result.get(0).getID();
+    }
+
+    /**
+     * Get the next integer ID to be added, for making new users
+     * @return the next ID
+     * @throws DatabaseNotAccessibleException
+     */
+    public int getNextID() throws DatabaseNotAccessibleException {
+        return userDatabase.getMaxID() +1;
     }
 }
