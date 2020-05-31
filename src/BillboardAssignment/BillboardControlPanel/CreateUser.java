@@ -31,6 +31,12 @@ public class CreateUser extends JFrame {
     private JPanel Background;
     private String[] UserData;
 
+    /**
+     * Change user window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     public CreateUser(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
@@ -81,7 +87,12 @@ public class CreateUser extends JFrame {
         });
     }
 
-
+    /**
+     * Sends a request to create a new user to the server. All exceptions occuring as a result are handled in the method.
+     * @param id - User ID for the new user
+     * @param pwd - Unhashed password for the new user.
+     * @return int 1 - Successful 2 - Fail
+     */
     private int CreateUserRequest(String id, String pwd) {
         try {
             //Hash the new password according to a generic salt
@@ -113,6 +124,11 @@ public class CreateUser extends JFrame {
         }
     }
 
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     //Method to create GUI
     protected static void create(String[] userDataInput) {
         JFrame frame = new CreateUser("Billboard Client", userDataInput);

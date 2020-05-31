@@ -91,6 +91,12 @@ public class UserManage extends JFrame {
     private String[][] userList;
     private int page;
 
+    /**
+     * User Manage window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     public UserManage(String titles, String[] userDataInput, String[][] userList) {
         super(titles);
         //Setup GUI
@@ -205,7 +211,11 @@ public class UserManage extends JFrame {
         });
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput) {
         String[][] userList = ListUsers(userDataInput);
         if (userList[0][0].equals("E")) {
@@ -216,7 +226,11 @@ public class UserManage extends JFrame {
         }
     }
 
-    //Returns list of users and their existing permissions
+    /**
+     * Fetch a list of all user accounts, along with their permissions
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return String[][] Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private static String[][] ListUsers(String[] userDataInput) {
         try {
             //Set up request
@@ -265,7 +279,12 @@ public class UserManage extends JFrame {
         }
     }
 
-    //Fetch permissions for user
+    /**
+     * Fetch a list of permissions for a specific user
+     * @param userData The session key and user ID for the user logged in.
+     * @param targetID The ID for which permissions should be fetched for
+     * @return String[] Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private static String[] GetPermissionsRequest(String[] userData, String targetID) {
         try {
             //Handle error if a targetID of null is entered.
@@ -328,7 +347,9 @@ public class UserManage extends JFrame {
         }
     }
 
-    //Populate GUI with data from users list
+    /**
+     * Populate GUI with data from the list of users
+     */
     private void DisplayUsersMain(int pageInput) {
         String[] blank = {"", "", "", "", ""};
         this.page = pageInput;
@@ -404,7 +425,10 @@ public class UserManage extends JFrame {
         labelPage.setText("User ID    (Page " + (page + 1) + " of " + numPages + ")");
     }
 
-    //Functions to display user info on GUI
+    /**
+     * Display user info on GUI for user to be displayed in position 1
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser1(String[] data) {
         labelU1.setText(data[0]);
         create1.setSelected(data[1].equals("1"));
@@ -414,6 +438,10 @@ public class UserManage extends JFrame {
         buttonEdit1.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 2
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser2(String[] data) {
         labelU2.setText(data[0]);
         create2.setSelected(data[1].equals("1"));
@@ -423,6 +451,10 @@ public class UserManage extends JFrame {
         buttonEdit2.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 3
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser3(String[] data) {
         labelU3.setText(data[0]);
         create3.setSelected(data[1].equals("1"));
@@ -432,6 +464,10 @@ public class UserManage extends JFrame {
         buttonEdit3.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 4
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser4(String[] data) {
         labelU4.setText(data[0]);
         create4.setSelected(data[1].equals("1"));
@@ -441,6 +477,10 @@ public class UserManage extends JFrame {
         buttonEdit4.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 5
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser5(String[] data) {
         labelU5.setText(data[0]);
         create5.setSelected(data[1].equals("1"));
@@ -450,6 +490,10 @@ public class UserManage extends JFrame {
         buttonEdit5.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 6
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser6(String[] data) {
         labelU6.setText(data[0]);
         create6.setSelected(data[1].equals("1"));
@@ -459,6 +503,10 @@ public class UserManage extends JFrame {
         buttonEdit6.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 7
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser7(String[] data) {
         labelU7.setText(data[0]);
         create7.setSelected(data[1].equals("1"));
@@ -468,6 +516,10 @@ public class UserManage extends JFrame {
         buttonEdit7.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 8
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser8(String[] data) {
         labelU8.setText(data[0]);
         create8.setSelected(data[1].equals("1"));
@@ -477,6 +529,10 @@ public class UserManage extends JFrame {
         buttonEdit8.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 9
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser9(String[] data) {
         labelU9.setText(data[0]);
         create9.setSelected(data[1].equals("1"));
@@ -486,6 +542,10 @@ public class UserManage extends JFrame {
         buttonEdit9.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 10
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser10(String[] data) {
         labelU10.setText(data[0]);
         create10.setSelected(data[1].equals("1"));
