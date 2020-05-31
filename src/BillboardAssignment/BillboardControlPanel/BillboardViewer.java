@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.xml.parsers.DocumentBuilder;
@@ -13,7 +14,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 
 public class BillboardViewer extends JFrame implements ActionListener, Runnable {
@@ -25,6 +28,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     // Contents of xmlBillboard
     String title;
     String imagePath;
+    Boolean imageUrlFlg;
     String subtext;
 
     Color backgroundColor;
@@ -91,8 +95,10 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 } else if (element.getTagName() == "picture") {
                     if (element.hasAttribute("url")) {
                         imagePath = element.getAttribute("url");
+                        imageUrlFlg = true;
                     } else {
                         imagePath = element.getAttribute("data");
+                        imageUrlFlg = false;
                     }
                 } else if (element.getTagName() == "information") {
                     subtext = element.getTextContent();
@@ -109,9 +115,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         }
 
         System.out.println(title);
-
-
-
         /*  ----------------------------------------------------------------------------- */
 
         // Create panels that define the layout
@@ -119,7 +122,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         pnl2 = createPanel(backgroundColor);
         pnl3 = createPanel(backgroundColor);
         pnl4 = createPanel(backgroundColor);
-        pnl5 = createPanel(Color.WHITE);
+        pnl5 = createPanel(backgroundColor);
 
         // Set sizes of the panels
 
@@ -156,6 +159,11 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         htmlTitle1.setHorizontalAlignment(JLabel.CENTER);
         htmlTitle1.setVerticalAlignment(JLabel.CENTER);
         pnl5.add(htmlTitle1);
+
+        BufferedImage myPicture = ImageIO.read(new File(imagePath));
+        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+        pnl3.add(picLabel);
+
     }
 
 

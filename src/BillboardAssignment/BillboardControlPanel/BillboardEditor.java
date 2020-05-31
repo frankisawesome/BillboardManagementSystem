@@ -289,13 +289,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             String billboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<billboard background = \"#0000FF\">\n" +
                     "    <message>Billboard with message, GIF and information</message>\n" +
-                    "    <picture url=\"https://cloudstor.aarnet.edu.au/plus/s/A26R8MYAplgjUhL/download\" />\n" +
+                    "    <picture url=\"C:\\Users\\billy\\OneDrive\\Desktop\\Clive-Palmer-billboard-500x309.jpg\" />\n" +
                     "    <information colour=\"#60B9FF\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
                     "</billboard>\n";
             BillboardViewer.create(billboard);
         } else if (source == searchComputer) {
              System.out.println("TODO: Search Computer files");
-             
+
         } else if (source == btnCreateBillboard){
             JOptionPane.showMessageDialog(null, "Billboard Created Successfully!\n" +
                     "NOT REALLY, PLEASE INTEGRATE TO SERVER");
