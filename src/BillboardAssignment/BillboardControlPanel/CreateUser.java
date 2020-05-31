@@ -63,6 +63,7 @@ public class CreateUser extends JFrame {
                                 JOptionPane.showMessageDialog(null, "User successfully created!\n" +
                                         "Please give user permissions via Edit User in the User Management Tool");
                                 dispose();
+                                UserManage.create(UserData);
                             }
                         } else {
                             JOptionPane.showMessageDialog(null, "Error! Password cannot be blank.");

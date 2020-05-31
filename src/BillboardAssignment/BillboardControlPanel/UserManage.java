@@ -114,6 +114,7 @@ public class UserManage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CreateUser.create(UserData);
+                dispose();
             }
         });
 
