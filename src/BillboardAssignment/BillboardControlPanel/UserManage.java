@@ -241,7 +241,6 @@ public class UserManage extends JFrame {
             //Loop through returned ID's and fetch permissions for each
             for (int i = 0; i < returnedID.length; i++) {
                 //Fetch Permission
-                System.out.println(returnedID[i].id);
                 String[] permissionReturned = GetPermissionsRequest(userDataInput, String.valueOf(returnedID[i].id));
 
                 //If error code returned, return error code for ListUsers
@@ -264,9 +263,6 @@ public class UserManage extends JFrame {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Fetch Users | " + e.getMessage());
             return (Error);
         }
-        //String[][] returnVal = {{"69420", "0", "1", "1", "1"}, {"694201", "1", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"},};
-        //System.out.println(returnVal.length);
-        //return (returnVal);
     }
 
     //Fetch permissions for user
@@ -279,7 +275,6 @@ public class UserManage extends JFrame {
                 return (ErrorR);
             }
             //Set up Request
-            System.out.println(targetID);
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("idToFind", targetID);
             requestBody.put("key", userData[0]);
