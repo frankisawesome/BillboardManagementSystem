@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CreateMenu extends JFrame {
+public class RenameBillboard extends JFrame {
     private JButton buttonBack;
     private JPanel panel1;
     private JButton buttonCreate;
@@ -17,37 +17,42 @@ public class CreateMenu extends JFrame {
     private JLabel labelTitle;
     private JLabel labelName;
     private String[] UserData;
+    private String billboardID;
 
-    public CreateMenu(String titles, String[] userDataInput) {
+    public RenameBillboard(String titles, String[] userDataInput, String billboardIDInput, String currentNameInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
+        this.billboardID = billboardIDInput;
+        fieldName.setText(currentNameInput);
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
 
-        //Listener for the back button, simply disposes and creates main menu
+        //Listener for the back button, simply disposes and returns
         buttonBack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                MainMenu.create(UserData);
+                ListBillboards.create(UserData);
             }
         });
 
-        //Listener for create button, will open the billboard design module.
+        //Listener for rename button, will query the server and if successful, return to billboard list.
         buttonCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD SERVER");
+                dispose();
+                ListBillboards.create(UserData);
             }
         });
     }
 
     //Method to create GUI
-    protected static void create(String[] userDataInput) {
-        JFrame frame = new CreateMenu("Billboard Client", userDataInput);
+    protected static void create(String[] userDataInput, String billboardID, String currentName) {
+        JFrame frame = new RenameBillboard("Billboard Client", userDataInput, billboardID, currentName);
         frame.setVisible(true);
     }
 
@@ -69,10 +74,10 @@ public class CreateMenu extends JFrame {
         Font labelTitleFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 18, labelTitle.getFont());
         if (labelTitleFont != null) labelTitle.setFont(labelTitleFont);
         labelTitle.setForeground(new Color(-12828863));
-        labelTitle.setText("Create New Billboard");
+        labelTitle.setText("Rename Billboard");
         panel1.add(labelTitle, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonCreate = new JButton();
-        buttonCreate.setText("Create");
+        buttonCreate.setText("Rename");
         panel1.add(buttonCreate, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         fieldName = new JTextField();
         panel1.add(fieldName, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
@@ -80,7 +85,7 @@ public class CreateMenu extends JFrame {
         labelName.setForeground(new Color(-11578538));
         labelName.setHorizontalAlignment(0);
         labelName.setHorizontalTextPosition(0);
-        labelName.setText("Billboard Name");
+        labelName.setText("New Billboard Name");
         panel1.add(labelName, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel1.add(spacer1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(85, 30), null, null, 0, false));
@@ -124,4 +129,7 @@ public class CreateMenu extends JFrame {
         return panel1;
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }
