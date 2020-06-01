@@ -264,7 +264,7 @@ public class UserManager {
      */
     public boolean logout(UserSessionKey key) throws DatabaseNotAccessibleException {
 
-        return sessionKeys.removeSessionKey(new UserDataInput(key.getID(), null, null, null));
+        return sessionKeys.removeSessionKey(new UserDataInput(key.getID(), "", new UserPrivilege[0], ""));
 
     }
 
