@@ -46,8 +46,14 @@ public class MainMenu extends JFrame {
 
         //Send request to fetch updated user permissions, in case they have been changed mid session by admin.
         String[] newPermissions = GetPermissionsRequest(userData);
-        for (int i = 0; i < 4; i++) {
-            userData[i + 2] = newPermissions[i];
+        if (newPermissions[0].equals("E")) {
+            dispose();
+            Login.create();
+        }
+        else {
+            for (int i = 0; i < 4; i++) {
+                userData[i + 2] = newPermissions[i];
+            }
         }
 
         //Listener for Logout Button
