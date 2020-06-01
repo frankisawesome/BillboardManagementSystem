@@ -69,7 +69,7 @@ public class TestUserControllers {
         HashMap<String, String> requestBody = new HashMap<>();
         requestBody.put("keyId", Integer.toString(key.getID()));
         Random random = new Random();
-        requestBody.put("newUserId", "555");
+        requestBody.put("newUserName", "myuser");
         requestBody.put("password", "newpass");
         requestBody.put("key", key.sessionKey);
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "create", requestBody);
