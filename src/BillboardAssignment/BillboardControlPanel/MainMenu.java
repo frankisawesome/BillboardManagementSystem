@@ -38,20 +38,20 @@ public class MainMenu extends JFrame {
         $$$setupUI$$$();
         // Finish setting up UI after all elements added to background
         this.userData = userDataInput;
-        this.setContentPane(Background);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //Display Username at top of screen.
-        this.labelUsername.setText(("Welcome User - " + userData[1]));
-        this.pack();
 
         //Send request to fetch updated user permissions, in case they have been changed mid session by admin.
         String[] newPermissions = GetPermissionsRequest(userData);
         if (newPermissions[0].equals("E")) {
-            dispose();
+            this.dispose();
             Login.create();
         }
         else {
             for (int i = 0; i < 4; i++) {
+                this.setContentPane(Background);
+                this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                //Display Username at top of screen.
+                this.labelUsername.setText(("Welcome User - " + userData[1]));
+                this.pack();
                 userData[i + 2] = newPermissions[i];
             }
         }

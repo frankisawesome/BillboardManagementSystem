@@ -194,7 +194,14 @@ public class ChangePassword extends JFrame {
                     MainMenu.create(UserData);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Change Server request rejected unexpectedly " + response.status());
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    dispose();
+                    Login.create();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n Change Server request rejected unexpectedly " + response.status());
+                }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error Please Contact IT Support and Quote the Following: \n" + e.getMessage());
@@ -253,10 +260,10 @@ public class ChangePassword extends JFrame {
                 String[] returnVal = {"1", response.body().sessionKey};
                 return (returnVal);
             } else {
-                // If response fail, return code 2 and error message.
-                String errorMsg = ("Error: " + response.status());
-                String[] returnVal = {"3", errorMsg};
-                return (returnVal);
+                    // If response fail, return code 2 and error message.
+                    String errorMsg = ("Error: " + response.status());
+                    String[] returnVal = {"3", errorMsg};
+                    return (returnVal);
             }
         } catch (Exception e) {
             // If exception thrown, return code 2 and error message prompting user to seek IT support.

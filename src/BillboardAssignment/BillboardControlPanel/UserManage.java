@@ -338,12 +338,11 @@ public class UserManage extends JFrame {
                     String[] ErrorI = {"I"}; //Code for invalid session key.
                     return (ErrorI);
                 }
-
                 String[] ErrorR = {"E"};
                 JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: Get Permissions\n Get Permissions |" + response.status());
                 return (ErrorR);
             }
-
+            System.out.println(targetID);
             //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
             for (int i = 0; i < perms.length; i++) {
                 tempPerm = String.valueOf(perms[i]);
@@ -371,7 +370,9 @@ public class UserManage extends JFrame {
         } catch (Exception e) {
             //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
             String[] ErrorR = {"E"};
-            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions E|" + e.getMessage());
+            //System.out.println(e);
+            //e.printStackTrace();
             return (ErrorR);
         }
     }
