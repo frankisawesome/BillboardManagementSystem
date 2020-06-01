@@ -1,10 +1,16 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Abstract implementation of the queryable interface for SQLite Databases
+ * Translates methods into generic sql commands that can work on databases storing any objects
+ * Cannot be instantiated, instead extend this class and fill out the required methods, and it will be able to be used as a queryable database.
+ *
+ * @param <E> The type of the object to be stored
+ */
 public abstract class SQLiteDatabase<E extends Identifiable> implements Queryable<E> {
     private String entityName;
     private Connection connection;
@@ -188,7 +194,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
      * Get the maximum ID of any object in the database
      *
      * @return An integer of the maximum ID. Returns 0 if no records in database
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     @Override
     public int getMaxID() throws DatabaseNotAccessibleException {
@@ -217,7 +223,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
     /**
      * Remove all observations in dataset
      *
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     @Override
     public void removeAllData() throws DatabaseNotAccessibleException {
@@ -239,11 +245,12 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
     /**
      * Gets the given object, which's parameterName parameter's value matched parameterValue.
      * E.G. select * from db where parameterName = parameterValue
-     * @param parameterName The name of the object's parameter
+     *
+     * @param parameterName  The name of the object's parameter
      * @param parameterValue The value of said parameter we want to search for
-     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @param dummyObject    Any object of type E, we need it to check if a parameter exists
      * @return The object(s) that satisfy the condition
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseMultipleMatchException
      */
@@ -274,7 +281,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
         }
 
-        if (output.size() == 0){
+        if (output.size() == 0) {
             throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
         }
 
@@ -284,11 +291,12 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
     /**
      * Gets the given object, which's parameterName parameter's value matched parameterValue.
      * E.G. select * from db where parameterName = parameterValue
-     * @param parameterName The name of the object's parameter
+     *
+     * @param parameterName  The name of the object's parameter
      * @param parameterValue The value of said parameter we want to search for
-     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @param dummyObject    Any object of type E, we need it to check if a parameter exists
      * @return The object(s) that satisfy the condition
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseMultipleMatchException
      */
@@ -319,7 +327,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             throw new DatabaseNotAccessibleException(getEntityName()); /* This isn't database accessibility problem most likely, but we still want to throw an error */
         }
 
-        if (output.size() == 0){
+        if (output.size() == 0) {
             throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
         }
 
@@ -358,6 +366,10 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
 
     /**
      * Add the values to a preparedStatement e.g statement.setInt(1, 20), statement.setString(2, "The UserName")
+     *
+     * @param statement The PreparedStatement to add the values to
+     * @param object    The object containing the values we want to add
+     * @throws SQLException If the method isn't implemented properly or invalid data is attempted to be stored
      */
     public abstract void addValues(PreparedStatement statement, E object) throws SQLException;
 
@@ -371,6 +383,7 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
 
     /**
      * Get the question mark string needed to insert parameters. E.G. if we want to add UserID and username, return "?, ?"
+     *
      * @return
      */
     public abstract String getQuestionMarks();

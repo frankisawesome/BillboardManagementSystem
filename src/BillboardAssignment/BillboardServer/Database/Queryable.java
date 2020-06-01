@@ -69,6 +69,7 @@ public interface Queryable<E extends Identifiable> {
 
     /**
      * Return an array of every single object in the database.
+     *
      * @return A list of the database generic type, containing every entry in the database
      * @throws DatabaseNotAccessibleException Throws an exception if we can't access the database.
      */
@@ -76,8 +77,9 @@ public interface Queryable<E extends Identifiable> {
 
     /**
      * Get the maximum ID of any object in the database
+     *
      * @return An integer of the maximum ID. Returns 0 if no records in database
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     int getMaxID() throws DatabaseNotAccessibleException;
 
@@ -88,18 +90,20 @@ public interface Queryable<E extends Identifiable> {
 
     /**
      * Remove all observations in dataset
-     * @throws DatabaseNotAccessibleException
+     *
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     void removeAllData() throws DatabaseNotAccessibleException;
 
     /**
      * Gets the given object, which's parameterName parameter's value matched parameterValue.
      * E.G. select * from db where parameterName = parameterValue
-     * @param parameterName The name of the object's parameter
+     *
+     * @param parameterName  The name of the object's parameter
      * @param parameterValue The value of said parameter we want to search for
-     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @param dummyObject    Any object of type E, we need it to check if a parameter exists
      * @return The object(s) that satisfy the condition
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseMultipleMatchException
      */
@@ -108,11 +112,12 @@ public interface Queryable<E extends Identifiable> {
     /**
      * Gets the given object, which's parameterName parameter's value matched parameterValue.
      * E.G. select * from db where parameterName = parameterValue
-     * @param parameterName The name of the object's parameter
+     *
+     * @param parameterName  The name of the object's parameter
      * @param parameterValue The value of said parameter we want to search for
-     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @param dummyObject    Any object of type E, we need it to check if a parameter exists
      * @return The object(s) that satisfy the condition
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseMultipleMatchException
      */
