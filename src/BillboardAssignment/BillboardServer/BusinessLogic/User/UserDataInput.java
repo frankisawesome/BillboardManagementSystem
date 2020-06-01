@@ -52,9 +52,9 @@ public class UserDataInput implements Identifiable {
 
         this.onceHashedPassword = onceHashedPassword;
 
-        this.privileges = privileges;
+        this.privileges = new UserPrivilege[0];
 
-        this.username = username;
+        this.username = "";
     }
 
     public UserPrivilege[] getPrivileges() {
