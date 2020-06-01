@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -27,7 +28,8 @@ public class MainMenu extends JFrame {
 
     /**
      * Main Menu window object constructor. Sets up GUI and also contains listeners
-     * @param titles - Window Title
+     *
+     * @param titles        - Window Title
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
@@ -41,6 +43,12 @@ public class MainMenu extends JFrame {
         //Display Username at top of screen.
         this.labelUsername.setText(("Welcome User - " + userData[1]));
         this.pack();
+
+        //Send request to fetch updated user permissions, in case they have been changed mid session by admin.
+        String[] newPermissions = GetPermissionsRequest(userData);
+        for (int i = 0; i < 4; i++) {
+            userData[i + 2] = newPermissions[i];
+        }
 
         //Listener for Logout Button
         buttonLogout.addActionListener(new ActionListener() {
@@ -114,8 +122,7 @@ public class MainMenu extends JFrame {
                 if (userData[5].equals("1")) {
                     dispose();
                     UserManage.create(userData);
-                }
-                else {
+                } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
                             "\n If this is an error please retry, or contact system administrator.");
                 }
@@ -135,6 +142,7 @@ public class MainMenu extends JFrame {
 
     /**
      * Create function. Creates instance of GUI
+     *
      * @param userDataInput The session key and user ID for the user logged in.
      * @return void
      */
@@ -142,6 +150,68 @@ public class MainMenu extends JFrame {
         //Create Menu Frame & Pass User Data
         JFrame frame = new MainMenu("Billboard Client", userDataInput);
         frame.setVisible(true);
+    }
+
+    /**
+     * Sets up and sends permissions fetch request to server
+     *
+     * @param userData - Session key and user ID
+     * @return String[] Permissions in binary format 1 - has, 0 - doesnt have {create, edit, schedule, user admin}
+     */
+    private String[] GetPermissionsRequest(String[] userData) {
+        try {
+            //Set up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("idToFind", userData[1]);
+            requestBody.put("key", userData[0]);
+            requestBody.put("keyId", userData[1]);
+
+            //Send Request
+            ServerRequest<UserPrivilege[]> request = new ServerRequest<>(RequestType.USER, "get privileges", requestBody);
+            ServerResponse<UserPrivilege[]> response = request.getResponse();
+
+            //Fetch response and convert to string format
+            UserPrivilege[] perms = response.body();
+            String[] stringPerms = {"0", "0", "0", "0"};
+            String tempPerm;
+
+            //Check that response is ok, if not display error message.
+            if (!response.status().equals("ok")) {
+                String[] Error = {"E"};
+                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + response.status());
+                return (Error);
+            }
+
+            //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
+            for (int i = 0; i < perms.length; i++) {
+                tempPerm = String.valueOf(perms[i]);
+                switch (tempPerm) {
+                    case "CreateBillboards":
+                        stringPerms[0] = "1";
+                        break;
+                    case "EditAllBillboards":
+                        stringPerms[1] = "1";
+                        break;
+                    case "ScheduleBillboards":
+                        stringPerms[2] = "1";
+                        break;
+                    case "EditUsers":
+                        stringPerms[3] = "1";
+                        break;
+                    default:
+                        //Return an element E if error occurs as a flag to login, error is handled here however with a prompt.
+                        String[] Error = {"E"};
+                        JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Invalid Permission returned by server");
+                        return (Error);
+                }
+            }
+            return (stringPerms);
+        } catch (Exception e) {
+            //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
+            String[] Error = {"E"};
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
+            return (Error);
+        }
     }
 
 
