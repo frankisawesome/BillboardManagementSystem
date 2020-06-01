@@ -34,22 +34,104 @@ public class ChangePassword extends JFrame {
     private String[] UserData;
     private int requestType; //Type = 0, change own password, Type = 1, Change another user's password
     private String changeTargetID;
+    private String[] editingUserData;
 
     /**
-     * Change password window object constructor. Sets up GUI and also contains listeners
-     * @param titles - Window Title
-     * @param userDataInput - Array containing session key and user ID for user performing the request
-     * @param type - Type of request 0 - Changing own password, 1 - Changing another user's password
-     * @param changeTarget  - If request is of type 1, this is the ID of the user which's password is to be changed.
+     * Change password window object constructor for request type 1. Sets up GUI and also contains listeners
+     *
+     * @param titles               - Window Title
+     * @param userDataInput        - Array containing session key and user ID for user performing the request
+     * @param type                 - Type of request 0 - Changing own password, 1 - Changing another user's password
+     * @param changeTarget         - If request is of type 1, this is the ID of the user which's password is to be changed.
+     * @param editingUserDataInput - Information on the user being edited in the format {ID, Create, Edit, Schedule, UserAdmin} where perms are int 0,1
      * @return N/A
      */
-    public ChangePassword(String titles, String[] userDataInput, int type, String changeTarget) {
+    public ChangePassword(String titles, String[] userDataInput, int type, String changeTarget, String[] editingUserDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
         this.UserData = userDataInput;
         this.requestType = type;
         this.changeTargetID = changeTarget;
+        this.editingUserData = editingUserDataInput;
+        PersonaliseGUI();
+        this.setContentPane(Background);
+        this.pack();
+
+        //Listener for confirm button
+        buttonConfirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String pwdE = "";
+                //Fetch existing password
+                if (requestType == 0) {
+                    char[] pwdCharE = passwordExisting.getPassword();
+                    pwdE = new String(pwdCharE);
+                }
+                //Fetch new password 1
+                char[] pwdChar1 = passwordNew1.getPassword();
+                String pwd1 = new String(pwdChar1);
+                //Fetch new password 2
+                char[] pwdChar2 = passwordNew2.getPassword();
+                String pwd2 = new String(pwdChar2);
+
+                //Checks validity of password change, first that a password has been entered,
+                // after that new passwords match, then that existing password is correct.
+                if (pwd1.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please Enter a New Password, Field Cannot Be Blank");
+                } else {
+                    if (pwd1.equals(pwd2)) {
+                        int checkResult;
+                        //If changing own password check validity of existing password
+                        if (requestType == 0) {
+                            checkResult = checkPassword(pwdE);
+                            // checkResult 1 - Success, 0 - Incorrect, 2 - Exception Thrown (Note exception is thrown in the check function.
+                        }
+                        //If changing another user's password as admin then this check is not required so return a result of 1.
+                        else {
+                            checkResult = 1;
+                        }
+                        if (checkResult == 1) {
+                            changePassword(pwd1);
+                        } else {
+                            if (checkResult == 0) {
+                                JOptionPane.showMessageDialog(null, "Existing password is incorrect, please try again!");
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error, new password entries do not match!");
+                    }
+                }
+            }
+        });
+
+        //Listener for cancel button
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                //If request type is 0 - change own password, load main menu.
+                if (requestType == 0) {
+                    MainMenu.create(UserData);
+                }
+            }
+        });
+    }
+
+    /**
+     * Change password window object constructor for request type 0. Sets up GUI and also contains listeners
+     *
+     * @param titles        - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @param type          - Type of request 0 - Changing own password, 1 - Changing another user's password
+     * @return N/A
+     */
+    public ChangePassword(String titles, String[] userDataInput, int type) {
+        super(titles);
+        //Setup GUI
+        $$$setupUI$$$();
+        this.UserData = userDataInput;
+        this.requestType = type;
         PersonaliseGUI();
         this.setContentPane(Background);
         this.pack();
@@ -116,6 +198,7 @@ public class ChangePassword extends JFrame {
 
     /**
      * Performs a check for whether the existing password entered by the user is correct.
+     *
      * @param password - Password Entered by the user, that is to be verified.
      * @return int, 0 if request failed, 1 is request successful.
      */
@@ -145,6 +228,7 @@ public class ChangePassword extends JFrame {
     /**
      * Changes the GUI according to the type of request. If request type is 0, box to insert existing password is shown,
      * otherwise it is hidden. Label displaying the username of the user having it's password changed is also set here.
+     *
      * @return void
      */
     private void PersonaliseGUI() {
@@ -160,6 +244,7 @@ public class ChangePassword extends JFrame {
     /**
      * Sends a request to the server to change a user's password. All possible exceptions occuring as a result are handled
      * internally. If request is successful, the change password window is disposed.
+     *
      * @param Password - Unhashed of what the password is to be changed to.
      * @return void
      */
@@ -192,6 +277,8 @@ public class ChangePassword extends JFrame {
                 //If request type is 0 (changing own password) create main menu, and pass back new session key, else simply dispose.
                 if (requestType == 0) {
                     MainMenu.create(UserData);
+                } else {
+                    EditUser.create(UserData, editingUserData);
                 }
             } else {
                 //If error is an invalid session key, dispose and return to login screen
@@ -210,35 +297,37 @@ public class ChangePassword extends JFrame {
 
     /**
      * Create function for a request of type 0 - Changing own password
+     *
      * @param userDataInput The session key and user ID for the user logged in.
-     * @param type - Request Type 0 - Self Change, 1 - Change another user.
+     * @param type          - Request Type 0 - Self Change, 1 - Change another user.
      * @return void
      */
-    //Type = 0, change own password, Type = 1, Change another user's password.
-    // Overload - Change target only required if type = 1, otherwise blank.
     protected static void create(String[] userDataInput, int type) {
-        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type, "");
-        frame.setVisible(true);
+        if (type == 0) {
+            JFrame frame = new ChangePassword("Billboard Client", userDataInput, type);
+            frame.setVisible(true);
+        }
     }
 
     /**
      * Create function for a request of type 1 - Changing another user's password
+     *
      * @param userDataInput The session key and user ID for the user logged in.
-     * @param type - Request Type 0 - Self Change, 1 - Change another user.
-     * @param changeTarget - The user ID for the user who's password is to be changed.
+     * @param type          - Request Type 0 - Self Change, 1 - Change another user.
+     * @param changeTarget  - The user ID for the user who's password is to be changed.
      * @return void
      */
-    protected static void create(String[] userDataInput, int type, String changeTarget) {
-        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type, changeTarget);
+    protected static void create(String[] userDataInput, int type, String changeTarget, String[] editingUserData) {
+        JFrame frame = new ChangePassword("Billboard Client", userDataInput, type, changeTarget, editingUserData);
         frame.setVisible(true);
     }
 
     /**
      * Performs a log in request to the server to verify whether the entered credentials are correct.
-     * @param id The  user ID for the user who's credentials are being verified.
+     *
+     * @param id  The  user ID for the user who's credentials are being verified.
      * @param pwd - Unhashed password for user being verified.
      * @return String[0] - Verification outcome (1 = success, 2 = exception thrown, 3 = response recieved but not successful) String[1] - Session key if successful, else error message.
-     *
      */
     //Login Function for creating a dummy login request to check correctness of existing password.
     private String[] LoginRequest(String id, String pwd) {
@@ -260,10 +349,10 @@ public class ChangePassword extends JFrame {
                 String[] returnVal = {"1", response.body().sessionKey};
                 return (returnVal);
             } else {
-                    // If response fail, return code 2 and error message.
-                    String errorMsg = ("Error: " + response.status());
-                    String[] returnVal = {"3", errorMsg};
-                    return (returnVal);
+                // If response fail, return code 2 and error message.
+                String errorMsg = ("Error: " + response.status());
+                String[] returnVal = {"3", errorMsg};
+                return (returnVal);
             }
         } catch (Exception e) {
             // If exception thrown, return code 2 and error message prompting user to seek IT support.

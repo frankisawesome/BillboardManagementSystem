@@ -69,7 +69,8 @@ public class EditUser extends JFrame {
                 if (adminUserData[1].equals(editingUserData[0])) {
                     JOptionPane.showMessageDialog(null, "Please change your own password from the button on the main menu.\nThanks!");
                 } else {
-                    ChangePassword.create(adminUserData, 1, editingUserData[0]);
+                    ChangePassword.create(adminUserData, 1, editingUserData[0], editingUserData);
+                    dispose();
                 }
             }
         });
