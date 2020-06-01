@@ -6,8 +6,6 @@ import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -89,7 +87,7 @@ class TestUserSQLiteDatabase extends FatherTester {
         assertEquals(firstobs.getID(), 1);
 
         assertThrows((DatabaseObjectNotFoundException.class), () -> {
-            database.getWhere("salt", 2,new User(1, "nice", "123", new UserPrivilege[0], "that guy"));
+            database.getWhere("salt", 2, new User(1, "nice", "123", new UserPrivilege[0], "that guy"));
         });
 
         assertThrows((NoSuchFieldException.class), () -> {
@@ -103,14 +101,13 @@ class TestUserSQLiteDatabase extends FatherTester {
     }
 
 
-
-
-    boolean userValuesEqual(User a, User b){
+    boolean userValuesEqual(User a, User b) {
         return a.salt.equals(b.salt) && a.getID() == b.getID() && a.twiceHashedPassword.equals(b.twiceHashedPassword) && a.getUsername().equals(b.getUsername()) && assertSetEquals(a.getPrivileges(), b.getPrivileges());
     }
 
     /**
      * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
+     *
      * @param set1
      * @param set2
      * @throws Exception
@@ -118,7 +115,7 @@ class TestUserSQLiteDatabase extends FatherTester {
     boolean assertSetEquals(UserPrivilege[] set1, UserPrivilege[] set2) {
         boolean match;
         boolean allMatch = true;
-        for (int i = 0; i < set1.length; i ++){
+        for (int i = 0; i < set1.length; i++) {
             match = false;
             for (int j = 0; j < set2.length; j++) {
                 if (set1[i] == set2[j]) {
@@ -126,8 +123,8 @@ class TestUserSQLiteDatabase extends FatherTester {
                 }
             }
 
-            if (!match){
-                allMatch =false;
+            if (!match) {
+                allMatch = false;
             }
 
         }
