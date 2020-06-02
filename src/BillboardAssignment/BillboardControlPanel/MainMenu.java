@@ -33,7 +33,7 @@ public class MainMenu extends JFrame {
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    public MainMenu(String titles, String[] userDataInput) {
+    private MainMenu(String titles, String[] userDataInput) {
         super(titles);
         $$$setupUI$$$();
         // Finish setting up UI after all elements added to background
@@ -176,17 +176,25 @@ public class MainMenu extends JFrame {
             ServerRequest<UserPrivilege[]> request = new ServerRequest<>(RequestType.USER, "get privileges", requestBody);
             ServerResponse<UserPrivilege[]> response = request.getResponse();
 
+            //Check that response is ok, if not display error message.
+            if (!response.status().equals("ok")) {
+                if (response.status().equals("Session key invalid")) {
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    dispose();
+                    Login.create();
+                    String[] Error = {"E"};
+                    return (Error);
+                } else {
+                    String[] Error = {"E"};
+                    JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + response.status());
+                    return (Error);
+                }
+            }
             //Fetch response and convert to string format
             UserPrivilege[] perms = response.body();
             String[] stringPerms = {"0", "0", "0", "0"};
             String tempPerm;
 
-            //Check that response is ok, if not display error message.
-            if (!response.status().equals("ok")) {
-                String[] Error = {"E"};
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + response.status());
-                return (Error);
-            }
 
             //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
             for (int i = 0; i < perms.length; i++) {
