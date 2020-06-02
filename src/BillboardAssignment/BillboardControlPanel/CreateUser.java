@@ -50,6 +50,7 @@ public class CreateUser extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                UserManage.create(UserData);
             }
         });
         buttonConfirm.addActionListener(new ActionListener() {
