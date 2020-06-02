@@ -32,6 +32,9 @@ public class BillboardController extends Controller {
             case "rename billboard":
                 response = rename();
                 break;
+            case "edit billboard":
+                response = edit();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
@@ -59,6 +62,14 @@ public class BillboardController extends Controller {
             UserSessionKey key = reconstructKey();
             billboardManager.rename(Integer.parseInt(body.get("billboardId")), body.get("newName"), key);
             return new ServerResponse("Rename success", "ok");
+        });
+    }
+
+    private ServerResponse edit() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            billboardManager.edit(Integer.parseInt(body.get("billboardId")), body.get("newContent"), key);
+            return new ServerResponse("Edit success", "ok");
         });
     }
 
