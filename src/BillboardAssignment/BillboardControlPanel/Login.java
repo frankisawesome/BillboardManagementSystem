@@ -40,7 +40,7 @@ public class Login extends JFrame {
      * @param title - Window Title
      * @return N/A
      */
-    public Login(String title) {
+    private Login(String title) {
         super(title);
         $$$setupUI$$$();
         //Completes GUI setup after all components added to background in $$$setupUI$$$

@@ -42,7 +42,7 @@ public class EditUser extends JFrame {
      * @param editingUserDataInput - Array of info for the user being edited {id,CreatePerm,EditPerm,SchedulePerm,AdminPerm} Where Perms are 1 - true, 0 - false
      * @return N/A
      */
-    public EditUser(String titles, String[] userDataInput, String[] editingUserDataInput) {
+    private EditUser(String titles, String[] userDataInput, String[] editingUserDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();

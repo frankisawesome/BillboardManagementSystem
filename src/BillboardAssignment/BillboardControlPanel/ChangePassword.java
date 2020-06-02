@@ -46,7 +46,7 @@ public class ChangePassword extends JFrame {
      * @param editingUserDataInput - Information on the user being edited in the format {ID, Create, Edit, Schedule, UserAdmin} where perms are int 0,1
      * @return N/A
      */
-    public ChangePassword(String titles, String[] userDataInput, int type, String changeTarget, String[] editingUserDataInput) {
+    private ChangePassword(String titles, String[] userDataInput, int type, String changeTarget, String[] editingUserDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();

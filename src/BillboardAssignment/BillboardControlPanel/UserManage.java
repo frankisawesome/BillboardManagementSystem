@@ -98,7 +98,7 @@ public class UserManage extends JFrame {
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    public UserManage(String titles, String[] userDataInput, String[][] userList) {
+    private UserManage(String titles, String[] userDataInput, String[][] userList) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();

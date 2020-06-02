@@ -37,7 +37,7 @@ public class CreateUser extends JFrame {
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    public CreateUser(String titles, String[] userDataInput) {
+    private CreateUser(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
