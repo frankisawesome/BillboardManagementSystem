@@ -160,7 +160,7 @@ public class UserController extends Controller{
     private ServerResponse create() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
-            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("newUserId")), body.get("password"));
+            UserDataInput user = new UserDataInput(userManager.getNextID(), body.get("password"), body.get("newUserName"));
             userManager.createUser(user, key);
             return new ServerResponse("Success! User created", "ok");
         });

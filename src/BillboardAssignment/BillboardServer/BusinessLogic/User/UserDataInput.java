@@ -57,6 +57,13 @@ public class UserDataInput implements Identifiable {
         this.username = "";
     }
 
+    public UserDataInput(int id, String password, String newUserName) {
+        this.userID = id;
+        this.privileges = new UserPrivilege[]{};
+        this.onceHashedPassword = password;
+        this.username = newUserName;
+    }
+
     public UserPrivilege[] getPrivileges() {
         return privileges;
     }

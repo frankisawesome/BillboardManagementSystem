@@ -18,13 +18,21 @@ public class TestUserControllers {
     /*
     Helper method to get key with admin privileges
      */
-    UserSessionKey loginWithAdmin() throws Exception {
+    public static UserSessionKey loginWithAdmin() throws Exception {
         HashMap<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("id", "69420");
         requestBody.put("password", "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ");
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
         ServerResponse<UserSessionKey> response = request.getResponse();
         return response.body();
+    }
+
+    public static HashMap<String, String> requestBodyWithKey() throws Exception {
+        UserSessionKey key = loginWithAdmin();
+        HashMap<String, String> requestBody = new HashMap<>();
+        requestBody.put("keyId", Integer.toString(key.getID()));
+        requestBody.put("key", key.sessionKey);
+        return requestBody;
     }
 
     /*
@@ -61,7 +69,7 @@ public class TestUserControllers {
         HashMap<String, String> requestBody = new HashMap<>();
         requestBody.put("keyId", Integer.toString(key.getID()));
         Random random = new Random();
-        requestBody.put("newUserId", "555");
+        requestBody.put("newUserName", "myuser");
         requestBody.put("password", "newpass");
         requestBody.put("key", key.sessionKey);
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "create", requestBody);
