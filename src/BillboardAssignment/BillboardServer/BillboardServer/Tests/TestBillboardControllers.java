@@ -13,13 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBillboardControllers {
     @Test
-    void getBillboard() throws Exception{
-        ServerRequest<String> request = new ServerRequest<String>(RequestType.BILLBOARD, "get one");
-        ServerResponse response = request.getResponse();
-        assertEquals("ok", response.status());
-    }
-
-    @Test
     void createBillboard() throws Exception{
         HashMap<String, String> requestBody = requestBodyWithKey();
         requestBody.put("billboardName", "mybb");
@@ -44,6 +37,16 @@ public class TestBillboardControllers {
         requestBody.put("billboardId", "0");
         requestBody.put("newName", "mynewbb");
         ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "rename billboard", requestBody);
+        ServerResponse response = request.getResponse();
+        assertEquals("ok", response.status());
+    }
+
+    @Test
+    void editBillboard() throws Exception {
+        HashMap<String, String> requestBody = requestBodyWithKey();
+        requestBody.put("billboardId", "0");
+        requestBody.put("newContent", "somexml shit");
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "edit billboard", requestBody);
         ServerResponse response = request.getResponse();
         assertEquals("ok", response.status());
     }

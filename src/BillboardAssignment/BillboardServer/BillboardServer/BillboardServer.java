@@ -102,6 +102,7 @@ public class BillboardServer {
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
         billboardManager = new BillboardManager(billboardDb, database2, database);
         userManager.createFirstUser();
+        billboardManager.createFirstBillboard();
     }
 
     /**

@@ -24,7 +24,7 @@ public class BillboardManager extends UserManager {
 
        int id = billboardDb.getMaxID();
 
-       Billboard billboard = new Billboard(id, newBillboard.name, newBillboard.xml, newBillboard.creatorId);
+       Billboard billboard = new Billboard(id + 1, newBillboard.name, newBillboard.xml, newBillboard.creatorId);
 
        billboardDb.addObject(billboard);
     }
@@ -41,5 +41,22 @@ public class BillboardManager extends UserManager {
         Billboard old = billboardDb.getObject(billboardId);
         billboardDb.removeObject(billboardId);
         billboardDb.addObject(new Billboard(billboardId, newName, old.xml, old.creatorId));
+    }
+
+    public void edit(int billboardId, String newContent, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException {
+        checkSessionKeyPrivileges(key, UserPrivilege.EditAllBillboards);
+
+        Billboard old = billboardDb.getObject(billboardId);
+        billboardDb.removeObject(billboardId);
+        billboardDb.addObject(new Billboard(billboardId, old.name, newContent, old.creatorId));
+    }
+
+    public void createFirstBillboard() {
+        Billboard billboard = new Billboard(0, "first", "somexml", 69420);
+        try {
+            billboardDb.addObject(billboard);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
