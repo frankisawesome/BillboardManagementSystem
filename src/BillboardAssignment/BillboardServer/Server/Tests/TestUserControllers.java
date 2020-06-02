@@ -1,8 +1,7 @@
-package BillboardAssignment.BillboardServer.BillboardServer.Tests;
+package BillboardAssignment.BillboardServer.Server.Tests;
 
-import BillboardAssignment.BillboardServer.BillboardServer.*;
+import BillboardAssignment.BillboardServer.Server.*;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import org.junit.jupiter.api.*;
 

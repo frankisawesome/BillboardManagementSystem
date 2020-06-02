@@ -1,8 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
-import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;

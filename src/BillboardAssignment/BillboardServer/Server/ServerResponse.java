@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BillboardServer;
+package BillboardAssignment.BillboardServer.Server;
 
 import java.io.Serializable;
 

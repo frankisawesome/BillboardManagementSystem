@@ -1,14 +1,13 @@
-package BillboardAssignment.BillboardServer.BillboardServer.Tests;
+package BillboardAssignment.BillboardServer.Server.Tests;
 
-import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static BillboardAssignment.BillboardServer.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
+import static BillboardAssignment.BillboardServer.Server.Tests.TestUserControllers.requestBodyWithKey;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBillboardControllers {
@@ -47,6 +46,15 @@ public class TestBillboardControllers {
         requestBody.put("billboardId", "0");
         requestBody.put("newContent", "somexml shit");
         ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "edit billboard", requestBody);
+        ServerResponse response = request.getResponse();
+        assertEquals("ok", response.status());
+    }
+
+    @Test
+    void deleteBillboard() throws Exception {
+        HashMap<String, String> requestBody = requestBodyWithKey();
+        requestBody.put("billboardId", "0");
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "delete billboard", requestBody);
         ServerResponse response = request.getResponse();
         assertEquals("ok", response.status());
     }
