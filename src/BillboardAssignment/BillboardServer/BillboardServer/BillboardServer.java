@@ -6,6 +6,8 @@ import BillboardAssignment.BillboardServer.BillboardServer.Controllers.UserContr
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.SessionKeyManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseArray;
@@ -23,6 +25,7 @@ import java.util.Properties;
 public class BillboardServer {
     ServerSocket server;
     UserManager userManager;
+    BillboardManager billboardManager;
 
     /**
      * A main method for creating a server instance and running it
@@ -93,8 +96,13 @@ public class BillboardServer {
         Queryable<UserSessionKey> database2 = new DatabaseArray<UserSessionKey>();
         database2.initialiseDatabase("SessionKeys");
 
+        Queryable<Billboard> billboardDb = new DatabaseArray<>();
+        billboardDb.initialiseDatabase("Billboards");
+
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
+        billboardManager = new BillboardManager(billboardDb, database2, database);
         userManager.createFirstUser();
+        billboardManager.createFirstBillboard();
     }
 
     /**
@@ -118,7 +126,7 @@ public class BillboardServer {
                     response = UserController.use(request.requestMessage, userManager, request.requestBody);
                     break;
                 case BILLBOARD:
-                    response = BillboardController.use(request.requestMessage, request.requestBody);
+                    response = BillboardController.use(request.requestMessage, request.requestBody, billboardManager);
                     break;
                 default:
                     response = new ServerResponse<String>("", "Request type must be of requestType enum");

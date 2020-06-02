@@ -93,7 +93,7 @@ public abstract class Controller {
         } catch (OutOfDateSessionKeyException e) {
             return errorResponse("Session key has expired");
         } catch (DatabaseObjectNotFoundException e) {
-            return errorResponse("User id doesn't appear to be associated with a session key");
+            return errorResponse("Object not found in database, step through this error.");
         } catch (RemoveOwnUserException e) {
             return errorResponse("You appear to be trying to delete yourself as a user, that's a no-op");
         } catch (RemoveOwnEditUsersPrivilegeException e) {

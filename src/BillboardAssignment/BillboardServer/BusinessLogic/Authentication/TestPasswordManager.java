@@ -1,11 +1,16 @@
 package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
 
 import BillboardAssignment.BillboardServer.BusinessLogic.AuthAndUserDatabaseTesting.FatherTester;
-import BillboardAssignment.BillboardServer.Database.*;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.*;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
+import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
+import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
+import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestPasswordManager extends FatherTester {
 

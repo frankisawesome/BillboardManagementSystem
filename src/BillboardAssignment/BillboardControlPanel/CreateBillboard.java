@@ -24,7 +24,7 @@ public class CreateBillboard extends JFrame {
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    public CreateBillboard(String titles, String[] userDataInput) {
+    private CreateBillboard(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();

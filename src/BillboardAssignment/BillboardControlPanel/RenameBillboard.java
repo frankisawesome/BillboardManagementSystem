@@ -25,7 +25,7 @@ public class RenameBillboard extends JFrame {
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    public RenameBillboard(String titles, String[] userDataInput, String billboardIDInput, String currentNameInput) {
+    private RenameBillboard(String titles, String[] userDataInput, String billboardIDInput, String currentNameInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();

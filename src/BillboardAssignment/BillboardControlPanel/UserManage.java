@@ -93,11 +93,12 @@ public class UserManage extends JFrame {
 
     /**
      * User Manage window object constructor. Sets up GUI and also contains listeners
-     * @param titles - Window Title
+     *
+     * @param titles        - Window Title
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    public UserManage(String titles, String[] userDataInput, String[][] userList) {
+    private UserManage(String titles, String[] userDataInput, String[][] userList) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
@@ -213,6 +214,7 @@ public class UserManage extends JFrame {
 
     /**
      * Create function. Creates instance of GUI
+     *
      * @param userDataInput The session key and user ID for the user logged in.
      * @return void
      */
@@ -220,6 +222,8 @@ public class UserManage extends JFrame {
         String[][] userList = ListUsers(userDataInput);
         if (userList[0][0].equals("E")) {
             MainMenu.create(userDataInput);
+        } else if (userList[0][0].equals("I")) {
+            Login.create();
         } else {
             JFrame frame = new UserManage("Billboard Client", userDataInput, userList);
             frame.setVisible(true);
@@ -228,6 +232,7 @@ public class UserManage extends JFrame {
 
     /**
      * Fetch a list of all user accounts, along with their permissions
+     *
      * @param userDataInput The session key and user ID for the user logged in.
      * @return String[][] Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
@@ -245,6 +250,14 @@ public class UserManage extends JFrame {
             //Check that response is ok, if not display error message and return error.
             if (!response.status().equals("ok")) {
                 String[][] Error = {{"E"}};
+
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    String[][] ErrorI = {{"I"}}; //Code for invalid session key.
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (ErrorI);
+                }
+
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Users |" + response.status());
                 return (Error);
             }
@@ -263,6 +276,15 @@ public class UserManage extends JFrame {
                     Error[0][0] = "E";
                     return (Error);
                 }
+
+                //If invalid session key error returned, return error code for ListUsers
+                if (permissionReturned[0].equals("I")) {
+                    String[][] Error = new String[1][1];
+                    Error[0][0] = "I";
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (Error);
+                }
+
                 //If no error returned, add to array.
                 returnVal[i] = permissionReturned;
             }
@@ -281,6 +303,7 @@ public class UserManage extends JFrame {
 
     /**
      * Fetch a list of permissions for a specific user
+     *
      * @param userData The session key and user ID for the user logged in.
      * @param targetID The ID for which permissions should be fetched for
      * @return String[] Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
@@ -310,11 +333,16 @@ public class UserManage extends JFrame {
 
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    String[] ErrorI = {"I"}; //Code for invalid session key.
+                    return (ErrorI);
+                }
                 String[] ErrorR = {"E"};
                 JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: Get Permissions\n Get Permissions |" + response.status());
                 return (ErrorR);
             }
-
+            System.out.println(targetID);
             //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
             for (int i = 0; i < perms.length; i++) {
                 tempPerm = String.valueOf(perms[i]);
@@ -342,7 +370,9 @@ public class UserManage extends JFrame {
         } catch (Exception e) {
             //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
             String[] ErrorR = {"E"};
-            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions E|" + e.getMessage());
+            //System.out.println(e);
+            //e.printStackTrace();
             return (ErrorR);
         }
     }
@@ -427,6 +457,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 1
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser1(String[] data) {
@@ -440,6 +471,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 2
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser2(String[] data) {
@@ -453,6 +485,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 3
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser3(String[] data) {
@@ -466,6 +499,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 4
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser4(String[] data) {
@@ -479,6 +513,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 5
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser5(String[] data) {
@@ -492,6 +527,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 6
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser6(String[] data) {
@@ -505,6 +541,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 7
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser7(String[] data) {
@@ -518,6 +555,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 8
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser8(String[] data) {
@@ -531,6 +569,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 9
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser9(String[] data) {
@@ -544,6 +583,7 @@ public class UserManage extends JFrame {
 
     /**
      * Display user info on GUI for user to be displayed in position 10
+     *
      * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
      */
     private void DisplayUser10(String[] data) {

@@ -3,11 +3,13 @@ package BillboardAssignment.BillboardServer.Database;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 
-import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Implementation of the SQLiteDatabase abstract method, for the storage and manipulation of User objects
+ */
 public class UserSQLiteDatabase extends SQLiteDatabase<User> {
     /**
      * Get the string required to create the database, e.g. CREATE TABLE IF NOT EXISTS users ....
@@ -86,29 +88,29 @@ public class UserSQLiteDatabase extends SQLiteDatabase<User> {
         UserPrivilege[] priv = new UserPrivilege[4];
         int privCounter = 0;
 
-        if (results.getString(5).toString().equals("true")){
+        if (results.getString(5).toString().equals("true")) {
             priv[0] = UserPrivilege.EditUsers;
             privCounter++;
         }
-        if (results.getString(6).toString().equals("true")){
+        if (results.getString(6).toString().equals("true")) {
             priv[1] = UserPrivilege.EditAllBillboards;
             privCounter++;
         }
-        if (results.getString(7).toString().equals("true")){
+        if (results.getString(7).toString().equals("true")) {
             priv[2] = UserPrivilege.ScheduleBillboards;
             privCounter++;
         }
-        if (results.getString(8).toString().equals("true")){
+        if (results.getString(8).toString().equals("true")) {
             priv[3] = UserPrivilege.CreateBillboards;
             privCounter++;
         }
 
-        UserPrivilege[] privilegesNoNulls =  new UserPrivilege[privCounter];
+        UserPrivilege[] privilegesNoNulls = new UserPrivilege[privCounter];
 
-        for (UserPrivilege p:
-             priv) {
-            if (p != null){
-                privilegesNoNulls[privCounter-1] = p;
+        for (UserPrivilege p :
+                priv) {
+            if (p != null) {
+                privilegesNoNulls[privCounter - 1] = p;
                 privCounter--;
             }
 

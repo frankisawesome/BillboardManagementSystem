@@ -14,9 +14,11 @@ public class User extends UserDataInput implements Comparable, Serializable {
     /**
      * Constructor
      *
-     * @param twiceHashedPassword
-     * @param salt
-     * @param ID
+     * @param twiceHashedPassword password string after it has been hashed by the front end and back end
+     * @param salt                Salt that was used to hash the password
+     * @param ID                  The user's ID
+     * @param username            The unique username of the user
+     * @param privileges          The users privledges in an array of enums
      */
     public User(int ID, String twiceHashedPassword, String salt, UserPrivilege[] privileges, String username) {
         /** We don't ever store the once hashed password **/
@@ -25,10 +27,6 @@ public class User extends UserDataInput implements Comparable, Serializable {
         this.twiceHashedPassword = twiceHashedPassword;
 
         this.salt = salt;
-    }
-
-    public User() {
-        super();
     }
 
     /**
@@ -41,6 +39,15 @@ public class User extends UserDataInput implements Comparable, Serializable {
         return "User";
     }
 
+    /** BELOW HERE IS UTILITY METHODS FOR OPERATIONS ON THE USER OBEJECT */
+
+    /**
+     * Just checks only a specific Privilege, and does throw errors
+     *
+     * @param privileges privileges to test
+     * @return boolean iff user has Privilege
+     * @throws InsufficentPrivilegeException if they do not have one or more of the privileges
+     */
     public void checkUserHasPriv(UserPrivilege[] privileges) throws InsufficentPrivilegeException {
         boolean foundPerm;
         for (int i = 0; i < privileges.length; i++) {
@@ -60,53 +67,54 @@ public class User extends UserDataInput implements Comparable, Serializable {
 
     /**
      * Just checks only a specific Privilege, and doesn't throw errors
-     * @param privilege
+     *
+     * @param privilege privilege to test
      * @return boolean iff user has Privilege
-     * @throws InsufficentPrivilegeException
      */
     public boolean checkUserHasPriv(UserPrivilege privilege) {
         boolean foundPerm;
-            foundPerm = false;
-            for (int j = 0; j < this.getPrivileges().length; j++) {
-                if (privilege == this.getPrivileges()[j]) {
-                    foundPerm = true;
-                    break;
-                }
+        foundPerm = false;
+        for (int j = 0; j < this.getPrivileges().length; j++) {
+            if (privilege == this.getPrivileges()[j]) {
+                foundPerm = true;
+                break;
             }
+        }
 
-            return foundPerm;
+        return foundPerm;
     }
 
     @Override
-    public boolean equals(Object obj){
-            User user2 = (User) obj;
-            return this.salt.equals(user2.salt) && this.getID() == user2.getID() && this.twiceHashedPassword.equals(user2.twiceHashedPassword) && this.getUsername().equals(user2.getUsername()) && assertSetEquals(this.getPrivileges(), user2.getPrivileges());
-        }
+    public boolean equals(Object obj) {
+        User user2 = (User) obj;
+        return this.salt.equals(user2.salt) && this.getID() == user2.getID() && this.twiceHashedPassword.equals(user2.twiceHashedPassword) && this.getUsername().equals(user2.getUsername()) && assertSetEquals(this.getPrivileges(), user2.getPrivileges());
+    }
 
-        /**
-         * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
-         * @param set1
-         * @param set2
-         * @throws Exception
-         */
-        boolean assertSetEquals(UserPrivilege[] set1, UserPrivilege[] set2) {
-            boolean match;
-            boolean allMatch = true;
-            for (int i = 0; i < set1.length; i ++){
-                match = false;
-                for (int j = 0; j < set2.length; j++) {
-                    if (set1[i] == set2[j]) {
-                        match = true;
-                    }
+    /**
+     * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
+     *
+     * @param set1
+     * @param set2
+     * @throws Exception
+     */
+    boolean assertSetEquals(UserPrivilege[] set1, UserPrivilege[] set2) {
+        boolean match;
+        boolean allMatch = true;
+        for (int i = 0; i < set1.length; i++) {
+            match = false;
+            for (int j = 0; j < set2.length; j++) {
+                if (set1[i] == set2[j]) {
+                    match = true;
                 }
-
-                if (!match){
-                    allMatch =false;
-                }
-
             }
-            return allMatch;
+
+            if (!match) {
+                allMatch = false;
+            }
+
         }
+        return allMatch;
+    }
 
     /**
      * Compares this object with the specified object for order.  Returns a
@@ -150,10 +158,10 @@ public class User extends UserDataInput implements Comparable, Serializable {
     @Override
     public int compareTo(Object o) {
         User cast = (User) o;
-        if (this.getID() == cast.getID()){
+        if (this.getID() == cast.getID()) {
             return 0;
         }
-        if (this.getID() > cast.getID()){
+        if (this.getID() > cast.getID()) {
             return 1;
         }
         return -1;
