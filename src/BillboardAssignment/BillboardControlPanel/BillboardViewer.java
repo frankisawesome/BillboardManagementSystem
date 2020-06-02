@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 
 public class BillboardViewer extends JFrame implements ActionListener, Runnable {
     private int WIDTH = 800;
@@ -27,7 +28,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
     // Contents of xmlBillboard
     String title;
-    String imagePath;
+    String image;
     Boolean imageUrlFlg;
     String subtext;
 
@@ -95,11 +96,11 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                     titleColor = element.getAttribute("colour");
                     System.out.println(titleColor);
                 } else if (element.getTagName() == "picture") {
-                    if (element.hasAttribute("url")) {
-                        imagePath = element.getAttribute("url");
+                    if ((element.hasAttribute("url")) && (!element.hasAttribute("data"))) {
+                        image = element.getAttribute("url");
                         imageUrlFlg = true;
-                    } else {
-                        imagePath = element.getAttribute("data");
+                    } else if ((element.hasAttribute("data")) && (!element.hasAttribute("url"))) {
+                        image = element.getAttribute("data");
                         imageUrlFlg = false;
                     }
                 } else if (element.getTagName() == "information") {
@@ -133,7 +134,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         setLayout(new BorderLayout());
         pnl1.setPreferredSize(new Dimension(100,100));
         pnl2.setPreferredSize(new Dimension(100,100));
-        pnl3.setPreferredSize(new Dimension(100,100));
+        pnl3.setPreferredSize(new Dimension(100, 100));
         pnl4.setPreferredSize(new Dimension(100, 200));
         pnl5.setPreferredSize(new Dimension(100,200));
 
@@ -164,9 +165,19 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         htmlTitle1.setVerticalAlignment(JLabel.CENTER);
         pnl5.add(htmlTitle1);
 
-        BufferedImage myPicture = ImageIO.read(new File(imagePath));
-        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-        pnl3.add(picLabel);
+        if (imageUrlFlg == true) {
+            BufferedImage myPicture = ImageIO.read(new File(image));
+            Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
+            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+            pnl3.add(picLabel);
+        } else if (imageUrlFlg == false) {
+            byte[] imageByte = Base64.getDecoder().decode(image);
+            BufferedImage myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
+            Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
+            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+            pnl3.add(picLabel);
+        }
+
 
     }
 
