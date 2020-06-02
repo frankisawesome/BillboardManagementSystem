@@ -2,13 +2,36 @@
 package BillboardAssignment.BillboardControlPanel;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 
+class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {
+
+    public MultiLineCellRenderer() {
+        setLineWrap(true);
+        setWrapStyleWord(true);
+        setOpaque(true);
+    }
+
+    @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                             boolean hasFocus, int row, int column) {
+        setText((value == null) ? "" : value.toString());
+        int height = getPreferredSize().height;
+        if (table.getRowHeight(row) < height)
+            table.setRowHeight(row, height);
+        return this;
+    }
+}
+
 public class BillboardScheduler {
+
+    JFrame frame;
+    JTable table;
+    JScrollPane scrollPane;
 
     public static int findIndex(String arr[], String t)
     {
@@ -51,10 +74,79 @@ public class BillboardScheduler {
         return time;
     }
 
+    public void addToCalendar(int hours_int, int start_hour, int minutes_int, int add_minutes,
+                              String name, String day, String[] columnNames, String[] rowNames) {
+        String am_or_pm;
+
+        start_hour = changeTime(start_hour);
+
+        if (start_hour == hours_int) {
+            am_or_pm = "am";
+        } else {
+            am_or_pm = "pm";
+        }
+
+        String desired_hour = start_hour + " " + am_or_pm;
+
+        int columnnum = findIndex(columnNames, day);
+        int rownum = findIndex(rowNames, desired_hour);
+
+        int total_minutes = minutes_int + add_minutes;
+
+        // Calculate how many hours have passed
+        while (total_minutes >= 60) {
+            hours_int++;
+            total_minutes = total_minutes - 60;
+        }
+
+        // Check if the billboard has reached the end of the day
+        if (hours_int >= 17) {
+            hours_int = 17;
+            total_minutes = 0;
+        }
+
+        String am_or_pm2;
+        int hold_time = hours_int;
+
+        hours_int = changeTime(hours_int);
+        if (hours_int == hold_time) {
+            if (hours_int == 12) {
+                am_or_pm2 = "pm";
+            }
+            else {
+                am_or_pm2 = "am";
+            }
+        } else {
+            am_or_pm2 = "pm";
+        }
+
+        String schedule;
+
+        // Print a 0 before the minutes if single digits
+        if (minutes_int >= 10) {
+            schedule = name + " " + start_hour + ":" + minutes_int + am_or_pm;
+        } else {
+            schedule = name + " " + start_hour + ":0" + minutes_int + am_or_pm;
+        }
+
+        if (total_minutes >= 10) {
+            schedule = schedule + " - " + hours_int + ":" + total_minutes + am_or_pm2;
+        } else {
+            schedule = schedule + " - " + hours_int + ":0" + total_minutes + am_or_pm2;
+        }
+
+        schedule += " ";
+
+        if (columnnum != -1 && rownum != -1){
+            String current = (String) table.getModel().getValueAt(rownum, columnnum);
+            table.setValueAt(current+schedule, rownum, columnnum);
+        }
+    }
+
     BillboardScheduler()
     {
         // Frame initialisation
-        JFrame frame = new JFrame();
+        frame = new JFrame();
 
         // Frame Title
         frame.setTitle("BillboardScheduler");
@@ -70,23 +162,23 @@ public class BillboardScheduler {
                 { "2pm", "", "", "", "", "" },
                 { "3pm", "", "", "", "", "" },
                 { "4pm", "", "", "", "", "" },
-                { "5pm", "", "", "", "", "" },
         };
 
         // Column Names
         String[] columnNames = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
-        String[] rowNames = {"8 am", "9 am", "10 am", "11 am", "12 pm", "1 pm", "2 pm", "3 pm", "4 pm", "5 pm"};
+        String[] rowNames = {"8 am", "9 am", "10 am", "11 am", "12 pm", "1 pm", "2 pm", "3 pm", "4 pm"};
 
         // Initializing the JTable
-        JTable table = new JTable(data, columnNames);
-        table.setBounds(30, 40, 300, 200);
+        table = new JTable(data, columnNames);
+        //table.setBounds(30, 40, 300, 200);
         table.setEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
+        table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(0).setMaxWidth(50);
 
         // adding it to JScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
@@ -96,7 +188,7 @@ public class BillboardScheduler {
         JComboBox dropdown =new JComboBox(placeholder_names);
         JLabel day = new JLabel("Scheduled Day");
         JComboBox dropdown2 =new JComboBox(days);
-        JLabel start_hour = new JLabel("Desired Start Hour (8-17)");
+        JLabel start_hour = new JLabel("Desired Start Hour (8-16)");
         JTextField hour_field = new JTextField(5);
         JLabel start_minute = new JLabel("Desired Start Minute (0-59)");
         JTextField minute_field = new JTextField(5);
@@ -107,8 +199,8 @@ public class BillboardScheduler {
         JCheckBox Checkbox2 = new JCheckBox("Repeat Hourly");
         JCheckBox Checkbox3 = new JCheckBox("Repeat every [ ] minutes");
 
-        JTextField repeat = new JTextField(5);
-        repeat.setVisible(false);
+        JTextField repeat_minutes = new JTextField(5);
+        repeat_minutes.setVisible(false);
 
         JButton button = new JButton("   Schedule   ");
 
@@ -156,10 +248,12 @@ public class BillboardScheduler {
         panel.add(Checkbox3, c);
         c.gridx = 1;
         c.gridy = 7;
-        panel.add(repeat, c);
+        panel.add(repeat_minutes, c);
         c.gridx = 1;
         c.gridy = 8;
         panel.add(button, c);
+
+        final String[] repeat = {""};
 
         button.addActionListener(new ActionListener() {
             @Override
@@ -169,71 +263,54 @@ public class BillboardScheduler {
                 String hours = hour_field.getText();
                 String minutes = minute_field.getText();
                 String duration = time_field.getText();
+                String repeat_time = repeat_minutes.getText();
 
                 int hours_int = Integer.parseInt(hours);
                 int start_hour = hours_int;
                 int minutes_int = Integer.parseInt(minutes);
                 int add_minutes = Integer.parseInt(duration);
+                int repeat_int;
 
-                String am_or_pm;
-
-                start_hour = changeTime(start_hour);
-
-                if (start_hour == hours_int) {
-                    am_or_pm = "am";
-                } else {
-                    am_or_pm = "pm";
-                }
-
-                String desired_hour = start_hour + " " + am_or_pm;
-
-                int columnnum = findIndex(columnNames, day);
-                int rownum = findIndex(rowNames, desired_hour);
-
-                if (8 <= hours_int && hours_int <= 17) {
+                if (8 <= hours_int && hours_int <= 16) {
                     if (0 <= minutes_int && minutes_int <= 59) {
                         if (add_minutes >= 0) {
-                            int total_minutes = minutes_int + add_minutes;
-
-                            // Calculate how many hours have passed
-                            while (total_minutes >= 60) {
-                                hours_int++;
-                                total_minutes = total_minutes - 60;
+                            if (repeat[0].equals("")) {
+                                addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                        name, day, columnNames, rowNames);
                             }
-
-                            // Check if the billboard has reached the end of the day
-                            if (hours_int >= 17) {
-                                hours_int = 17;
-                                total_minutes = 0;
+                            else if (repeat[0].equals("Daily")) {
+                                int day_index = findIndex(columnNames, day);
+                                while (day_index < 6) {
+                                    addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                            name, columnNames[day_index], columnNames, rowNames);
+                                    day_index++;
+                                }
                             }
+                            else if (repeat[0].equals("Hourly") || repeat[0].equals("Minutely")) {
+                                if (repeat[0].equals("Minutely")) {
+                                    repeat_int = Integer.parseInt(repeat_time);
+                                } else {
+                                    repeat_int = 60;
+                                }
 
-                            String am_or_pm2;
-                            int hold_time = hours_int;
+                                if (repeat_int >= add_minutes) {
+                                    int end_time = hours_int*60 + minutes_int;
 
-                            hours_int = changeTime(hours_int);
-                            if (hours_int == hold_time) {
-                                am_or_pm2 = "am";
-                            } else {
-                                am_or_pm2 = "pm";
-                            }
+                                    while (end_time < 1020) {
+                                        addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                                name, day, columnNames, rowNames);
+                                        end_time += repeat_int;
 
-                            String schedule;
+                                        minutes_int += repeat_int;
 
-                            // Print a 0 before the minutes if single digits
-                            if (minutes_int >= 10) {
-                                schedule = name + " " + start_hour + ":" + minutes_int + am_or_pm;
-                            } else {
-                                schedule = name + " " + start_hour + ":0" + minutes_int + am_or_pm;
-                            }
+                                        while (minutes_int >= 60) {
+                                            hours_int++;
+                                            minutes_int = minutes_int - 60;
+                                        }
 
-                            if (total_minutes >= 10) {
-                                schedule = schedule + " - " + hours_int + ":" + total_minutes + am_or_pm2;
-                            } else {
-                                schedule = schedule + " - " + hours_int + ":0" + total_minutes + am_or_pm2;
-                            }
-
-                            if (columnnum != -1 && rownum != -1){
-                                table.setValueAt(schedule, rownum, columnnum);
+                                        start_hour = hours_int;
+                                    }
+                                }
                             }
                         }
                     }
@@ -242,6 +319,12 @@ public class BillboardScheduler {
                 hour_field.setText("");
                 minute_field.setText("");
                 time_field.setText("");
+                repeat_minutes.setText("");
+                Checkbox1.setSelected(false);
+                Checkbox2.setSelected(false);
+                Checkbox3.setSelected(false);
+                repeat_minutes.setVisible(false);
+                repeat[0] = "";
             }
         });
 
@@ -251,6 +334,10 @@ public class BillboardScheduler {
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
                     Checkbox2.setSelected(false);
                     Checkbox3.setSelected(false);
+
+                    repeat[0] = "Daily";
+                } else {
+                    repeat[0] = "";
                 }
             }
         });
@@ -261,6 +348,10 @@ public class BillboardScheduler {
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
                     Checkbox1.setSelected(false);
                     Checkbox3.setSelected(false);
+
+                    repeat[0] = "Hourly";
+                } else {
+                    repeat[0] = "";
                 }
             }
         });
@@ -269,13 +360,15 @@ public class BillboardScheduler {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
-                    repeat.setVisible(true);
+                    repeat_minutes.setVisible(true);
                     Checkbox1.setSelected(false);
                     Checkbox2.setSelected(false);
                     panel.invalidate();
                     panel.validate();
+                    repeat[0] = "Minutely";
                 } else {
-                    repeat.setVisible(false);
+                    repeat_minutes.setVisible(false);
+                    repeat[0] = "";
                 }
             }
         });
@@ -286,12 +379,12 @@ public class BillboardScheduler {
         frame.pack();
 
         // Frame Size
-        frame.setSize(1200, 300);
+        frame.setSize(1400, 300);
         // Frame Visible = true
         frame.setVisible(true);
     }
 
-    public static void create(String[] args, String[] UserData)
+    public static void create(String[] args, String[] userData)
     {
         new BillboardScheduler();
     }
