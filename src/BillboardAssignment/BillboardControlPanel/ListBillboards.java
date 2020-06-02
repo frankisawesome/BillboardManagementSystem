@@ -1,5 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
+import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +11,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+
+import static BillboardAssignment.BillboardServer.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListBillboards extends JFrame {
     private JLabel labelTitle;
@@ -218,8 +225,46 @@ public class ListBillboards extends JFrame {
      * @return String[][] list of all billboards (id, author, name)
      */
     private String[][] FetchBillboards() {
-        String[][] returnVal = {{"1", "69420", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
-        return (returnVal);
+        try {
+            //Set Up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("key", UserData[0]);
+
+            //Send request
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "list billboards", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //Catch any error messages returned by server
+            if (!response.status().equals("ok")) {
+                String[][] Error = {{"E"}};
+
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    String[][] ErrorI = {{"I"}}; //Code for invalid session key.
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (ErrorI);
+                }
+                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Billboard List|" + response.status());
+                return (Error);
+            }
+            //Object serverReturnList = response.body();
+            //serverReturnList.
+
+            //for (int i = 0; i < )
+
+            String[][] returnVal = {{"1", "69421", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
+            return (returnVal);
+        }
+        //Catch Exception
+    catch (Exception e) {
+        String[][] Error = new String[1][1];
+        Error[0][0] = "E";
+        JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Fetch Billboard List |" + e.getMessage());
+        return (Error);
+        }
     }
 
     /**
@@ -308,7 +353,7 @@ public class ListBillboards extends JFrame {
             buttonEdit.setVisible(true);
             buttonRename.setVisible(true);
         } else {
-            if (billboardList[selection][1].equals(UserData[1])) {
+            if (billboardList[selection][1].equals(UserData[1]) && UserData[2].equals("1")) {
                 if (!CheckScheduled()) {
                     buttonDelete.setVisible(true);
                     buttonEdit.setVisible(true);
@@ -331,9 +376,43 @@ public class ListBillboards extends JFrame {
      * @return boolean - True if scheduled, false if not.
      */
     private boolean CheckScheduled() {
-        //METHOD TO BE COMPLETED
-        JOptionPane.showMessageDialog(null, "CHECK FOR IF BILLBOARD IS SCHEDULED OR NOT HAS NOT BEEN IMPLEMENTED PLEASE DO BEFORE SUBMISSION");
-        return (false);
+        try {
+            //Set up request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("key", UserData[0]);
+            requestBody.put("billboardName", billboardList[selection][2]);
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "is schedueled", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //Check if response is ok, else handle errors
+            if (response.status().equals("ok")) {
+                //Return Appropiate response.
+                if (response.body().equals(true)) {
+                    return (true);
+                } else {
+                    return (false);
+                }
+            } else {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    dispose();
+                    return (true);
+                }
+                JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Check if Scheduled |" + response.status());
+                //Assume true as a safe outcome and return. (A return of true in context of selecting a billboard will not allow
+                // a user to delete or edit the billboard unless they have EditAllBillboards permission.
+                return (true);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Check if Scheduled |" + e.getMessage());
+            //Assume true as a safe outcome and return. (A return of true in context of selecting a billboard will not allow
+            // a user to delete or edit the billboard unless they have EditAllBillboards permission.
+            return (true);
+        }
     }
 
     /**
