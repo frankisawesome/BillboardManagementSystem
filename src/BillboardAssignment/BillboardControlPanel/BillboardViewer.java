@@ -93,6 +93,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
                     title = element.getTextContent();
+                    System.out.println(title);
                     titleColor = element.getAttribute("colour");
                     System.out.println(titleColor);
                 } else if (element.getTagName() == "picture") {

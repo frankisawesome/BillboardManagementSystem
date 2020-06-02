@@ -28,10 +28,11 @@ import javax.swing.BorderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
-    public static int WIDTH = 640;
-    public static int HEIGHT = 480;
+    public static int WIDTH = 1200;
+    public static int HEIGHT = 700;
 
     // Boolean deciding if new billboard or existing
     Boolean newBillboard;
@@ -67,7 +68,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     JTextField imagePath;
     JLabel imagePathLabel;
-    JCheckBox imagePathCheckBox;
+    JCheckBox imageUrlData;
     JButton searchComputer;
 
     JTextArea subtext;
@@ -82,6 +83,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JTextField backgroundColorG;
     JTextField backgroundColorB;
     JLabel colorLabel;
+    JLabel colorLabel2;
 
     JLabel editorTitle;
     private String[] userData;
@@ -98,6 +100,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     public void SetGUI () {
         // Set preliminaries
         setVisible(true);
+        setResizable(false);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -169,9 +172,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         titleColorB = createTextField("B");
         titleColorB.setColumns(3);
 
-        imagePath = createTextField("Specify the images path");
+        imagePath = createTextField("Specify the images path/ a byte representation");
         imagePath.setColumns(20);
         imagePathLabel = new JLabel("Image Path");
+        imageUrlData = new JCheckBox("Image a byte array?");
         searchComputer = createButton("Browse PC");
 
 
@@ -184,7 +188,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         subtextColorB = createTextField("B");
         subtextColorB.setColumns(3);
 
-        colorLabel = new JLabel("Color (0-255)");
+        colorLabel = new JLabel("Color");
+        colorLabel2 = new JLabel("(0-255)");
 
         backgroundColorLabel = new JLabel("Background Color");
         backgroundColorR = createTextField("R");
@@ -204,22 +209,24 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         addToPanel(pnl3, titleColorG, constraints1, 7, 2, 2, 1);
         addToPanel(pnl3, titleColorB, constraints1, 9, 2, 2, 1);
 
-        addToPanel(pnl3, colorLabel, constraints1, 7, 0, 2, 1);
+        addToPanel(pnl3, colorLabel, constraints1, 5, 0, 2, 1);
+        addToPanel(pnl3, colorLabel2, constraints1, 7, 0, 2, 1);
 
         addToPanel(pnl3, imagePath, constraints1, 3, 3, 2, 1);
         addToPanel(pnl3, imagePathLabel, constraints1, 0, 3, 2, 1);
+        addToPanel(pnl3, imageUrlData, constraints1, 3, 5, 2, 1);
         addToPanel(pnl3, searchComputer, constraints1, 3, 4, 2,1);
 
-        addToPanel(pnl3, subtext, constraints1, 3, 5, 2, 1);
-        addToPanel(pnl3, subtextLabel, constraints1, 0, 5, 2, 1);
-        addToPanel(pnl3, subtextColorR, constraints1, 5, 5, 2, 1);
-        addToPanel(pnl3, subtextColorG, constraints1, 7, 5, 2, 1);
-        addToPanel(pnl3, subtextColorB, constraints1, 8, 5, 2, 1);
+        addToPanel(pnl3, subtext, constraints1, 3, 6, 2, 1);
+        addToPanel(pnl3, subtextLabel, constraints1, 0, 6, 2, 1);
+        addToPanel(pnl3, subtextColorR, constraints1, 5, 6, 2, 1);
+        addToPanel(pnl3, subtextColorG, constraints1, 7, 6, 2, 1);
+        addToPanel(pnl3, subtextColorB, constraints1, 9, 6, 2, 1);
 
-        addToPanel(pnl3, backgroundColorLabel, constraints1, 0, 6, 2, 1);
-        addToPanel(pnl3, backgroundColorR, constraints1, 5, 6, 2, 1);
-        addToPanel(pnl3, backgroundColorG, constraints1, 7, 6, 2, 1);
-        addToPanel(pnl3, backgroundColorB, constraints1, 9, 6, 2, 1);
+        addToPanel(pnl3, backgroundColorLabel, constraints1, 0, 7, 2, 1);
+        addToPanel(pnl3, backgroundColorR, constraints1, 5, 7, 2, 1);
+        addToPanel(pnl3, backgroundColorG, constraints1, 7, 7, 2, 1);
+        addToPanel(pnl3, backgroundColorB, constraints1, 9, 7, 2, 1);
 
         editorTitle = new JLabel();
         editorTitle.setText("<html><h1>Billboard Editor</h1></html>");
@@ -289,9 +296,19 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             String billboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<billboard background = \"#0000FF\">\n" +
                     "    <message>Billboard with message, GIF and information</message>\n" +
-                    "    <picture url=\"C:\\Users\\bill\\OneDrive\\Desktop\\Clive-Palmer-billboard-500x309.jpg\" />\n" +
+                    "    <picture url=\"C:\\Users\\billy\\OneDrive\\Desktop\\Clive-Palmer-billboard-500x309.jpg\" />\n" +
                     "    <information colour=\"#FFC457\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
                     "</billboard>\n";
+            try {
+                billboard = XMLBuilder.WriteXML("Yes", "255", "255", "0",
+                        "", false,
+                "", "", "", "",
+                        "", "", "");
+            } catch (ParserConfigurationException ex) {
+                ex.printStackTrace();
+            } catch (TransformerException ex) {
+                ex.printStackTrace();
+            }
             BillboardViewer.create(billboard);
         } else if (source == searchComputer) {
              System.out.println("TODO: Search Computer files");
