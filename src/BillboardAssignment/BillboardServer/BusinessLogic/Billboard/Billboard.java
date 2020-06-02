@@ -2,14 +2,23 @@ package BillboardAssignment.BillboardServer.BusinessLogic.Billboard;
 
 import BillboardAssignment.BillboardServer.Database.Identifiable;
 
-public class Billboard implements Identifiable {
+import java.io.Serializable;
+
+public class Billboard implements Identifiable, Serializable {
     private int id;
-    private String name;
-    private String xml;
-    private int creatorId;
+    public String name;
+    public String xml;
+    public int creatorId;
 
 
     public Billboard(String name, String xml, int creatorId) {
+        this.name = name;
+        this.xml = xml;
+        this.creatorId = creatorId;
+    }
+
+    public Billboard(int id, String name, String xml, int creatorId) {
+        this.id = id;
         this.name = name;
         this.xml = xml;
         this.creatorId = creatorId;

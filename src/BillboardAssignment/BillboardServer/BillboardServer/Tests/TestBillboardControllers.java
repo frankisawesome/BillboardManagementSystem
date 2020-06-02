@@ -41,9 +41,9 @@ public class TestBillboardControllers {
     @Test
     void renameBillboard() throws Exception {
         HashMap<String, String> requestBody = requestBodyWithKey();
-        requestBody.put("billboardName", "mybb");
+        requestBody.put("billboardId", "0");
         requestBody.put("newName", "mynewbb");
-        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "rename", requestBody);
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "rename billboard", requestBody);
         ServerResponse response = request.getResponse();
         assertEquals("ok", response.status());
     }

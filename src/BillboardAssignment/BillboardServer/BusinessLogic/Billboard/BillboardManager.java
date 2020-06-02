@@ -7,6 +7,8 @@ import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import BillboardAssignment.BillboardServer.Database.*;
 
+import java.util.ArrayList;
+
 public class BillboardManager extends UserManager {
     public Queryable<Billboard> billboardDb;
     private SessionKeyManager sessionKeyManager;
@@ -20,6 +22,24 @@ public class BillboardManager extends UserManager {
     public void create(Billboard newBillboard, UserSessionKey key) throws InsufficentPrivilegeException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException, OutOfDateSessionKeyException, IncorrectSessionKeyException, DatabaseLogicException {
        checkSessionKeyPrivileges(key, UserPrivilege.CreateBillboards);
 
-       billboardDb.addObject(newBillboard);
+       int id = billboardDb.getMaxID();
+
+       Billboard billboard = new Billboard(id, newBillboard.name, newBillboard.xml, newBillboard.creatorId);
+
+       billboardDb.addObject(billboard);
+    }
+
+    public ArrayList<Billboard> list(UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
+        checkSessionKeyPrivileges(key, UserPrivilege.EditAllBillboards);
+
+        return billboardDb.getAllObjects();
+    }
+
+    public void rename(int billboardId, String newName, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException {
+        checkSessionKeyPrivileges(key, UserPrivilege.EditAllBillboards);
+
+        Billboard old = billboardDb.getObject(billboardId);
+        billboardDb.removeObject(billboardId);
+        billboardDb.addObject(new Billboard(billboardId, newName, old.xml, old.creatorId));
     }
 }
