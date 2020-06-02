@@ -71,6 +71,23 @@ public class BillboardScheduler {
                 time = 5;
             }
         }
+        else {
+            if (time == 1) {
+                time = 13;
+            }
+            if (time == 2) {
+                time = 14;
+            }
+            if (time == 3) {
+                time = 15;
+            }
+            if (time == 4) {
+                time = 16;
+            }
+            if (time == 5) {
+                time = 17;
+            }
+        }
         return time;
     }
 
@@ -143,6 +160,18 @@ public class BillboardScheduler {
         }
     }
 
+    public static boolean isNumeric(String num) {
+        if (num == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(num);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
     BillboardScheduler()
     {
         // Frame initialisation
@@ -185,11 +214,11 @@ public class BillboardScheduler {
         String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};
 
         JLabel name = new JLabel("Billboard Name");
-        JComboBox dropdown =new JComboBox(placeholder_names);
+        JComboBox dropdown = new JComboBox(placeholder_names);
         JLabel day = new JLabel("Scheduled Day");
-        JComboBox dropdown2 =new JComboBox(days);
-        JLabel start_hour = new JLabel("Desired Start Hour (8-16)");
-        JTextField hour_field = new JTextField(5);
+        JComboBox dropdown2 = new JComboBox(days);
+        JLabel start_hour = new JLabel("Desired Start Hour");
+        JComboBox hour_field = new JComboBox(rowNames);
         JLabel start_minute = new JLabel("Desired Start Minute (0-59)");
         JTextField minute_field = new JTextField(5);
         JLabel run_time = new JLabel("Duration (minutes)");
@@ -260,20 +289,23 @@ public class BillboardScheduler {
             public void actionPerformed(ActionEvent e) {
                 String name = (String) dropdown.getItemAt(dropdown.getSelectedIndex());
                 String day = (String) dropdown2.getItemAt(dropdown2.getSelectedIndex());
-                String hours = hour_field.getText();
+                String hours = (String) hour_field.getItemAt(hour_field.getSelectedIndex());
+                hours = hours.split(" ")[0];
                 String minutes = minute_field.getText();
                 String duration = time_field.getText();
                 String repeat_time = repeat_minutes.getText();
 
                 int hours_int = Integer.parseInt(hours);
+                hours_int = changeTime(hours_int);
                 int start_hour = hours_int;
-                int minutes_int = Integer.parseInt(minutes);
-                int add_minutes = Integer.parseInt(duration);
                 int repeat_int;
 
-                if (8 <= hours_int && hours_int <= 16) {
+                if (isNumeric(minutes) && isNumeric(duration)) {
+                    int minutes_int = Integer.parseInt(minutes);
+                    int add_minutes = Integer.parseInt(duration);
+
                     if (0 <= minutes_int && minutes_int <= 59) {
-                        if (add_minutes >= 0) {
+                        if (add_minutes > 0) {
                             if (repeat[0].equals("")) {
                                 addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
                                         name, day, columnNames, rowNames);
@@ -313,10 +345,21 @@ public class BillboardScheduler {
                                 }
                             }
                         }
+                        else {
+                            JOptionPane.showMessageDialog(null, "Error! Duration must be greater than 0.");
+                        }
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Error! Please enter a starting minute " +
+                                "between 0 and 59.");
                     }
                 }
+                else {
+                    JOptionPane.showMessageDialog(null, "Error! Please enter a numeric value " +
+                            "for both start minute and duration.");
+                }
 
-                hour_field.setText("");
+                //hour_field.setText("");
                 minute_field.setText("");
                 time_field.setText("");
                 repeat_minutes.setText("");
