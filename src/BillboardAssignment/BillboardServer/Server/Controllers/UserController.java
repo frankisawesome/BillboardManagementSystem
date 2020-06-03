@@ -138,7 +138,8 @@ public class UserController extends Controller{
 
     private ServerResponse login() {
         try {
-            UserSessionKey sessionKey = userManager.login(new UserDataInput(Integer.parseInt(body.get("id")), body.get("password")));
+            int id = userManager.mapUsernameToID(body.get("username"));
+            UserSessionKey sessionKey = userManager.login(new UserDataInput(id, body.get("password")));
             return new ServerResponse<UserSessionKey>(sessionKey, "ok");
         } catch (IncorrectPasswordException | DatabaseObjectNotFoundException e) {
             return errorResponse("Incorrect credentials");
