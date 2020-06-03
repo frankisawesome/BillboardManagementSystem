@@ -1,8 +1,8 @@
-package BillboardAssignment.BillboardServer.BillboardServer;
+package BillboardAssignment.BillboardServer.Server;
 
-import BillboardAssignment.BillboardServer.BillboardServer.Controllers.BillboardController;
-import BillboardAssignment.BillboardServer.BillboardServer.Controllers.TestController;
-import BillboardAssignment.BillboardServer.BillboardServer.Controllers.UserController;
+import BillboardAssignment.BillboardServer.Server.Controllers.BillboardController;
+import BillboardAssignment.BillboardServer.Server.Controllers.TestController;
+import BillboardAssignment.BillboardServer.Server.Controllers.UserController;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.SessionKeyManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
@@ -12,7 +12,6 @@ import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseArray;
 import BillboardAssignment.BillboardServer.Database.Queryable;
-import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
 
 import java.io.*;
 import java.net.ServerSocket;

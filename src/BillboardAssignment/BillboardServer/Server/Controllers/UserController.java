@@ -1,7 +1,7 @@
-package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
+package BillboardAssignment.BillboardServer.Server.Controllers;
 
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
-import BillboardAssignment.BillboardServer.BillboardServer.UserData;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.UserData;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
@@ -138,7 +138,8 @@ public class UserController extends Controller{
 
     private ServerResponse login() {
         try {
-            UserSessionKey sessionKey = userManager.login(new UserDataInput(Integer.parseInt(body.get("id")), body.get("password")));
+            int id = userManager.mapUsernameToID(body.get("username"));
+            UserSessionKey sessionKey = userManager.login(new UserDataInput(id, body.get("password")));
             return new ServerResponse<UserSessionKey>(sessionKey, "ok");
         } catch (IncorrectPasswordException | DatabaseObjectNotFoundException e) {
             return errorResponse("Incorrect credentials");

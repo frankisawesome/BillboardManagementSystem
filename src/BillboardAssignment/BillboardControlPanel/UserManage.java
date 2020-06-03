@@ -1,11 +1,12 @@
 package BillboardAssignment.BillboardControlPanel;
 
-import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
-import BillboardAssignment.BillboardServer.BillboardServer.UserData;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
+import BillboardAssignment.BillboardServer.Server.*;
+import BillboardAssignment.BillboardServer.Server.UserData;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -244,7 +245,7 @@ public class UserManage extends JFrame {
             requestBody.put("keyId", userDataInput[1]);
 
             //Send Request
-            ServerRequest<BillboardAssignment.BillboardServer.BillboardServer.UserData[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
+            ServerRequest<UserData[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
             ServerResponse<UserData[]> response = request.getResponse();
 
             //Check that response is ok, if not display error message and return error.

@@ -1,8 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
-import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static BillboardAssignment.BillboardServer.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
+import static BillboardAssignment.BillboardServer.Server.Tests.TestUserControllers.requestBodyWithKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListBillboards extends JFrame {

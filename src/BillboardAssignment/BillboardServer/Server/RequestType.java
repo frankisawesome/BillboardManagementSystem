@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BillboardServer;
+package BillboardAssignment.BillboardServer.Server;
 
 /**
  * Enum type used to assign requests to appropriate controllers

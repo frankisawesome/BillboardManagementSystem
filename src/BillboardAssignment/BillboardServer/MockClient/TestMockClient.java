@@ -1,8 +1,8 @@
 package BillboardAssignment.BillboardServer.MockClient;
 
-import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
 /**
  * A collection of mains that demonstrate the use of the server
