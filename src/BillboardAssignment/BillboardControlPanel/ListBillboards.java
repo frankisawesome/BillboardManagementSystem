@@ -250,10 +250,10 @@ public class ListBillboards extends JFrame {
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Billboard List|" + response.status());
                 return (Error);
             }
-            //Object serverReturnList = response.body();
-            //serverReturnList.
-
-            //for (int i = 0; i < )
+            Object serverReturnList = response.body();
+            for (int i = 0; i < serverReturnList.size; i++){
+                System.out.println(serverReturnList.get(i));
+            }
 
             String[][] returnVal = {{"1", "69421", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
             return (returnVal);
