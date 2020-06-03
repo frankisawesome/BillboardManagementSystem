@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static BillboardAssignment.BillboardServer.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
@@ -65,7 +67,8 @@ public class ListBillboards extends JFrame {
 
     /**
      * List Billboards window object constructor. Sets up GUI and also contains listeners
-     * @param titles - Window Title
+     *
+     * @param titles        - Window Title
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
@@ -176,7 +179,7 @@ public class ListBillboards extends JFrame {
                 //Dialog for user confirmation that they really want to delete the billboard.
                 int dialogButton = JOptionPane.YES_NO_OPTION;
                 int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to " +
-                        "PERMANENTLY delete this billboard?\n Billboard- " + billboardList[selection][2], "Warning",
+                                "PERMANENTLY delete this billboard?\n Billboard- " + billboardList[selection][2], "Warning",
                         dialogButton);
 
                 //If user confirms, call function to delete User
@@ -214,6 +217,7 @@ public class ListBillboards extends JFrame {
 
     /**
      * Sends a request to delete the currently selected billboard to server.
+     *
      * @return void
      */
     private void DeleteBillboard() {
@@ -222,6 +226,7 @@ public class ListBillboards extends JFrame {
 
     /**
      * Queries database and returns list of all billboards (id, author, name)
+     *
      * @return String[][] list of all billboards (id, author, name)
      */
     private String[][] FetchBillboards() {
@@ -250,8 +255,8 @@ public class ListBillboards extends JFrame {
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Billboard List|" + response.status());
                 return (Error);
             }
-            Object serverReturnList = response.body();
-            for (int i = 0; i < serverReturnList.size; i++){
+            ArrayList<User> serverReturnList = (ArrayList<User>) response.body();
+            for (int i = 0; i < serverReturnList.size(); i++) {
                 System.out.println(serverReturnList.get(i));
             }
 
@@ -259,16 +264,17 @@ public class ListBillboards extends JFrame {
             return (returnVal);
         }
         //Catch Exception
-    catch (Exception e) {
-        String[][] Error = new String[1][1];
-        Error[0][0] = "E";
-        JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Fetch Billboard List |" + e.getMessage());
-        return (Error);
+        catch (Exception e) {
+            String[][] Error = new String[1][1];
+            Error[0][0] = "E";
+            JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Fetch Billboard List |" + e.getMessage());
+            return (Error);
         }
     }
 
     /**
      * Selects billboard according to user selection.
+     *
      * @param row The row of the billboard in list in GUI which was selected.
      * @return void
      */
@@ -373,6 +379,7 @@ public class ListBillboards extends JFrame {
 
     /**
      * Queries server and checks if billboard already scheduled at any time
+     *
      * @return boolean - True if scheduled, false if not.
      */
     private boolean CheckScheduled() {
@@ -417,6 +424,7 @@ public class ListBillboards extends JFrame {
 
     /**
      * Populates GUI with data from the list of billboards.
+     *
      * @param pageInput - Page Number of the GUI Displayed
      */
     private void DisplayBillboardsMain(int pageInput) {
@@ -542,6 +550,7 @@ public class ListBillboards extends JFrame {
 
     /**
      * Create function. Creates instance of GUI
+     *
      * @param userDataInput The session key and user ID for the user logged in.
      * @return void
      */
