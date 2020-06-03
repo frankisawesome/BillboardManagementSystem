@@ -24,6 +24,7 @@ public class FatherTester {
     @BeforeEach
     void setUp() throws DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, IncorrectPasswordException, DatabaseLogicException, DatabaseObjectNotFoundException {
         Queryable<User> database = new DatabaseArray<User>();
+
         database.initialiseDatabase("Users");
 
         Queryable<UserSessionKey> database2 = new DatabaseArray<UserSessionKey>();
