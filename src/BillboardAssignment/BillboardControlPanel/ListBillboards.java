@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.BillboardServer.RequestType;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerRequest;
 import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -256,12 +257,18 @@ public class ListBillboards extends JFrame {
                 return (Error);
             }
             /* Change User to some other object */
-            ArrayList<User> serverReturnList = (ArrayList<User>) response.body();
+            ArrayList<Billboard> serverReturnList = (ArrayList<Billboard>) response.body();
+
+            //Turn array list into an array to provide correct return format.
+            String[][] returnVal = new String[serverReturnList.size()][4];
             for (int i = 0; i < serverReturnList.size(); i++) {
-                System.out.println(serverReturnList.get(i));
+                returnVal[i][0] = String.valueOf(serverReturnList.get(i).getID());
+                returnVal[i][1] = String.valueOf(serverReturnList.get(i).creatorId);
+                returnVal[i][2] = serverReturnList.get(i).name;
+                returnVal[i][3] = serverReturnList.get(i).xml;
             }
 
-            String[][] returnVal = {{"1", "69421", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
+            //String[][] returnVal = {{"1", "69421", "cat1"}, {"1", "69420", "cat2"}, {"1", "69420", "cat3"}, {"1", "69420", "cat4"}, {"1", "69420", "cat5"}, {"1", "69420", "cat6"}, {"1", "69420", "cat7"}, {"1", "69420", "cat8"}, {"1", "69420", "cat9"}, {"1", "69420", "cat10"}, {"1", "69420", "cat11"}};
             return (returnVal);
         }
         //Catch Exception
