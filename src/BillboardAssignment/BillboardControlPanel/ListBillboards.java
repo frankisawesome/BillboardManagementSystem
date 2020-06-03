@@ -383,6 +383,7 @@ public class ListBillboards extends JFrame {
                 buttonRename.setVisible(false);
             }
         }
+        pack();
     }
 
     /**
