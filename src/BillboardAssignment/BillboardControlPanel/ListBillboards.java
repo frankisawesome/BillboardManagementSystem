@@ -255,6 +255,7 @@ public class ListBillboards extends JFrame {
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Billboard List|" + response.status());
                 return (Error);
             }
+            /* Change User to some other object */
             ArrayList<User> serverReturnList = (ArrayList<User>) response.body();
             for (int i = 0; i < serverReturnList.size(); i++) {
                 System.out.println(serverReturnList.get(i));
