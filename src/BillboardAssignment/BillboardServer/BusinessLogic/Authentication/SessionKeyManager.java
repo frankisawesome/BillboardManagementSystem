@@ -6,6 +6,9 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
+/**
+ * Class that manages the storage, checking and creating of session keys.
+ */
 public class SessionKeyManager {
 
     private Queryable<UserSessionKey> sessionKeyDatabase;
@@ -39,7 +42,7 @@ public class SessionKeyManager {
      *
      * @param user
      * @return The user that was stored, with session key and valid time, etc.
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      * @throws DatabaseLogicException
      */
     public UserSessionKey addSessionKeyData(Identifiable user) throws DatabaseNotAccessibleException, DatabaseLogicException {
@@ -60,12 +63,12 @@ public class SessionKeyManager {
      * Check the given user's ID and session key input in a UserSessionKey object to see if they match the data on file.
      * Throws one of 4 exceptions if there is a problem (And the problem should be handled differently depending on the exception), and true anytime else.
      *
-     * @param user
+     * @param user The session key object that we want to test, both sessionkey and userID properties are used
      * @return Allways errors out or returns true
-     * @throws DatabaseObjectNotFoundException
-     * @throws DatabaseNotAccessibleException
-     * @throws IncorrectSessionKeyException
-     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseObjectNotFoundException If there is no session key linked to a given user in the database
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
+     * @throws IncorrectSessionKeyException    If the session key linked to a user doesn't match the one in our database
+     * @throws OutOfDateSessionKeyException    If the session key on file is out of date
      */
     public boolean checkSessionKeyStatus(UserSessionKey user) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectSessionKeyException, OutOfDateSessionKeyException {
         UserSessionKey dataInDatabase = sessionKeyDatabase.getObject(user.getID());
@@ -86,13 +89,13 @@ public class SessionKeyManager {
      * Check the given user's ID and session key input in a UserSessionKey object to see if they match the data on file.
      * DO NOT USE THIS METHOD SIGNATURE, IT IS ONLY FOR TESTING.
      *
-     * @param user
+     * @param user      The session key object that we want to test, both sessionkey and userID properties are used
      * @param debugTime The time to check the session key in the database against. Don't use this at all, except for testing.
      * @return Allways errors out or returns true
-     * @throws DatabaseObjectNotFoundException
-     * @throws DatabaseNotAccessibleException
-     * @throws IncorrectSessionKeyException
-     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseObjectNotFoundException If there is no session key linked to a given user in the database
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
+     * @throws IncorrectSessionKeyException    If the session key linked to a user doesn't match the one in our database
+     * @throws OutOfDateSessionKeyException    If the session key on file is out of date
      */
     protected boolean checkSessionKeyStatus(UserSessionKey user, LocalDateTime debugTime) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectSessionKeyException, OutOfDateSessionKeyException {
         UserSessionKey dataInDatabase = sessionKeyDatabase.getObject(user.getID());
@@ -112,9 +115,9 @@ public class SessionKeyManager {
     /**
      * Remove a given session key
      *
-     * @param user
+     * @param user any identifiable object containing the user's ID that we want to remove the session key of
      * @return boolean if the session key existed in the first place or not
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     public boolean removeSessionKey(Identifiable user) throws DatabaseNotAccessibleException {
         return sessionKeyDatabase.removeObject(user.getID());

@@ -33,8 +33,15 @@ public class EditUser extends JFrame {
     private String[] adminUserData;
     private String[] editingUserData;
 
-
-    public EditUser(String titles, String[] userDataInput, String[] editingUserDataInput) {
+    /**
+     * Edit user window object constructor. Sets up GUI and also contains listeners
+     *
+     * @param titles               - Window Title
+     * @param userDataInput        - Array containing session key and user ID for user performing the request
+     * @param editingUserDataInput - Array of info for the user being edited {id,CreatePerm,EditPerm,SchedulePerm,AdminPerm} Where Perms are 1 - true, 0 - false
+     * @return N/A
+     */
+    private EditUser(String titles, String[] userDataInput, String[] editingUserDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
@@ -61,7 +68,8 @@ public class EditUser extends JFrame {
                 if (adminUserData[1].equals(editingUserData[0])) {
                     JOptionPane.showMessageDialog(null, "Please change your own password from the button on the main menu.\nThanks!");
                 } else {
-                    ChangePassword.create(adminUserData, 1, editingUserData[0]);
+                    ChangePassword.create(adminUserData, 1, editingUserData[0], editingUserData);
+                    dispose();
                 }
             }
         });
@@ -237,7 +245,12 @@ public class EditUser extends JFrame {
         });
     }
 
-    //Method to add permission
+    /**
+     * Method to add a user permission
+     *
+     * @param permissionName - Name of the permission to Add
+     * @return Int   = 0 if request failed, = 1 if successful
+     */
     private int AddPermission(String permissionName) {
         //Set Up Server Request
         try {
@@ -253,8 +266,16 @@ public class EditUser extends JFrame {
 
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission |" + response.status());
-                return (0);
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    dispose();
+                    Login.create();
+                    return (0);
+                } else {
+                    System.out.println(response.status());
+                    JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Add Permission |" + response.status());
+                }
             }
 
         } catch (Exception e) {
@@ -265,7 +286,12 @@ public class EditUser extends JFrame {
         return (1);
     }
 
-    //Method to remove permission
+    /**
+     * Method to remove a user permission
+     *
+     * @param permissionName - Name of the permission to remove
+     * @return Int   = 0 if request failed, = 1 if successful
+     */
     private int RemovePermission(String permissionName) {
         //Set Up Server Request
         try {
@@ -281,8 +307,16 @@ public class EditUser extends JFrame {
 
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n  Remove Permission |" + response.status());
-                return (0);
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    dispose();
+                    Login.create();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n  Remove Permission |" + response.status());
+                    return (0);
+                }
             }
 
         } catch (Exception e) {
@@ -293,13 +327,23 @@ public class EditUser extends JFrame {
         return (1);
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     *
+     * @param AdminDataInput       The session key and user ID for the user logged in.
+     * @param editingUserDataInput Array of info for the user being edited {id,CreatePerm,EditPerm,SchedulePerm,AdminPerm} Where Perms are 1 - true, 0 - false
+     * @return void
+     */
     protected static void create(String[] AdminDataInput, String[] editingUserDataInput) {
         JFrame frame = new EditUser("Billboard Client", AdminDataInput, editingUserDataInput);
         frame.setVisible(true);
     }
 
-    //Method to Delete User
+    /**
+     * Method to delete a user. Note user ID is not passed but rather fetched from variables in the EditUser object
+     *
+     * @return void
+     */
     private void DeleteUser() {
         //If Successful, inform user, dispose and return to user management menu.
         try {
@@ -321,7 +365,14 @@ public class EditUser extends JFrame {
             }
             //If unsuccessful display error
             else {
-                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete User |" + response.status());
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    dispose();
+                    Login.create();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete User |" + response.status());
+                }
             }
 
         }
@@ -332,7 +383,9 @@ public class EditUser extends JFrame {
 
     }
 
-    //Personalises the generic edit window to be specific to the user which is being edited.
+    /**
+     * Changes the GUI according to the data of the user being edited.
+     */
     private void PersonaliseWindow() {
         labelUsername.setText(("User - " + editingUserData[0]));
         buttonAddCreate.setVisible(editingUserData[1].equals("0"));

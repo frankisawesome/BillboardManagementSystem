@@ -3,7 +3,10 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
+import BillboardAssignment.BillboardServer.Server.*;
+import BillboardAssignment.BillboardServer.Server.UserData;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -89,7 +92,14 @@ public class UserManage extends JFrame {
     private String[][] userList;
     private int page;
 
-    public UserManage(String titles, String[] userDataInput, String[][] userList) {
+    /**
+     * User Manage window object constructor. Sets up GUI and also contains listeners
+     *
+     * @param titles        - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
+    private UserManage(String titles, String[] userDataInput, String[][] userList) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
@@ -112,6 +122,7 @@ public class UserManage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CreateUser.create(UserData);
+                dispose();
             }
         });
 
@@ -202,18 +213,30 @@ public class UserManage extends JFrame {
         });
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     *
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput) {
         String[][] userList = ListUsers(userDataInput);
         if (userList[0][0].equals("E")) {
             MainMenu.create(userDataInput);
+        } else if (userList[0][0].equals("I")) {
+            Login.create();
         } else {
             JFrame frame = new UserManage("Billboard Client", userDataInput, userList);
             frame.setVisible(true);
         }
     }
 
-    //Returns list of users and their existing permissions
+    /**
+     * Fetch a list of all user accounts, along with their permissions
+     *
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return String[][] Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private static String[][] ListUsers(String[] userDataInput) {
         try {
             //Set up request
@@ -222,24 +245,31 @@ public class UserManage extends JFrame {
             requestBody.put("keyId", userDataInput[1]);
 
             //Send Request
-            ServerRequest<User[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
-            ServerResponse<User[]> response = request.getResponse();
+            ServerRequest<UserData[]> request = new ServerRequest<>(RequestType.USER, "list users", requestBody);
+            ServerResponse<UserData[]> response = request.getResponse();
 
             //Check that response is ok, if not display error message and return error.
             if (!response.status().equals("ok")) {
                 String[][] Error = {{"E"}};
+
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    String[][] ErrorI = {{"I"}}; //Code for invalid session key.
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (ErrorI);
+                }
+
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Fetch Users |" + response.status());
                 return (Error);
             }
-            User[] returnedID = response.body();
-            String[][] returnVal = new String[returnedID.length][5];
+            UserData[] returnedID = response.body();
+            String[][] returnVal = new String[returnedID.length][6];
             returnVal[0][0] = "E";
 
             //Loop through returned ID's and fetch permissions for each
             for (int i = 0; i < returnedID.length; i++) {
                 //Fetch Permission
-                System.out.println(returnedID[i].getID());
-                String[] permissionReturned = GetPermissionsRequest(userDataInput, String.valueOf(returnedID[i].getID()));
+                String[] permissionReturned = GetPermissionsRequest(userDataInput, String.valueOf(returnedID[i].id), returnedID[i].userName);
 
                 //If error code returned, return error code for ListUsers
                 if (permissionReturned[0].equals("E")) {
@@ -247,9 +277,19 @@ public class UserManage extends JFrame {
                     Error[0][0] = "E";
                     return (Error);
                 }
+
+                //If invalid session key error returned, return error code for ListUsers
+                if (permissionReturned[0].equals("I")) {
+                    String[][] Error = new String[1][1];
+                    Error[0][0] = "I";
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (Error);
+                }
+
                 //If no error returned, add to array.
                 returnVal[i] = permissionReturned;
             }
+
             return (returnVal);
 
         }
@@ -260,13 +300,16 @@ public class UserManage extends JFrame {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Fetch Users | " + e.getMessage());
             return (Error);
         }
-        //String[][] returnVal = {{"69420", "0", "1", "1", "1"}, {"694201", "1", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"}, {"69420", "0", "1", "1", "1"},};
-        //System.out.println(returnVal.length);
-        //return (returnVal);
     }
 
-    //Fetch permissions for user
-    private static String[] GetPermissionsRequest(String[] userData, String targetID) {
+    /**
+     * Fetch a list of permissions for a specific user
+     *
+     * @param userData The session key and user ID for the user logged in.
+     * @param targetID The ID for which permissions should be fetched for
+     * @return String[] Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
+    private static String[] GetPermissionsRequest(String[] userData, String targetID, String userName) {
         try {
             //Handle error if a targetID of null is entered.
             if (targetID == null) {
@@ -275,7 +318,6 @@ public class UserManage extends JFrame {
                 return (ErrorR);
             }
             //Set up Request
-            System.out.println(targetID);
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("idToFind", targetID);
             requestBody.put("key", userData[0]);
@@ -287,16 +329,21 @@ public class UserManage extends JFrame {
 
             //Fetch response and convert to string format
             UserPrivilege[] perms = response.body();
-            String[] stringPerms = {targetID, "0", "0", "0", "0"};
+            String[] stringPerms = {targetID, "0", "0", "0", "0", userName};
             String tempPerm;
 
             //Check that response is ok, if not display error message.
             if (!response.status().equals("ok")) {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    String[] ErrorI = {"I"}; //Code for invalid session key.
+                    return (ErrorI);
+                }
                 String[] ErrorR = {"E"};
                 JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: Get Permissions\n Get Permissions |" + response.status());
                 return (ErrorR);
             }
-
+            System.out.println(targetID);
             //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
             for (int i = 0; i < perms.length; i++) {
                 tempPerm = String.valueOf(perms[i]);
@@ -324,14 +371,18 @@ public class UserManage extends JFrame {
         } catch (Exception e) {
             //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
             String[] ErrorR = {"E"};
-            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions E|" + e.getMessage());
+            //System.out.println(e);
+            //e.printStackTrace();
             return (ErrorR);
         }
     }
 
-    //Populate GUI with data from users list
+    /**
+     * Populate GUI with data from the list of users
+     */
     private void DisplayUsersMain(int pageInput) {
-        String[] blank = {"", "", "", "", ""};
+        String[] blank = {"", "", "", "", "", ""};
         this.page = pageInput;
 
         //Check if user exists to be displayed, if so display it, else display blank field.
@@ -405,9 +456,13 @@ public class UserManage extends JFrame {
         labelPage.setText("User ID    (Page " + (page + 1) + " of " + numPages + ")");
     }
 
-    //Functions to display user info on GUI
+    /**
+     * Display user info on GUI for user to be displayed in position 1
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser1(String[] data) {
-        labelU1.setText(data[0]);
+        labelU1.setText(data[5]);
         create1.setSelected(data[1].equals("1"));
         edit1.setSelected(data[2].equals("1"));
         schedule1.setSelected(data[3].equals("1"));
@@ -415,8 +470,13 @@ public class UserManage extends JFrame {
         buttonEdit1.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 2
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser2(String[] data) {
-        labelU2.setText(data[0]);
+        labelU2.setText(data[5]);
         create2.setSelected(data[1].equals("1"));
         edit2.setSelected(data[2].equals("1"));
         schedule2.setSelected(data[3].equals("1"));
@@ -424,8 +484,13 @@ public class UserManage extends JFrame {
         buttonEdit2.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 3
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser3(String[] data) {
-        labelU3.setText(data[0]);
+        labelU3.setText(data[5]);
         create3.setSelected(data[1].equals("1"));
         edit3.setSelected(data[2].equals("1"));
         schedule3.setSelected(data[3].equals("1"));
@@ -433,8 +498,13 @@ public class UserManage extends JFrame {
         buttonEdit3.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 4
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser4(String[] data) {
-        labelU4.setText(data[0]);
+        labelU4.setText(data[5]);
         create4.setSelected(data[1].equals("1"));
         edit4.setSelected(data[2].equals("1"));
         schedule4.setSelected(data[3].equals("1"));
@@ -442,8 +512,13 @@ public class UserManage extends JFrame {
         buttonEdit4.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 5
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser5(String[] data) {
-        labelU5.setText(data[0]);
+        labelU5.setText(data[5]);
         create5.setSelected(data[1].equals("1"));
         edit5.setSelected(data[2].equals("1"));
         schedule5.setSelected(data[3].equals("1"));
@@ -451,8 +526,13 @@ public class UserManage extends JFrame {
         buttonEdit5.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 6
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser6(String[] data) {
-        labelU6.setText(data[0]);
+        labelU6.setText(data[5]);
         create6.setSelected(data[1].equals("1"));
         edit6.setSelected(data[2].equals("1"));
         schedule6.setSelected(data[3].equals("1"));
@@ -460,8 +540,13 @@ public class UserManage extends JFrame {
         buttonEdit6.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 7
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser7(String[] data) {
-        labelU7.setText(data[0]);
+        labelU7.setText(data[5]);
         create7.setSelected(data[1].equals("1"));
         edit7.setSelected(data[2].equals("1"));
         schedule7.setSelected(data[3].equals("1"));
@@ -469,8 +554,13 @@ public class UserManage extends JFrame {
         buttonEdit7.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 8
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser8(String[] data) {
-        labelU8.setText(data[0]);
+        labelU8.setText(data[5]);
         create8.setSelected(data[1].equals("1"));
         edit8.setSelected(data[2].equals("1"));
         schedule8.setSelected(data[3].equals("1"));
@@ -478,8 +568,13 @@ public class UserManage extends JFrame {
         buttonEdit8.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 9
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser9(String[] data) {
-        labelU9.setText(data[0]);
+        labelU9.setText(data[5]);
         create9.setSelected(data[1].equals("1"));
         edit9.setSelected(data[2].equals("1"));
         schedule9.setSelected(data[3].equals("1"));
@@ -487,8 +582,13 @@ public class UserManage extends JFrame {
         buttonEdit9.setVisible(!data[0].equals(""));
     }
 
+    /**
+     * Display user info on GUI for user to be displayed in position 10
+     *
+     * @param data Data to be Displayed Format {User ID, Create, Edit, Schedule, User Admin}  Note the latter 4 are permissions in binary format.
+     */
     private void DisplayUser10(String[] data) {
-        labelU10.setText(data[0]);
+        labelU10.setText(data[5]);
         create10.setSelected(data[1].equals("1"));
         edit10.setSelected(data[2].equals("1"));
         schedule10.setSelected(data[3].equals("1"));

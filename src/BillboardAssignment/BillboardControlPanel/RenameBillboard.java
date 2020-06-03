@@ -1,5 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class RenameBillboard extends JFrame {
     private JButton buttonBack;
@@ -19,7 +23,14 @@ public class RenameBillboard extends JFrame {
     private String[] UserData;
     private String billboardID;
 
-    public RenameBillboard(String titles, String[] userDataInput, String billboardIDInput, String currentNameInput) {
+    /**
+     * Rename Billboard window object constructor. Sets up GUI and also contains listeners
+     *
+     * @param titles        - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
+    private RenameBillboard(String titles, String[] userDataInput, String billboardIDInput, String currentNameInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
@@ -43,14 +54,49 @@ public class RenameBillboard extends JFrame {
         buttonCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD SERVER");
-                dispose();
-                ListBillboards.create(UserData);
+                try {
+                    //Sey up Request
+                    HashMap<String, String> requestBody = new HashMap<>();
+                    requestBody.put("keyId", UserData[1]);
+                    requestBody.put("key", UserData[0]);
+                    requestBody.put("billboardId", billboardID);
+                    requestBody.put("newName", fieldName.getText());
+
+                    //Send Request
+                    ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "rename billboard", requestBody);
+                    ServerResponse response = request.getResponse();
+
+                    //Catch any error messages returned by server
+                    if (!response.status().equals("ok")) {
+                        //If error is an invalid session key, dispose and return to login screen
+                        if (response.status().equals("Session key invalid")) {
+                            dispose();
+                            Login.create();
+                            JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                        }
+                        //Otherwise, generic error.
+                        JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Rename billboard|" + response.status());
+                    }
+                    else {
+                        //If Response is ok (no errors)
+                        JOptionPane.showMessageDialog(null, "Billboard Successfully Renamed");
+                        dispose();
+                        ListBillboards.create(UserData);
+                    }
+                }
+                catch (Exception f) {
+                    JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Fetch Billboard List |" + f.getMessage());
+                }
             }
         });
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     *
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput, String billboardID, String currentName) {
         JFrame frame = new RenameBillboard("Billboard Client", userDataInput, billboardID, currentName);
         frame.setVisible(true);
@@ -129,7 +175,4 @@ public class RenameBillboard extends JFrame {
         return panel1;
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

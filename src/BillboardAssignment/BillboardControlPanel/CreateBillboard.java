@@ -18,7 +18,13 @@ public class CreateBillboard extends JFrame {
     private JLabel labelName;
     private String[] UserData;
 
-    public CreateBillboard(String titles, String[] userDataInput) {
+    /**
+     * Change billboard window object constructor. Sets up GUI and also contains listeners
+     * @param titles - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
+    private CreateBillboard(String titles, String[] userDataInput) {
         super(titles);
         //Setup GUI
         $$$setupUI$$$();
@@ -51,12 +57,21 @@ public class CreateBillboard extends JFrame {
         });
     }
 
-    private static boolean CheckBillboardExists(String billboardName) {
+    /**
+     * Function queries the server and checks if another billboard exists under the same name.
+     * @param billboardName The name to be checked against the database.
+     * @return Boolean True - Another billboard exists, False - No other billboard exists
+     */
+    private boolean CheckBillboardExists(String billboardName) {
         JOptionPane.showMessageDialog(null, "PLEASE INTEGRATE A CHECK IF BILLBOARD NAME IS ALREADY IN USE");
         return (false);
     }
 
-    //Method to create GUI
+    /**
+     * Create function. Creates instance of GUI
+     * @param userDataInput The session key and user ID for the user logged in.
+     * @return void
+     */
     protected static void create(String[] userDataInput) {
         JFrame frame = new CreateBillboard("Billboard Client", userDataInput);
         frame.setVisible(true);

@@ -9,12 +9,15 @@ import BillboardAssignment.BillboardServer.Database.Identifiable;
 public class UserDataInput implements Identifiable {
 
     /**
+     * The username of the user, unique, but we don't use it as the primary key as that would be inefficient and can cause problems with string comparison, etc.
+     */
+    public String username;
+    /**
      * ID for each user
      */
     private int userID;
-
     /**
-     * Enum of privileges for each years
+     * Enum array of privileges for each user
      */
     private UserPrivilege[] privileges;
     /**
@@ -23,14 +26,12 @@ public class UserDataInput implements Identifiable {
     private String onceHashedPassword;
 
     /**
-     *  The username of the user, unique, but we don't use it as the primary key as that would be inefficient.
+     * Default User Data input constructor
+     * @param userID Unique integer identifier of the user
+     * @param onceHashedPassword Password from the front end that is only hashed once, will not be stored in the DB
+     * @param privileges Enum array of privileges for each user
+     * @param username The username of the user
      */
-    public String username;
-
-    public UserDataInput() {
-
-    }
-
     public UserDataInput(int userID, String onceHashedPassword, UserPrivilege[] privileges, String username) {
         this.userID = userID;
 
@@ -42,27 +43,18 @@ public class UserDataInput implements Identifiable {
     }
 
     /**
-     * For when we don't care about the original password (Just going to store the double hashed version only)
-     *
-     * @param userID
-     */
-    public UserDataInput(int userID) {
-        this.userID = userID;
-        this.privileges = new UserPrivilege[]{};
-        this.onceHashedPassword = "";
-        this.username = null;
-    }
-
-    /**
-     * For when we don't care about the original priviledges (Just going to store the double hashed version only)
-     *
-     * @param userID
+     * User Data input constructor for when we don't care about privs or usernames
+     * @param userID Unique integer identifier of the user
+     * @param onceHashedPassword Password from the front end that is only hashed once, will not be stored in the DB
      */
     public UserDataInput(int userID, String onceHashedPassword) {
         this.userID = userID;
-        this.privileges = new UserPrivilege[]{};
+
         this.onceHashedPassword = onceHashedPassword;
-        this.username = null;
+
+        this.privileges = new UserPrivilege[0];
+
+        this.username = "";
     }
 
     public UserDataInput(int id, String password, String newUserName) {
@@ -77,7 +69,7 @@ public class UserDataInput implements Identifiable {
     }
 
     /**
-     * Make sure to overwrite this in any sub-class as it contains senstive data that shouldn't be stored/accessed except for hashing
+     * Make sure that you don't store the password in the database, just use null in the inheritance constructor
      *
      * @return
      */
@@ -111,10 +103,12 @@ public class UserDataInput implements Identifiable {
 
     /**
      * Username getter
+     *
      * @return user's username
      */
-    public String getUsername(){return username;}
-
+    public String getUsername() {
+        return username;
+    }
 
 
 }

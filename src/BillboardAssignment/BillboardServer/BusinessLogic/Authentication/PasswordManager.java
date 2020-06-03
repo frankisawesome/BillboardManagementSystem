@@ -1,17 +1,16 @@
 package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
 
+import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.BillboardServer.Database.Queryable;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
 
 /**
  * Class for the storage and management of user passwords and salts
@@ -40,12 +39,14 @@ public class PasswordManager {
 
         /* Create a new random salt generator and use it to generate a salt for the given user */
         SecureRandom randomNumGenerator = new SecureRandom();
-        byte[] passwordSalt = new byte[3];
+        int size_of_salt = 3;
+        byte[] passwordSalt = new byte[size_of_salt];
         randomNumGenerator.nextBytes(passwordSalt);
+
         String passwordSaltString = null;
         try {
             passwordSaltString = new String(passwordSalt, "ISO-8859-1");
-        } catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace(); /* Will never happen */
         }
 
@@ -56,13 +57,13 @@ public class PasswordManager {
     }
 
     /**
-     * Returns a boolean indicating if the provied password and the hashed password on file match (after the input is hashed)
+     * Returns a boolean indicating if the provided password and the hashed password on file match (after the input is hashed)
      *
      * @param user The user input object that holds the once hashed password and ID
      * @return Boolean indicating if the password credentials are correct
-     * @throws DatabaseObjectNotFoundException
-     * @throws DatabaseNotAccessibleException
-     * @throws IncorrectPasswordException
+     * @throws DatabaseObjectNotFoundException If the user being checked doesnt exist in the database
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
+     * @throws IncorrectPasswordException      If the given password doesn't match the one we have on file
      */
     public User checkPasswordMatch(UserDataInput user) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, IncorrectPasswordException {
         User userData = passwordDatabase.getObject(user.getID());
@@ -100,7 +101,7 @@ public class PasswordManager {
         String hashedPassword = null;
         try {
             hashedPassword = new String(md.digest(password.getBytes()), "ISO-8859-1");
-        } catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace(); /* Will never happen */
         }
         return hashedPassword;
@@ -111,9 +112,9 @@ public class PasswordManager {
      *
      * @param inputUser             The data of the user that we want to change the password of
      * @param onceHashedNewPassword The new password that we want to re-salt and hash and store
-     * @throws DatabaseObjectNotFoundException
-     * @throws DatabaseNotAccessibleException
-     * @throws DatabaseLogicException
+     * @throws DatabaseObjectNotFoundException If the user being checked doesnt exist in the database
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
+     * @throws DatabaseLogicException          If there exists two users with same ID in the database already (shouldn't happen)
      */
     public void changePassword(UserDataInput inputUser, String onceHashedNewPassword) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
         User oldUserData = passwordDatabase.getObject(inputUser.getID());

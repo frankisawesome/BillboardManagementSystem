@@ -34,10 +34,15 @@ public class Login extends JFrame {
     private JPasswordField passwordField;
     private String SessionKey;
 
-    public Login(String title) {
+    /**
+     * Login window object constructor. Sets up GUI and also contains listeners
+     * @param title - Window Title
+     * @return N/A
+     */
+    private Login(String title) {
         super(title);
         $$$setupUI$$$();
-        //Completes GUI seyup after all components added to background in $$$setupUI$$$
+        //Completes GUI setup after all components added to background in $$$setupUI$$$
         this.setContentPane(Background);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -63,25 +68,10 @@ public class Login extends JFrame {
                     SessionKey = loginReturn[1];
                     dispose();
                     //Store ID and Session key in an array of user data
-                    String[] userData = new String[6];
+                    String[] userData = {"", "", "", "", "", ""};
                     userData[0] = SessionKey;
                     userData[1] = id;
-
-                    // Fetch user permissions from server
-                    String[] permission = GetPermissionsRequest(userData);
-                    //If an error is not returned, store these, then create main menu and transmit all user data to menu
-
-                    //An error in getting permissions is handled in the GetPermissionsRequest method and will prompt user
-                    //to contact support. The loop also breaks, aborting the log in.
-                    for (int i = 0; i < 4; i++) {
-                        userData[i + 2] = permission[i];
-                        if (permission[i].equals("E")) {
-                            break;
-                        }
-                        if (i == 3) {
-                            MainMenu.create(userData);
-                        }
-                    }
+                    MainMenu.create(userData);
                 }
                 //If Login Unsuccessful
                 else {
@@ -89,9 +79,8 @@ public class Login extends JFrame {
                 }
             }
         });
-        /**
-         * Key Listeners for User Enter Press In Login Page = Pressing Login Button
-         */
+        //------------------------
+         // Key Listeners for User Enter Press In Login Page = Pressing Login Button
         buttonlogin.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -118,7 +107,12 @@ public class Login extends JFrame {
         });
     }
 
-    //Function for Sending Request to Server
+    /**
+     * Sets up and sends login request to server
+     * @param id - User ID to login
+     * @param pwd - Password to login
+     * @return String[] {Status(1 - successful, 2 - fail), sessionKey if pass or error message if fail}
+     */
     private String[] SendLoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
@@ -143,63 +137,6 @@ public class Login extends JFrame {
             // If exception thrown, return code 2 and error message prompting user to seek IT support.
             String[] returnVal = {"2", "Please Contact IT Support and Quote the Following: \n" + e.getMessage()};
             return (returnVal);
-        }
-    }
-
-    //Fetch permissions for user
-    private String[] GetPermissionsRequest(String[] userData) {
-        try {
-            //Set up Request
-            HashMap<String, String> requestBody = new HashMap<>();
-            requestBody.put("idToFind", userData[1]);
-            requestBody.put("key", userData[0]);
-            requestBody.put("keyId", userData[1]);
-
-            //Send Request
-            ServerRequest<UserPrivilege[]> request = new ServerRequest<>(RequestType.USER, "get privileges", requestBody);
-            ServerResponse<UserPrivilege[]> response = request.getResponse();
-
-            //Fetch response and convert to string format
-            UserPrivilege[] perms = response.body();
-            String[] stringPerms = {"0", "0", "0", "0"};
-            String tempPerm;
-
-            //Check that response is ok, if not display error message.
-            if (!response.status().equals("ok")) {
-                String[] Error = {"E"};
-                JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + response.status());
-                return (Error);
-            }
-
-            //Set up array with a binary code for each permission, 1=true (has), 0 = false (doesnt have)
-            for (int i = 0; i < perms.length; i++) {
-                tempPerm = String.valueOf(perms[i]);
-                switch (tempPerm) {
-                    case "CreateBillboards":
-                        stringPerms[0] = "1";
-                        break;
-                    case "EditAllBillboards":
-                        stringPerms[1] = "1";
-                        break;
-                    case "ScheduleBillboards":
-                        stringPerms[2] = "1";
-                        break;
-                    case "EditUsers":
-                        stringPerms[3] = "1";
-                        break;
-                    default:
-                        //Return an element E if error occurs as a flag to login, error is handled here however with a prompt.
-                        String[] Error = {"E"};
-                        JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Invalid Permission returned by server");
-                        return (Error);
-                }
-            }
-            return (stringPerms);
-        } catch (Exception e) {
-            //Return an element E if exception occurs as a flag to login, exception is handled here however with a prompt.
-            String[] Error = {"E"};
-            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Get Permissions |" + e.getMessage());
-            return (Error);
         }
     }
 
@@ -232,6 +169,10 @@ public class Login extends JFrame {
         return hashedPassword;
     }
 
+    /**
+     * Create function. Creates instance of GUI
+     * @return void
+     */
     protected static void create() {
         //Creates new frame for Login and sets Visible.
         JFrame frame = new Login("Billboard Client");

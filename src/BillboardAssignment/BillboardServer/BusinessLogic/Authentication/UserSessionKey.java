@@ -14,7 +14,7 @@ public class UserSessionKey implements Identifiable, Serializable {
     private int userID;
 
     /**
-     * Just creating a basic object to store user ID, just for consistency of the API this class inherits UserDataInput
+     * Just creating a basic object to store user ID, just for consistency of the API this class implements Identifiable
      *
      * @param userID
      */

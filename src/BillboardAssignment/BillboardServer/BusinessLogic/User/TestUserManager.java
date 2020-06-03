@@ -1,8 +1,13 @@
 package BillboardAssignment.BillboardServer.BusinessLogic.User;
 
 import BillboardAssignment.BillboardServer.BusinessLogic.AuthAndUserDatabaseTesting.FatherTester;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.*;
-import BillboardAssignment.BillboardServer.Database.*;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
+import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
+import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +26,7 @@ public class TestUserManager extends FatherTester {
 
         assertTrue(sessionKey instanceof String);
 
-        UserDataInput badCreds = new UserDataInput(69420, "the_wrong_password");
+        UserDataInput badCreds = new UserDataInput(UserManager.defaultAdminUserID, "the_wrong_password");
 
         assertThrows(IncorrectPasswordException.class, () -> {
             userManager.login(badCreds);
@@ -59,8 +64,8 @@ public class TestUserManager extends FatherTester {
 
     @Test
     void listUsers() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, IncorrectPasswordException, DatabaseLogicException, DatabaseObjectNotFoundException {
-        User adminUser = userManager.getUser(69420);
-        assertArrayEquals(new User[]{ adminUser}, userManager.listUsers(adminKey));
+        User adminUser = userManager.getUser(UserManager.defaultAdminUserID);
+        assertArrayEquals(new User[]{adminUser}, userManager.listUsers(adminKey));
 
         UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "");
         UserDataInput user2 = new UserDataInput(2, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
@@ -70,9 +75,9 @@ public class TestUserManager extends FatherTester {
         User[] userOut = new User[4];
         userOut[0] = adminUser;
 
-        for (int i = 1; i < userArray.length +1; i++) {
-            userManager.createUser(userArray[i-1],adminKey);
-            userOut[i] = userManager.getUser(i );
+        for (int i = 1; i < userArray.length + 1; i++) {
+            userManager.createUser(userArray[i - 1], adminKey);
+            userOut[i] = userManager.getUser(i);
         }
 
         User[] outputUsers = userManager.listUsers(adminKey);
@@ -179,7 +184,7 @@ public class TestUserManager extends FatherTester {
     @Test
     void logout() throws IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         assertTrue(userManager.logout(adminKey));
-        assertThrows(DatabaseObjectNotFoundException.class,() -> {
+        assertThrows(DatabaseObjectNotFoundException.class, () -> {
             userManager.listUsers(adminKey);
         });
         assertFalse(userManager.logout(adminKey)); /* No throw? */
@@ -187,20 +192,21 @@ public class TestUserManager extends FatherTester {
 
     /**
      * Assert that two arrays are equal (using the concept of set equality). Not a test, just a helper function
+     *
      * @param set1
      * @param set2
      * @throws Exception
      */
     void assertSetEquals(UserPrivilege[] set1, UserPrivilege[] set2) throws Exception {
         boolean match;
-        for (int i = 0; i < set1.length; i ++){
+        for (int i = 0; i < set1.length; i++) {
             match = false;
-            for (int j = 0; j < set2.length; j++){
-                if (set1[i] == set2[j]){
+            for (int j = 0; j < set2.length; j++) {
+                if (set1[i] == set2[j]) {
                     match = true;
                 }
             }
-            if (!match){
+            if (!match) {
                 throw new Exception("The two enums aren't the same!");
             }
 

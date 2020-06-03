@@ -1,9 +1,14 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+/**
+ * This class is essentially an in-memory "database".
+ * It includes wrappers around an ArrayList object so that it can essentially be treated as a database
+ *
+ * @param <E> The type of the object to be stored in the database
+ */
 public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
 
     /**
@@ -123,6 +128,13 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
     }
 
 
+    /**
+     * Run any necessary setup to get the database ready for storage and querying. The database will be created depended on
+     * the getEntityName value of the object being stored. I.E. If the entity name is a sessionToken, then the sessionToken database will be created/accessed.
+     *
+     * @param entityName The name of the data/database
+     * @throws DatabaseNotAccessibleException Errors out if the database didn't get created successfully
+     */
     @Override
     public void initialiseDatabase(String entityName) {
         data = new ArrayList<E>();
@@ -130,6 +142,12 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
         this.entityName = entityName;
     }
 
+    /**
+     * Return an array of every single object in the database.
+     *
+     * @return A list of the database generic type, containing every entry in the database
+     * @throws DatabaseNotAccessibleException Throws an exception if we can't access the database.
+     */
     @Override
     public ArrayList<E> getAllObjects() throws DatabaseNotAccessibleException {
         if (!arrayInitialised) {
@@ -140,6 +158,12 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
     }
 
 
+    /**
+     * Get the maximum ID of any object in the database
+     *
+     * @return An integer of the maximum ID. Returns 0 if no records in database
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
+     */
     @Override
     public int getMaxID() throws DatabaseNotAccessibleException {
         if (!arrayInitialised) {
@@ -147,7 +171,7 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
         }
         int max = 0;
 
-        for (int i = 0; i < data.size(); i++ ){
+        for (int i = 0; i < data.size(); i++) {
             max = Math.max(max, data.get(i).getID());
         }
 
@@ -158,14 +182,14 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
      * Get name of database, for debugging
      */
     @Override
-    public String getEntityName(){
+    public String getEntityName() {
         return this.entityName;
     }
 
     /**
      * Remove all observations in dataset
      *
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     @Override
     public void removeAllData() throws DatabaseNotAccessibleException {
@@ -178,11 +202,12 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
     /**
      * Gets the given object, which's parameterName parameter's value matched parameterValue.
      * E.G. select * from db where parameterName = parameterValue
-     * @param parameterName The name of the object's parameter
+     *
+     * @param parameterName  The name of the object's parameter
      * @param parameterValue The value of said parameter we want to search for
-     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @param dummyObject    Any object of type E, we need it to check if a parameter exists
      * @return The object(s) that satisfy the condition
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseMultipleMatchException
      */
@@ -198,19 +223,19 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
         E obj;
         ArrayList<E> output = new ArrayList<E>();
 
-        for (int i = 0; i < data.size(); i++ ){
+        /* Find objects that equal the value */
+        for (int i = 0; i < data.size(); i++) {
             obj = data.get(i);
             try {
                 if ((int) field.get(data.get(i)) == parameterValue) {
                     output.add(obj);
                 }
+            } catch (IllegalAccessException e) {
+                throw new NoSuchFieldException();
             }
-            catch (IllegalAccessException e) {
-                    throw new NoSuchFieldException();
-                }
         }
 
-        if (output.size() == 0){
+        if (output.size() == 0) {
             throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
         }
 
@@ -221,11 +246,12 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
     /**
      * Gets the given object, which's parameterName parameter's value matched parameterValue.
      * E.G. select * from db where parameterName = parameterValue
-     * @param parameterName The name of the object's parameter
+     *
+     * @param parameterName  The name of the object's parameter
      * @param parameterValue The value of said parameter we want to search for
-     * @param dummyObject Any object of type E, we need it to check if a parameter exists
+     * @param dummyObject    Any object of type E, we need it to check if a parameter exists
      * @return The object(s) that satisfy the condition
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseMultipleMatchException
      */
@@ -241,19 +267,19 @@ public class DatabaseArray<E extends Identifiable> implements Queryable<E> {
         E obj;
         ArrayList<E> output = new ArrayList<E>();
 
-        for (int i = 0; i < data.size(); i++ ){
+        /* Find objects that equal the value */
+        for (int i = 0; i < data.size(); i++) {
             obj = data.get(i);
             try {
                 if (((String) field.get(data.get(i))).equals(parameterValue)) {
                     output.add(obj);
                 }
-            }
-            catch (IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 throw new NoSuchFieldException();
             }
         }
 
-        if (output.size() == 0){
+        if (output.size() == 0) {
             throw new DatabaseObjectNotFoundException(entityName, parameterValue, parameterName);
         }
 

@@ -5,8 +5,10 @@ import BillboardAssignment.BillboardServer.Database.*;
 
 import java.util.ArrayList;
 
-public class UserManager{
+public class UserManager {
 
+    public static String defaultHashedAdminPasssword = "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ";
+    public static int defaultAdminUserID = 69420;
     public Queryable<User> userDatabase;
     private PasswordManager passwords;
     private SessionKeyManager sessionKeys;
@@ -35,7 +37,7 @@ public class UserManager{
      * @return Session key in string form
      * @throws IncorrectPasswordException
      * @throws DatabaseObjectNotFoundException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseLogicException
      */
     public UserSessionKey login(UserDataInput userCreds) throws IncorrectPasswordException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException {
@@ -57,7 +59,7 @@ public class UserManager{
      * @param userToAdd      The user we want to add, with password, ID and permissions
      * @param adminUserPerms The user session key with edit user permissions
      * @return The user that was just added to the database
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseLogicException
      * @throws DatabaseObjectNotFoundException
      * @throws IncorrectPasswordException
@@ -76,14 +78,15 @@ public class UserManager{
 
 
     /**
-     * Creates the first, default admin user, with ID 69420, and password "pwd". This default password will likely have to change.
+     * Creates the first, default admin user, with ID UserManager.defaultAdminUserID, and password "pwd". This default password will likely have to change.
+     *
      * @return User that was just added
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      * @throws DatabaseLogicException
      */
     public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException {
         String onceHashedPassword = "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ";
-        UserDataInput userToAdd = new UserDataInput(69420, onceHashedPassword, new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
+        UserDataInput userToAdd = new UserDataInput(UserManager.defaultAdminUserID, onceHashedPassword, new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
         User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
         userDatabase.addObject(userWithNewPassword);
@@ -94,10 +97,11 @@ public class UserManager{
 
     /**
      * Not for the API, just used interally and for debugging
+     *
      * @param ID
      * @return
      * @throws DatabaseObjectNotFoundException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      */
     protected User getUser(int ID) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException {
         return userDatabase.getObject(ID);
@@ -105,9 +109,10 @@ public class UserManager{
 
     /**
      * List all users, given a session key with the edit users perms. Can get any data from these objects you need.
+     *
      * @param adminUserPerms The admin user session key.
      * @return An array of Users that the database holds.
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws InsufficentPrivilegeException
      * @throws OutOfDateSessionKeyException
      * @throws DatabaseObjectNotFoundException
@@ -122,12 +127,13 @@ public class UserManager{
 
     /**
      * Get the permissions of a user. If you're grabbing permissions for yourself you need no perms, but for others you need edit users.
+     *
      * @param userToGet
      * @param userSessionKey
      * @return List of privledges
      * @throws InsufficentPrivilegeException
      * @throws OutOfDateSessionKeyException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws IncorrectSessionKeyException
      * @throws DatabaseObjectNotFoundException
      */
@@ -139,7 +145,7 @@ public class UserManager{
         }
         // We only get to this section if the password and permissions are correct, will throw error above if they aren't
 
-        if (adminUser.getID() == userToGet.getID()){
+        if (adminUser.getID() == userToGet.getID()) {
             return userDatabase.getObject(userToGet.getID()).getPrivileges();
         }
 
@@ -150,11 +156,12 @@ public class UserManager{
 
     /**
      * Set the privileges of a user. Needs edit users permission
+     *
      * @param userToChange
      * @param privilegesToSet
      * @param adminKey
      * @throws OutOfDateSessionKeyException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException       If the database can't be connected to
      * @throws InsufficentPrivilegeException
      * @throws IncorrectSessionKeyException
      * @throws DatabaseObjectNotFoundException
@@ -165,14 +172,14 @@ public class UserManager{
 
         User adminUser = checkSessionKeyPrivileges(adminKey, new UserPrivilege[]{UserPrivilege.EditUsers});
 
-        if (adminKey.getID() == userToChange.getID()){
+        if (adminKey.getID() == userToChange.getID()) {
             boolean gettingRidOfEditUsers = true;
-            for (int i =0; i < privilegesToSet.length; i++){
-                if (privilegesToSet[i] == UserPrivilege.EditUsers){
+            for (int i = 0; i < privilegesToSet.length; i++) {
+                if (privilegesToSet[i] == UserPrivilege.EditUsers) {
                     gettingRidOfEditUsers = false;
                 }
             }
-            if (gettingRidOfEditUsers){
+            if (gettingRidOfEditUsers) {
                 throw new RemoveOwnEditUsersPrivilegeException();
             }
         }
@@ -187,11 +194,12 @@ public class UserManager{
 
     /**
      * Sets the password, given the input object (only really need user ID), new password, and a session key.
+     *
      * @param userToChange
      * @param newPassword
      * @param userSessionKey
      * @throws OutOfDateSessionKeyException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws IncorrectSessionKeyException
      * @throws DatabaseObjectNotFoundException
      * @throws DatabaseLogicException
@@ -205,10 +213,9 @@ public class UserManager{
         }
         // We only get to this section if the password and permissions are correct, will throw error above if they aren't
 
-        if (adminUser.getID() == userToChange.getID()){
+        if (adminUser.getID() == userToChange.getID()) {
             passwords.changePassword(userToChange, newPassword);
-        }
-        else{
+        } else {
             adminUser.checkUserHasPriv(new UserPrivilege[]{UserPrivilege.EditUsers});
             passwords.changePassword(userToChange, newPassword);
         }
@@ -216,10 +223,11 @@ public class UserManager{
 
     /**
      * Remove a user from both user and session key databases. Requires edit users perm
+     *
      * @param userToDelete
      * @param adminKey
      * @throws OutOfDateSessionKeyException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws InsufficentPrivilegeException
      * @throws IncorrectSessionKeyException
      * @throws DatabaseObjectNotFoundException
@@ -228,7 +236,7 @@ public class UserManager{
     public void deleteUser(UserDataInput userToDelete, UserSessionKey adminKey) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, RemoveOwnUserException {
         User admin = checkSessionKeyPrivileges(adminKey, new UserPrivilege[]{UserPrivilege.EditUsers});
 
-        if (userToDelete.getID() == admin.getID()){
+        if (userToDelete.getID() == admin.getID()) {
             throw new RemoveOwnUserException();
         }
         userDatabase.removeObject(userToDelete.getID());
@@ -261,36 +269,37 @@ public class UserManager{
 
     /**
      * Log out the given user, essentially just delete their session key from the database. Returns true iff session key was in the database in the first place
+     *
      * @param key
      * @return
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     public boolean logout(UserSessionKey key) throws DatabaseNotAccessibleException {
 
-       return sessionKeys.removeSessionKey(new UserDataInput(key.getID()));
+        return sessionKeys.removeSessionKey(new UserDataInput(key.getID(), "", new UserPrivilege[0], ""));
 
     }
 
     /**
      * Map a given username to an integer ID in the database. Will error out if nobody has a given username
+     *
      * @param username
      * @return the ID of the user with said username
      * @throws DatabaseObjectNotFoundException
      * @throws NoSuchFieldException
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException  If the database can't be connected to
      * @throws DatabaseMultipleMatchException
      */
     public int mapUsernameToID(String username) throws DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseMultipleMatchException {
         ArrayList<User> result;
-        try{
+        try {
             result = userDatabase.getWhere("username", username, new User(1, "", "", new UserPrivilege[0], ""));
-        }
-        catch (NoSuchFieldException e){
+        } catch (NoSuchFieldException e) {
             // This will never happen
             throw new DatabaseNotAccessibleException("user");
         }
 
-        if (result.size() > 1){
+        if (result.size() > 1) {
             throw new DatabaseMultipleMatchException();
         }
 
@@ -299,10 +308,11 @@ public class UserManager{
 
     /**
      * Get the next integer ID to be added, for making new users
+     *
      * @return the next ID
-     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseNotAccessibleException If the database can't be connected to
      */
     public int getNextID() throws DatabaseNotAccessibleException {
-        return userDatabase.getMaxID() +1;
+        return userDatabase.getMaxID() + 1;
     }
 }
