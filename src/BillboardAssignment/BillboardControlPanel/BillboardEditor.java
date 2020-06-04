@@ -10,6 +10,12 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import org.w3c.dom.*;
 
 import javax.imageio.ImageIO;
@@ -22,12 +28,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import static BillboardAssignment.BillboardServer.Server.Tests.TestUserControllers.requestBodyWithKey;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
     public static int WIDTH = 1200;
@@ -416,6 +425,37 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         return true;
     }
 
+    /**
+     * Sends a request to create a new billboardto the server. All exceptions occuring as a result are handled in the method.
+     * @param billboardName - name of the billboard to be created
+     * @param xmlBillboard - xml string that stores billboard info
+     * @return int 1 - Successful 2 - Fail
+     */
+    private int CreateUserRequest(String billboardName, String xmlBillboard) {
+        try {
+            HashMap<String, String> requestBody = requestBodyWithKey();
+            requestBody.put("billboardName", billboardName);
+            requestBody.put("content", xmlBillboard);
+            requestBody.put("keyId", userData[1]);
+            requestBody.put("key", userData[0]);
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "create", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //If Successful, return 1, else return 0 and give error dialog.
+            if (response.status().equals("ok")) {
+                return (1);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
+                        response.status());
+                return (0);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Create Billboard | " + e.getMessage());
+            return (0);
+        }
+    }
 
     @Override
     public void run() {
@@ -467,7 +507,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             if (validFlag) {
                 dispose();
                 if(newBillboard == true) {
-                    MainMenu.create(userData);
+                    int successful = CreateUserRequest(billboardName, xmlBillboard);
+                    if (successful > 0) {
+                        MainMenu.create(userData);
+                    }
                 }
                 else{
                     ListBillboards.create(userData);
@@ -475,8 +518,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             }
         }
     }
-    
-        public static void create(String[] userData, String billboardName, boolean newBillboard) {
+
+    public static void create(String[] userData, String billboardName, boolean newBillboard) {
         SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
     }
 }
