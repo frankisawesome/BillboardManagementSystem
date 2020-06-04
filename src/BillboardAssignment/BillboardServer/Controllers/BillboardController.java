@@ -17,10 +17,8 @@ public class BillboardController extends Controller {
     }
     protected void handle() {
         switch (message) {
-            case "get one":
-                response = new ServerResponse("<billboard background=\"#8996FF\">\n" +
-                        "<picture url=\"https://cloudstor.aarnet.edu.au/plus/s/5fhToroJL0nMKvB/download\"/>\n" +
-                        "</billboard>", "ok");
+            case "current":
+                response = getCurrent();
                 break;
             case "create":
                 response = create();
@@ -43,6 +41,10 @@ public class BillboardController extends Controller {
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
+    }
+
+    private ServerResponse getCurrent() {
+        return useDbTryCatch(() -> new ServerResponse(billboardManager.get("first"), "ok"));
     }
 
     private ServerResponse create() {
