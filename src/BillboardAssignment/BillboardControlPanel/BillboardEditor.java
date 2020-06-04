@@ -428,6 +428,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 } catch (TransformerException ex) {
                     ex.printStackTrace();
                 }
+                JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
+                        "Press Escape to Exit Preview");
                 BillboardViewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
