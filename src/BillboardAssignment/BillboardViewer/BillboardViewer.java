@@ -1,5 +1,10 @@
 package BillboardAssignment.BillboardViewer;
 
+import BillboardAssignment.BillboardControlPanel.Login;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,14 +23,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.HashMap;
+
+import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
 public class BillboardViewer extends JFrame implements ActionListener, Runnable {
+    private int WIDTH = 800;
+    private int HEIGHT = 450;
 
     String xmlBillboard;
-    static int exit = 0;
+
     // Contents of xmlBillboard
     String title;
     String image;
@@ -42,32 +51,50 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     JPanel pnl4;
     JPanel pnl5;
 
-    public BillboardViewer (String title, String xmlBillboard) throws HeadlessException {
+    Timer timer;
+
+    public BillboardViewer (String title) throws HeadlessException {
         super(title);
-        this.xmlBillboard = xmlBillboard;
+        xmlBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<billboard>\n" +
+                "    <message>Billboard with message, GIF and information</message>\n" +
+                "    <picture \n" +
+                "\tdata=\"iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAIAAAD4YuoOAAAAKXRFWHRDcmVhdGlvbiBUaW1lAJCFIDI1IDMgMjAyMCAwOTowMjoxNyArMDkwMHlQ1XMAAAAHdElNRQfkAxkAAyQ8nibjAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAAAS5JREFUeNq1kb9KxEAQxmcgcGhhJ4cnFwP6CIIiPoZwD+ALXGFxj6BgYeU7BO4tToSDFHYWZxFipeksbMf5s26WnAkJki2+/c03OzPZDRJNYcgVwfsU42cmKi5YjS1s4p4DCrkBPc0wTlkdX6bsG4hZQOj3HRDLHqh08U4Adb/zgEMtq5RuH3Axd45PbftdB2wO5OsWc7pOYaOeOk63wYfdFtL5qldB34W094ZfJ+4RlFldTrmW/ZNbn2g0of1vLHdZq77qSDCaSAsLf9kXh9w44PNoR/YSPHycEmbIOs5QzBJsmDHrWLPeF24ZkCe6ZxDCOqHcmxmsr+hsicahss+n8vYb8NHZPTJxi/RGC5IqbRwqH6uxVTX+5LvHtvT/V/R6PGh/iF4GHoBAwz7RD26spwq6Amh/AAAAAElFTkSuQmCC\"/>\n" +
+                "    <information>This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
+                "</billboard>";
+
     }
 
-    public void SetGUI() throws ParserConfigurationException, IOException, SAXException {
+
+
+    public void SetGUI(boolean alreadyCalled) throws ParserConfigurationException, IOException, SAXException {
         // Set preliminaries
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
-        setResizable(false);
-        setVisible(true);
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+            setUndecorated(true);
+            setResizable(false);
+            setVisible(true);
+
 
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
                     dispose();
-                    exit = 1;
             }
         });
 
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 dispose();
-                exit = 1;
             }
         });
+
+        SetComponents();
+
+        timer = new Timer(15000, this);
+        timer.start();
+    }
+
+    private void SetComponents () throws ParserConfigurationException, IOException, SAXException {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
 
@@ -194,8 +221,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 pnl3.add(picLabel);
             }
         }
-
-
     }
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
@@ -216,47 +241,48 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     @Override
     public void run() {
         try {
-            SetGUI();
+            SetGUI(false);
         } catch (ParserConfigurationException e) {
-            JOptionPane.showMessageDialog(null, "ParserConfigurationException");
+            e.printStackTrace();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "IOException");
+            e.printStackTrace();
         } catch (SAXException e) {
-            JOptionPane.showMessageDialog(null, "SAXException");
-        } catch (NullPointerException e) {
-            JOptionPane.showMessageDialog(null, "NullPointerException");
+            e.printStackTrace();
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
 
-    }
+        if (source == timer) {
+            xmlBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<billboard>\n" +
+                    "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
+                    "    <picture \n" +
+                    "\tdata=\"iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAIAAAD4YuoOAAAAKXRFWHRDcmVhdGlvbiBUaW1lAJCFIDI1IDMgMjAyMCAwOTowMjoxNyArMDkwMHlQ1XMAAAAHdElNRQfkAxkAAyQ8nibjAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAAAS5JREFUeNq1kb9KxEAQxmcgcGhhJ4cnFwP6CIIiPoZwD+ALXGFxj6BgYeU7BO4tToSDFHYWZxFipeksbMf5s26WnAkJki2+/c03OzPZDRJNYcgVwfsU42cmKi5YjS1s4p4DCrkBPc0wTlkdX6bsG4hZQOj3HRDLHqh08U4Adb/zgEMtq5RuH3Axd45PbftdB2wO5OsWc7pOYaOeOk63wYfdFtL5qldB34W094ZfJ+4RlFldTrmW/ZNbn2g0of1vLHdZq77qSDCaSAsLf9kXh9w44PNoR/YSPHycEmbIOs5QzBJsmDHrWLPeF24ZkCe6ZxDCOqHcmxmsr+hsicahss+n8vYb8NHZPTJxi/RGC5IqbRwqH6uxVTX+5LvHtvT/V/R6PGh/iF4GHoBAwz7RD26spwq6Amh/AAAAAElFTkSuQmCC\"/>\n" +
+                    "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
+                    "</billboard>";
+            System.out.println(xmlBillboard);
 
-    public static void create(String billboard) {
-        SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer", billboard));
-    }
-
-    public static void main (String[] args) {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (exit > 0) {
-                    timer.cancel();
-                    return;
-                }
-
-                
-
-                create("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                        "<billboard>\n" +
-                        "    <message>Billboard with message, GIF and information</message>\n" +
-                        "    <picture \n" +
-                        "\tdata=\"iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAIAAAD4YuoOAAAAKXRFWHRDcmVhdGlvbiBUaW1lAJCFIDI1IDMgMjAyMCAwOTowMjoxNyArMDkwMHlQ1XMAAAAHdElNRQfkAxkAAyQ8nibjAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAAAS5JREFUeNq1kb9KxEAQxmcgcGhhJ4cnFwP6CIIiPoZwD+ALXGFxj6BgYeU7BO4tToSDFHYWZxFipeksbMf5s26WnAkJki2+/c03OzPZDRJNYcgVwfsU42cmKi5YjS1s4p4DCrkBPc0wTlkdX6bsG4hZQOj3HRDLHqh08U4Adb/zgEMtq5RuH3Axd45PbftdB2wO5OsWc7pOYaOeOk63wYfdFtL5qldB34W094ZfJ+4RlFldTrmW/ZNbn2g0of1vLHdZq77qSDCaSAsLf9kXh9w44PNoR/YSPHycEmbIOs5QzBJsmDHrWLPeF24ZkCe6ZxDCOqHcmxmsr+hsicahss+n8vYb8NHZPTJxi/RGC5IqbRwqH6uxVTX+5LvHtvT/V/R6PGh/iF4GHoBAwz7RD26spwq6Amh/AAAAAElFTkSuQmCC\"/>\n" +
-                        "    <information>This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                        "</billboard>");
+            try {
+                SetComponents();
+            } catch (ParserConfigurationException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (SAXException ex) {
+                ex.printStackTrace();
             }
-        }, 15000, 15000);
+            revalidate();
+        }
+    }
+
+    public static void create() {
+        SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
+    }
+
+    public static void main(String[] args) {
+        create();
     }
 }
