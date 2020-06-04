@@ -113,11 +113,11 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     String billboardName;
 
 
-    public BillboardEditor (String title, String[] userDataInput, Billboard billboard, Boolean newBillboard) throws HeadlessException {
+    public BillboardEditor (String title, String[] userDataInput, String[] billboard, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
-        this.billboardName = billboard.name;
-        this.xmlBillboard = billboard.xml;
+        this.billboardName = billboard[2];
+        this.xmlBillboard = billboard[3];
         this.newBillboard = newBillboard;
     }
 
@@ -541,7 +541,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
-    public static void create(String[] userData, Billboard billboard) {
+    public static void create(String[] userData, String[] billboard) {
         boolean newBillboard = false;
         SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboard, newBillboard));
     }

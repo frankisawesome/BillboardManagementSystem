@@ -204,7 +204,7 @@ public class ListBillboards extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                BillboardEditor.create(UserData, billboardList[selection][2]);
+                BillboardEditor.create(UserData, billboardList[selection]);
             }
         });
 
