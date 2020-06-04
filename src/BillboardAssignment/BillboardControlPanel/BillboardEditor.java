@@ -316,7 +316,6 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         titleBBillboard = titleColorB.getText();
 
         imagePathBillboard = imagePath.getText();
-        System.out.println(imagePathBillboard);
 
         if (imageUrlData.isSelected()) {
             urlBillboard = false;
@@ -327,6 +326,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         if (noImage.isSelected()) {
             imagePathBillboard = "";
         }
+
+        System.out.println(imagePathBillboard);
 
         subtextBillboard = subtext.getText();
         subtextRBillboard = subtextColorR.getText();
@@ -429,14 +430,14 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
      * Sends a request to create a new billboardto the server. All exceptions occuring as a result are handled in the method.
      * @param billboardName - name of the billboard to be created
      * @param xmlBillboard - xml string that stores billboard info
-     * @return int 1 - Successful 2 - Fail
+     * @return int 1 - Successful 0 - Fail
      */
-    private int CreateUserRequest(String billboardName, String xmlBillboard) {
+    private int CreateBillboardRequest(String billboardName, String xmlBillboard, String[] userData) {
         try {
             HashMap<String, String> requestBody = requestBodyWithKey();
+            requestBody.put("keyId", userData[1]);
             requestBody.put("billboardName", billboardName);
             requestBody.put("content", xmlBillboard);
-            requestBody.put("keyId", userData[1]);
             requestBody.put("key", userData[0]);
 
             //Send Request
@@ -507,7 +508,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             if (validFlag) {
                 dispose();
                 if(newBillboard == true) {
-                    int successful = CreateUserRequest(billboardName, xmlBillboard);
+                    int successful = CreateBillboardRequest(billboardName, xmlBillboard, userData);
                     if (successful > 0) {
                         MainMenu.create(userData);
                     }
