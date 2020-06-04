@@ -113,10 +113,18 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     String billboardName;
 
 
-    public BillboardEditor (String title, String[] userDataInput, String billboardNameInput, Boolean newBillboard) throws HeadlessException {
+    public BillboardEditor (String title, String[] userDataInput, Billboard billboard, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
-        this.billboardName = billboardNameInput;
+        this.billboardName = billboard.name;
+        this.xmlBillboard = billboard.xml;
+        this.newBillboard = newBillboard;
+    }
+
+    public BillboardEditor (String title, String[] userDataInput, String billboardName, Boolean newBillboard) throws HeadlessException {
+        super(title);
+        this.userData = userDataInput;
+        this.billboardName = billboardName;
         this.newBillboard = newBillboard;
     }
 
@@ -227,13 +235,6 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         backgroundColorB = createTextField("255");
         backgroundColorB.setColumns(3);
 
-        /*
-        if (newBillboard == false) {
-
-
-        }
-*/
-
 
         addToPanel(pnl3, name, constraints1,3, 1, 2, 1);
         addToPanel(pnl3, nameLabel, constraints1, 0, 1, 2, 1);
@@ -274,6 +275,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     }
 
+    private void PrepopulateGUIFields () {
+
+    }
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
                             int x, int y, int w, int h) {
@@ -537,7 +541,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
-    public static void create(String[] userData, String billboardName, boolean newBillboard) {
+    public static void create(String[] userData, Billboard billboard) {
+        boolean newBillboard = false;
+        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboard, newBillboard));
+    }
+
+    public static void create(String[] userData, String billboardName) {
+        boolean newBillboard = true;
         SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
     }
 }
