@@ -405,7 +405,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
         if (source == btnCancel) {
             dispose();
-            MainMenu.create(userData);
+            if(newBillboard == true) {
+                MainMenu.create(userData);
+            }
+            else{
+                ListBillboards.create(userData);
+            }
         } else if (source == btnSave) {
             validFlag = GetTextFields();
         } else if (source == btnPreview) {
@@ -423,6 +428,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 } catch (TransformerException ex) {
                     ex.printStackTrace();
                 }
+                JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
+                        "Press Escape to Exit Preview");
                 BillboardViewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
@@ -436,7 +443,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
             if (validFlag) {
                 dispose();
-                MainMenu.create(userData);
+                if(newBillboard == true) {
+                    MainMenu.create(userData);
+                }
+                else{
+                    ListBillboards.create(userData);
+                }
             }
         }
     }

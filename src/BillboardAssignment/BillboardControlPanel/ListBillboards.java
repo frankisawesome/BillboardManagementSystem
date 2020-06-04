@@ -203,7 +203,8 @@ public class ListBillboards extends JFrame {
         buttonEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML EDITOR BILLY");
+                dispose();
+                BillboardEditor.create(UserData, billboardList[selection][2], false);
             }
         });
 
@@ -211,7 +212,9 @@ public class ListBillboards extends JFrame {
         buttonPreview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML VIEWER BILLY");
+                JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
+                        "Press Escape to Exit Preview");
+                BillboardViewer.create(billboardList[selection][3]);
             }
         });
     }
@@ -259,7 +262,7 @@ public class ListBillboards extends JFrame {
     /**
      * Queries database and returns list of all billboards (id, author, name)
      *
-     * @return String[][] list of all billboards (id, author, name)
+     * @return String[][] list of all billboards (id, author, name, xml)
      */
     private String[][] FetchBillboards() {
         try {
