@@ -43,7 +43,7 @@ public class ScheduleManager {
     }
 
     // Determine the billboard to be displayed at the current time
-    public Schedule scheduledBillboard() throws DatabaseNotAccessibleException {
+    public Schedule scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         LocalDateTime currentDayTime = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("EEEE HH:mm");
         String formattedDate = currentDayTime.format(myFormatObj);
@@ -58,17 +58,22 @@ public class ScheduleManager {
         ArrayList<Schedule> schedulesToShowShortlist = new ArrayList<>();
 
         for (int i = 0; i < schedules.size(); i++) {
-            if (schedules.get(i).day == currentDay && /* Is the day of the schedule today? */
+            if (schedules.get(i).day.equals(currentDay) && /* Is the day of the schedule today? */
                     (current.isAfter(schedules.get(i).start) || current.equals(schedules.get(i).start)) /* Is the start time <= Right now? */ &&
                     current.isBefore(schedules.get(i).end) /* Is the end time > right now?*/) {
                 schedulesToShowShortlist.add(schedules.get(i));
             }
         }
 
-        // Get the billboard with the latest starting time
-        Schedule currentBoard = schedules.get(0);
+        /* If there are no databases at this time then throw error */
+        if (schedulesToShowShortlist.size() == 0){
+            throw new DatabaseObjectNotFoundException("DatabaseSchedule", 1);
+        }
 
-        for (Schedule billboard : schedules) {
+        // Get the billboard with the latest starting time
+        Schedule currentBoard = schedulesToShowShortlist.get(0);
+
+        for (Schedule billboard : schedulesToShowShortlist) {
             if (billboard.start.isAfter(currentBoard.start) || billboard.start.equals(currentBoard.start)) {
                 currentBoard = billboard;
             }
