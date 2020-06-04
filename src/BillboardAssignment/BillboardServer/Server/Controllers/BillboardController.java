@@ -38,6 +38,9 @@ public class BillboardController extends Controller {
             case "delete billboard":
                 response = delete();
                 break;
+            case "validate name":
+                response = validateName();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
@@ -49,6 +52,18 @@ public class BillboardController extends Controller {
             UserSessionKey key = reconstructKey();
             billboardManager.create(billboard, key);
             return new ServerResponse("Billboard created", "ok");
+        });
+    }
+
+    private ServerResponse validateName() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            boolean valid = billboardManager.validateName(key, body.get("name"));
+            if (valid) {
+                return new ServerResponse(true, "ok");
+            } else {
+                return new ServerResponse(false, "ok");
+            }
         });
     }
 
