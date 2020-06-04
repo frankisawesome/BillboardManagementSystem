@@ -172,7 +172,7 @@ public class BillboardScheduler {
         return true;
     }
 
-    BillboardScheduler()
+    BillboardScheduler(String[] UserData)
     {
         // Frame initialisation
         frame = new JFrame();
@@ -283,6 +283,25 @@ public class BillboardScheduler {
         panel.add(button, c);
 
         final String[] repeat = {""};
+
+        JLabel title = new JLabel("Billboard Schedule");
+        title.setFont(new Font("", Font.PLAIN, 20));
+        JPanel header = new JPanel();
+        header.add(title);
+        frame.add(header, BorderLayout.NORTH);
+
+        JButton exit = new JButton("Return to Main Menu");
+        JPanel bottom = new JPanel();
+        bottom.add(exit);
+        frame.add(bottom, BorderLayout.SOUTH);
+
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                MainMenu.create(UserData);
+            }
+        });
 
         button.addActionListener(new ActionListener() {
             @Override
@@ -422,13 +441,13 @@ public class BillboardScheduler {
         frame.pack();
 
         // Frame Size
-        frame.setSize(1400, 300);
+        frame.setSize(1400, 400);
         // Frame Visible = true
         frame.setVisible(true);
     }
 
-    public static void create(String[] args, String[] userData)
+    public static void create(String[] args, String[] UserData)
     {
-        new BillboardScheduler();
+        new BillboardScheduler(UserData);
     }
 }
