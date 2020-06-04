@@ -112,6 +112,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             }
         }
 
+
+
         if (title == null) {
             title = "";
         }
@@ -120,7 +122,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             subtext = "";
         }
 
-        System.out.println(title);
+
         /*  ----------------------------------------------------------------------------- */
 
         // Create panels that define the layout
@@ -195,9 +197,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
 
     }
-
-
-
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
                             int x, int y, int w, int h) {
