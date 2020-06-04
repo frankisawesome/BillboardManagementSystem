@@ -50,7 +50,7 @@ public class MainMenu extends JFrame {
                 this.setContentPane(Background);
                 this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 //Display Username at top of screen.
-                this.labelUsername.setText(("Welcome User - " + userData[1]));
+                this.labelUsername.setText(("Welcome User - " + userData[6]));
                 this.pack();
                 userData[i + 2] = newPermissions[i];
             }

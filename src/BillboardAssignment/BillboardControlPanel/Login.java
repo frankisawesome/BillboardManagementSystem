@@ -68,9 +68,10 @@ public class Login extends JFrame {
                     SessionKey = loginReturn[1];
                     dispose();
                     //Store ID and Session key in an array of user data
-                    String[] userData = {"", "", "", "", "", ""};
+                    String[] userData = {"", "", "", "", "", "", ""};
                     userData[0] = SessionKey;
                     userData[1] = loginReturn[2]; //User ID Returned
+                    userData[6] = id;
                     MainMenu.create(userData);
                 }
                 //If Login Unsuccessful

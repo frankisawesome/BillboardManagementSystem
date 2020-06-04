@@ -109,9 +109,11 @@ public class ChangePassword extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                //If request type is 0 - change own password, load main menu.
+                //If request type is 0 - change own password, load main menu. Else Load Edit User Menu
                 if (requestType == 0) {
                     MainMenu.create(UserData);
+                } else {
+                    EditUser.create(UserData, editingUserData);
                 }
             }
         });
@@ -232,9 +234,9 @@ public class ChangePassword extends JFrame {
      */
     private void PersonaliseGUI() {
         if (requestType == 0) {
-            this.labelUsername.setText(("User - " + UserData[1]));
+            this.labelUsername.setText(("User - " + UserData[6]));
         } else {
-            this.labelUsername.setText(("User - " + changeTargetID));
+            this.labelUsername.setText(("User - " + editingUserData[5]));
             labelExisting.setVisible(false);
             passwordExisting.setVisible(false);
         }
