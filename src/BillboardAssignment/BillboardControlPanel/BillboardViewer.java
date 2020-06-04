@@ -168,31 +168,33 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         htmlTitle1.setVerticalAlignment(JLabel.CENTER);
         pnl5.add(htmlTitle1);
 
-        if (imageUrlFlg == true) {
-            BufferedImage myPicture;
-            try {
-                myPicture = ImageIO.read(new File(image));
-            } catch (IOException e){
-                dispose();
-                JOptionPane.showMessageDialog(this, "Invalid Url.");
-                return;
+        if (imageUrlFlg != null) {
+            if (imageUrlFlg == true) {
+                BufferedImage myPicture;
+                try {
+                    myPicture = ImageIO.read(new File(image));
+                } catch (IOException e){
+                    dispose();
+                    JOptionPane.showMessageDialog(this, "Invalid Url.");
+                    return;
+                }
+                Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
+                JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+                pnl3.add(picLabel);
+            } else if (imageUrlFlg == false) {
+                byte[] imageByte = Base64.getDecoder().decode(image);
+                BufferedImage myPicture;
+                try {
+                    myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
+                } catch (IOException e){
+                    dispose();
+                    JOptionPane.showMessageDialog(this, "Invalid Byte Array.");
+                    return;
+                }
+                Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
+                JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+                pnl3.add(picLabel);
             }
-            Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
-            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-            pnl3.add(picLabel);
-        } else if (imageUrlFlg == false) {
-            byte[] imageByte = Base64.getDecoder().decode(image);
-            BufferedImage myPicture;
-            try {
-                myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
-            } catch (IOException e){
-                dispose();
-                JOptionPane.showMessageDialog(this, "Invalid Byte Array.");
-                return;
-            }
-            Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
-            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-            pnl3.add(picLabel);
         }
 
 

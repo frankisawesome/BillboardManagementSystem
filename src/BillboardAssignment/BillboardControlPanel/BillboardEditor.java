@@ -427,7 +427,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     }
 
     /**
-     * Sends a request to create a new billboardto the server. All exceptions occuring as a result are handled in the method.
+     * Sends a request to create a new billboard to the server. All exceptions occuring as a result are handled in the method.
      * @param billboardName - name of the billboard to be created
      * @param xmlBillboard - xml string that stores billboard info
      * @return int 1 - Successful 0 - Fail
@@ -440,20 +440,28 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             requestBody.put("content", xmlBillboard);
             requestBody.put("key", userData[0]);
 
+            System.out.println(userData[1]);
+            System.out.println(userData[0]);
+            System.out.println(billboardName);
+            System.out.println(xmlBillboard);
+
             //Send Request
             ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "create", requestBody);
             ServerResponse response = request.getResponse();
 
             //If Successful, return 1, else return 0 and give error dialog.
             if (response.status().equals("ok")) {
+                System.out.println("ok");
                 return (1);
             } else {
                 JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
                         response.status());
+                System.out.println("request rejected");
                 return (0);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Create Billboard | " + e.getMessage());
+            System.out.println("contact it");
             return (0);
         }
     }
@@ -477,21 +485,21 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             }
         } else if (source == btnSave) {
             validFlag = GetTextFields();
+            try {
+                xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
+                        imagePathBillboard, urlBillboard,
+                        subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
+                        backgroundRBillboard, backgroundGBillboard, backgroundBBillboard);
+            } catch (ParserConfigurationException ex) {
+                ex.printStackTrace();
+            } catch (TransformerException ex) {
+                ex.printStackTrace();
+            }
         } else if (source == btnPreview) {
             ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
             actionPerformed(btnSaveSim);
 
             if (validFlag) {
-                try {
-                    xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
-                            imagePathBillboard, urlBillboard,
-                            subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
-                            backgroundRBillboard, backgroundGBillboard, backgroundBBillboard);
-                } catch (ParserConfigurationException ex) {
-                    ex.printStackTrace();
-                } catch (TransformerException ex) {
-                    ex.printStackTrace();
-                }
                 JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
                         "Press Escape to Exit Preview");
                 BillboardViewer.create(xmlBillboard);
@@ -506,9 +514,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             actionPerformed(btnSaveSim);
 
             if (validFlag) {
-                dispose();
                 if(newBillboard == true) {
                     int successful = CreateBillboardRequest(billboardName, xmlBillboard, userData);
+                    dispose();
                     if (successful > 0) {
                         MainMenu.create(userData);
                     }
