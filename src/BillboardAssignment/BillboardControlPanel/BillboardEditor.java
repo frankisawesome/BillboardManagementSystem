@@ -17,6 +17,7 @@ import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -46,6 +47,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     Boolean newBillboard;
     Boolean validFlag;
     // Strings of text defining Billboard
+    String billboardID;
     String titleBillboard;
     String titleRBillboard;
     String titleGBillboard;
@@ -116,6 +118,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     public BillboardEditor (String title, String[] userDataInput, String[] billboard, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
+        this.billboardID = billboard[0];
         this.billboardName = billboard[2];
         this.xmlBillboard = billboard[3];
         this.newBillboard = newBillboard;
@@ -164,10 +167,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
         pnlBtn.setLayout(new GridBagLayout());
 
-        btnCreateBillboard = createButton("Create Billboard");
+        btnCreateBillboard = createButton("Save Billboard");
         btnCancel = createButton("Cancel");
         btnPreview = createButton("Preview");
-        btnSave = createButton("Save");
+        btnSave = createButton("Cache Billboard");
 
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -275,8 +278,87 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     }
 
-    private void PrepopulateGUIFields () {
+    private void PrepopulateGUIFields () throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
 
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(xmlBillboard.getBytes());
+        Document document = builder.parse(bais);
+        bais.close();
+
+        Element documentElement = document.getDocumentElement();
+        String attributeValue = documentElement.getAttribute("background");
+
+        if (attributeValue.isEmpty()) {
+            backgroundRBillboard = "255";
+            backgroundGBillboard = "255";
+            backgroundBBillboard = "255";
+
+            backgroundColorR.setText(backgroundRBillboard);
+            backgroundColorG.setText(backgroundGBillboard);
+            backgroundColorB.setText(backgroundBBillboard);
+        } else {
+            System.out.println(attributeValue);
+            backgroundRBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(1,3), 16));
+            backgroundGBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(3,5), 16));
+            backgroundBBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(5,7), 16));
+
+            backgroundColorR.setText(backgroundRBillboard);
+            backgroundColorG.setText(backgroundGBillboard);
+            backgroundColorB.setText(backgroundBBillboard);
+        }
+
+        NodeList nl = documentElement.getChildNodes();
+
+        for (int i =0; i < nl.getLength(); ++i) {
+            Node node = nl.item(i);
+            if (node instanceof Element) {
+                Element element = (Element) node;
+                if (element.getTagName() == "message") {
+                    titleBillboard = element.getTextContent();
+                    System.out.println(titleBillboard);
+                    String dummyTitleColor = element.getAttribute("colour");
+                    titleRBillboard = String.valueOf(Integer.parseInt(dummyTitleColor.substring(1,3), 16));
+                    titleGBillboard = String.valueOf(Integer.parseInt(dummyTitleColor.substring(3,5), 16));
+                    titleBBillboard = String.valueOf(Integer.parseInt(dummyTitleColor.substring(5,7), 16));
+
+                    titleColorR.setText(titleRBillboard);
+                    titleColorG.setText(titleGBillboard);
+                    titleColorB.setText(titleBBillboard);
+                } else if (element.getTagName() == "picture") {
+                    if ((element.hasAttribute("url")) && (!element.hasAttribute("data"))) {
+                        imagePathBillboard = element.getAttribute("url");
+                        imagePath.setText(imagePathBillboard);
+                        imageUrlData.setSelected(false);
+                        if (imagePathBillboard == "") {
+                            noImage.setSelected(true);
+                        } else {
+                            noImage.setSelected(false);
+                        }
+                    } else if ((element.hasAttribute("data")) && (!element.hasAttribute("url"))) {
+                        imagePathBillboard = element.getAttribute("data");
+                        imageUrlData.setSelected(true);
+                        if (imagePathBillboard == "") {
+                            noImage.setSelected(true);
+                        } else {
+                            noImage.setSelected(false);
+                        }
+                    }
+                } else if (element.getTagName() == "information") {
+                    subtextBillboard = element.getTextContent();
+                    subtext.setText(subtextBillboard);
+                    String dummySubtextColor = element.getAttribute("colour");
+                    subtextRBillboard = String.valueOf(Integer.parseInt(dummySubtextColor.substring(1,3), 16));
+                    subtextGBillboard = String.valueOf(Integer.parseInt(dummySubtextColor.substring(3,5), 16));
+                    subtextBBillboard = String.valueOf(Integer.parseInt(dummySubtextColor.substring(5,7), 16));
+
+                    subtextColorR.setText(subtextRBillboard);
+                    subtextColorG.setText(subtextGBillboard);
+                    subtextColorB.setText(subtextBBillboard);
+                }
+            }
+        }
     }
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
@@ -479,9 +561,69 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
+    /**
+     * Sends a request to edit an existing billboard in the server. All exceptions occuring as a result are handled in the method.
+     * @param billboardID - name of the billboard to be created
+     * @param xmlBillboard - xml string that stores billboard info
+     * @return int 1 - Successful 0 - Fail
+     */
+    private int EditBillboardRequest(String billboardID, String xmlBillboard, String[] userData) {
+        try {
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", userData[1]);
+            requestBody.put("billboardId", billboardID);
+            requestBody.put("newContent", xmlBillboard);
+            requestBody.put("key", userData[0]);
+
+            System.out.println(userData[1]);
+            System.out.println(userData[0]);
+            System.out.println(billboardID);
+            System.out.println(xmlBillboard);
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "edit billboard", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //If Successful, return 1, else return 0 and give error dialog.
+            if (response.status().equals("ok")) {
+                System.out.println("ok");
+                return (1);
+            } else {
+                //Check if error was due to session key expiry and process accordingly
+                if (response.status().equals("Session key invalid")) {
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (0);
+                }
+                //If not then treat as generic error
+                JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
+                        response.status());
+                System.out.println("request rejected");
+                return (0);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \nEdit Billboard | " + e.getMessage());
+            System.out.println("contact it");
+            return (0);
+        }
+    }
+
     @Override
     public void run() {
         SetGUI();
+
+        if (newBillboard == false) {
+            try {
+                PrepopulateGUIFields();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -529,6 +671,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             if (validFlag) {
                 if(newBillboard == true) {
                     int successful = CreateBillboardRequest(billboardName, xmlBillboard, userData);
+                    dispose();
+                    if (successful > 0) {
+                        MainMenu.create(userData);
+                    }
+                } else if (newBillboard == false) {
+                    int successful = EditBillboardRequest(billboardID, xmlBillboard, userData);
                     dispose();
                     if (successful > 0) {
                         MainMenu.create(userData);
