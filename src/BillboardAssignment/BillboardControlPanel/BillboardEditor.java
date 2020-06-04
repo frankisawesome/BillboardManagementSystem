@@ -441,11 +441,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
-    public static void create(String[] userData, String billboardName, boolean newBillboard) {
-        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
-    }
-
-    public static void create(String[] userData, String billboardName, boolean newBillboard) {
+        public static void create(String[] userData, String billboardName, boolean newBillboard) {
         SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
     }
 }
