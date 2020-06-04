@@ -1,11 +1,10 @@
-package BillboardAssignment.BillboardServer.Server.Controllers;
+package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 

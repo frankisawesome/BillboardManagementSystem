@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.Server.Controllers;
+package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
