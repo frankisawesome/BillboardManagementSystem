@@ -18,11 +18,11 @@ public class ScheduleManager {
     }
 
     // Add a new instance of a billboard to the schedule
-    public Schedule addToSchedule(String[] billboardInfo) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
 
         int ID = scheduleDatabase.getMaxID() + 1;
 
-        Schedule addBillboard = new Schedule (ID, billboardInfo[0], billboardInfo[1], LocalTime.parse(billboardInfo[2]), LocalTime.parse(billboardInfo[3]));
+        Schedule addBillboard = new Schedule (ID, billboardName, scheduleDay, LocalTime.parse(startTime), LocalTime.parse(endTime));
 
         scheduleDatabase.addObject(addBillboard);
 

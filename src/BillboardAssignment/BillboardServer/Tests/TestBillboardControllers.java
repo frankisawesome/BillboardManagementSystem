@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.Server.Tests;
+package BillboardAssignment.BillboardServer.Tests;
 
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static BillboardAssignment.BillboardServer.Server.Tests.TestUserControllers.requestBodyWithKey;
+import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBillboardControllers {

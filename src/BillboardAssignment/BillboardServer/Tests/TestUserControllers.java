@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.Server.Tests;
+package BillboardAssignment.BillboardServer.Tests;
 
 import BillboardAssignment.BillboardServer.Server.*;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
