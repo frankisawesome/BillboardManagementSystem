@@ -51,6 +51,11 @@ public class BillboardManager extends UserManager {
         billboardDb.addObject(new Billboard(billboardId, old.name, newContent, old.creatorId));
     }
 
+    public void delete(int billboardId, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
+        checkSessionKeyPrivileges(key, UserPrivilege.EditAllBillboards);
+        billboardDb.removeObject(billboardId);
+    }
+
     public void createFirstBillboard() {
         Billboard billboard = new Billboard(0, "first", "somexml", 69420);
         try {

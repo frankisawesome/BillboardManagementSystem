@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
+package BillboardAssignment.BillboardServer.Server.Controllers;
 
 public class PrivilegeStringInvalidException extends Exception {
     @Override

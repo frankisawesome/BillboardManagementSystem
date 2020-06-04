@@ -1,11 +1,11 @@
-package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
+package BillboardAssignment.BillboardServer.Server.Controllers;
 
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,6 +35,9 @@ public class BillboardController extends Controller {
             case "edit billboard":
                 response = edit();
                 break;
+            case "delete billboard":
+                response = delete();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
@@ -54,6 +57,14 @@ public class BillboardController extends Controller {
             UserSessionKey key = reconstructKey();
             ArrayList<Billboard> billboards = billboardManager.list(key);
             return new ServerResponse(billboards, "ok");
+        });
+    }
+
+    private ServerResponse delete() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            billboardManager.delete(Integer.parseInt(body.get("billboardId")), key);
+            return new ServerResponse("Billboard deleted", "ok");
         });
     }
 

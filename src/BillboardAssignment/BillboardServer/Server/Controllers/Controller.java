@@ -1,6 +1,6 @@
-package BillboardAssignment.BillboardServer.BillboardServer.Controllers;
+package BillboardAssignment.BillboardServer.Server.Controllers;
 
-import BillboardAssignment.BillboardServer.BillboardServer.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
