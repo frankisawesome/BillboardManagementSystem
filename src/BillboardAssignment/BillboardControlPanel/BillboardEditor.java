@@ -454,6 +454,14 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 System.out.println("ok");
                 return (1);
             } else {
+                //Check if error was due to session key expiry and process accordingly
+                if (response.status().equals("Session key invalid")) {
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (0);
+                }
+                //If not then treat as generic error
                 JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
                         response.status());
                 System.out.println("request rejected");
