@@ -10,23 +10,12 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.net.URL;
-import java.util.Base64;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -38,9 +27,19 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     Boolean newBillboard;
     // Strings of text defining Billboard
     String titleBillboard;
+    String titleRBillboard;
+    String titleGBillboard;
+    String titleBBillboard;
     String imagePathBillboard;
+    boolean byteBillboard;
     String subtextBillboard;
+    String subtextRBillboard;
+    String subtextGBillboard;
+    String subtextBBillboard;
     String xmlBillboard;
+    String backgroundRBillboard;
+    String backgroundGBillboard;
+    String backgroundBBillboard;
 
     // Panels for the Box layout
     JPanel pnl1;
@@ -108,7 +107,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         pnl1 = createPanel(Color.WHITE);
         pnl2 = createPanel(Color.WHITE);
         pnl3 = createPanel(Color.WHITE);
-        pnl4 = createPanel(Color.WHITE);
+        pnl4 = createPanel(Color.ORANGE);
         pnlBtn = createPanel(Color.GRAY);
 
         // Set sizes of the panels
@@ -159,11 +158,11 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
         name = createTextField(billboardName);
         name.setEnabled(false);
-        name.setColumns(20);
+        name.setColumns(30);
         JLabel nameLabel = new JLabel("Name");
 
         title = createTextField("Insert billboard title");
-        title.setColumns(20);
+        title.setColumns(30);
         JLabel titleLabel = new JLabel("Title");
         titleColorR = createTextField("R");
         titleColorR.setColumns(3);
@@ -173,13 +172,14 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         titleColorB.setColumns(3);
 
         imagePath = createTextField("Specify the images path/ a byte representation");
-        imagePath.setColumns(20);
+        imagePath.setColumns(30);
         imagePathLabel = new JLabel("Image Path");
         imageUrlData = new JCheckBox("Image a byte array?");
         searchComputer = createButton("Browse PC");
 
 
         subtext = createTextArea("Billboard subtext");
+        subtext.setColumns(30);
         subtextLabel = new JLabel("Billboard Subtext");
         subtextColorR = createTextField("R");
         subtextColorR.setColumns(3);
@@ -276,6 +276,31 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         panel.setBackground(color);
         return panel;
     }
+    
+    private void GetTextFields() {
+        titleBillboard = title.getText();
+        titleRBillboard = titleColorR.getText();
+        titleGBillboard = titleColorG.getText();
+        titleBBillboard = titleColorB.getText();
+
+        imagePathBillboard = imagePath.getText();
+        System.out.println(imagePathBillboard);
+
+        if (imageUrlData.isSelected()) {
+            byteBillboard = false;
+        } else {
+            byteBillboard = true;
+        }
+
+        subtextBillboard = subtext.getText();
+        subtextRBillboard = subtextColorR.getText();
+        subtextGBillboard = subtextColorG.getText();
+        subtextBBillboard = subtextColorB.getText();
+
+        backgroundRBillboard = backgroundColorR.getText();
+        backgroundGBillboard = backgroundColorG.getText();
+        backgroundBBillboard = backgroundColorB.getText();
+    }
 
 
     @Override
@@ -291,25 +316,23 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             dispose();
             MainMenu.create(userData);
         } else if (source == btnSave) {
+            GetTextFields();
             System.out.println(2);
         } else if (source == btnPreview) {
-            String billboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<billboard background = \"#0000FF\">\n" +
-                    "    <message>Billboard with message, GIF and information</message>\n" +
-                    "    <picture url=\"C:\\Users\\billy\\OneDrive\\Desktop\\Clive-Palmer-billboard-500x309.jpg\" />\n" +
-                    "    <information colour=\"#FFC457\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                    "</billboard>\n";
+            ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
+            actionPerformed(btnSaveSim);
+
             try {
-                billboard = XMLBuilder.WriteXML("Yes", "255", "255", "0",
-                        "", false,
-                "", "", "", "",
-                        "", "", "");
+                xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
+                        imagePathBillboard, byteBillboard,
+                subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
+                        backgroundRBillboard, backgroundGBillboard, backgroundBBillboard);
             } catch (ParserConfigurationException ex) {
                 ex.printStackTrace();
             } catch (TransformerException ex) {
                 ex.printStackTrace();
             }
-            BillboardViewer.create(billboard);
+            BillboardViewer.create(xmlBillboard);
         } else if (source == searchComputer) {
              System.out.println("TODO: Search Computer files");
 

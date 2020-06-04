@@ -30,6 +30,22 @@ public class XMLBuilder {
         Element billboardElement = document.createElement("billboard");
         document.appendChild(billboardElement);
 
+        if ((backgroundR.length() > 0) && (backgroundG.length() > 0) && (backgroundB.length() > 0)) {
+            // Convert title colours to ints
+            int backgroundRInt = Integer.parseInt(backgroundR);
+            int backgroundGInt = Integer.parseInt(backgroundG);
+            int backgroundBInt = Integer.parseInt(backgroundB);
+
+            // Convert ints to hex strings
+            String backgroundRHex = String.format("%02X", backgroundRInt);
+            String backgroundGHex = String.format("%02X", backgroundGInt);
+            String backgroundBHex = String.format("%02X", backgroundBInt);
+
+            Attr colour = document.createAttribute("background");
+            colour.setValue("#" + backgroundRHex + backgroundGHex + backgroundBHex);
+            billboardElement.setAttributeNode(colour);
+        }
+
         if (title.length() > 0) {
 
             Element titleElement;
@@ -49,13 +65,51 @@ public class XMLBuilder {
                 String titleBHex = String.format("%02X", titleBInt);
 
                 Attr colour = document.createAttribute("colour");
-                colour.setValue("\"#" + titleRHex + titleGHex + titleBHex + "\"");
+                colour.setValue("#" + titleRHex + titleGHex + titleBHex);
                 titleElement.setAttributeNode(colour);
             }
+        }
 
+        if (imagePath.length() > 0) {
 
+            Element imagePathElement;
+            imagePathElement = document.createElement("picture");
+            billboardElement.appendChild(imagePathElement);
 
+            if (URL == true) {
 
+                Attr urlAttr = document.createAttribute("url");
+                urlAttr.setValue(imagePath);
+                imagePathElement.setAttributeNode(urlAttr);
+            } else {
+                Attr dataAttr = document.createAttribute("data");
+                dataAttr.setValue(imagePath);
+                imagePathElement.setAttributeNode(dataAttr);
+            }
+        }
+
+        if (subtext.length() > 0) {
+
+            Element subtextElement;
+            subtextElement = document.createElement("information");
+            billboardElement.appendChild(subtextElement);
+            subtextElement.appendChild(document.createTextNode(subtext));
+
+            if ((subtextR.length() > 0) && (subtextG.length() > 0) && (subtextB.length() > 0)) {
+                // Convert title colours to ints
+                int subtextRInt = Integer.parseInt(subtextR);
+                int subtextGInt = Integer.parseInt(subtextG);
+                int subtextBInt = Integer.parseInt(subtextB);
+
+                // Convert ints to hex strings
+                String subtextRHex = String.format("%02X", subtextRInt);
+                String subtextGHex = String.format("%02X", subtextGInt);
+                String subtextBHex = String.format("%02X", subtextBInt);
+
+                Attr colour = document.createAttribute("colour");
+                colour.setValue("#" + subtextRHex + subtextGHex + subtextBHex);
+                subtextElement.setAttributeNode(colour);
+            }
         }
 
         DOMSource domSource = new DOMSource(document);
