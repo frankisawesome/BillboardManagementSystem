@@ -274,9 +274,6 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     }
 
-    private void PrepopulateFields () {
-
-    }
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
                             int x, int y, int w, int h) {
