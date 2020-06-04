@@ -50,11 +50,13 @@ public class CreateBillboard extends JFrame {
                 if (!billboardName.equals("")) {
                     if (!CheckBillboardExists(billboardName)) {
                         dispose();
-                        BillboardEditor.create(UserData, billboardName);
+                        BillboardEditor.create(UserData, billboardName, true);
                     }
                 }
             }
         });
+
+
     }
 
     /**

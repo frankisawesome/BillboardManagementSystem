@@ -10,22 +10,45 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
+import org.w3c.dom.Attr;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
-    public static int WIDTH = 640;
-    public static int HEIGHT = 480;
+    public static int WIDTH = 1200;
+    public static int HEIGHT = 700;
 
+    // Boolean deciding if new billboard or existing
+    Boolean newBillboard;
+    Boolean validFlag;
     // Strings of text defining Billboard
     String titleBillboard;
+    String titleRBillboard;
+    String titleGBillboard;
+    String titleBBillboard;
     String imagePathBillboard;
+    boolean urlBillboard;
     String subtextBillboard;
+    String subtextRBillboard;
+    String subtextGBillboard;
+    String subtextBBillboard;
     String xmlBillboard;
+    String backgroundRBillboard;
+    String backgroundGBillboard;
+    String backgroundBBillboard;
 
     // Panels for the Box layout
     JPanel pnl1;
@@ -42,6 +65,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JButton btnPreview;
     JButton btnSave;
 
+    JTextField name;
+    JLabel nameLabel;
+
     JTextField title;
     JLabel titleLabel;
     JTextField titleColorR;
@@ -50,7 +76,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     JTextField imagePath;
     JLabel imagePathLabel;
-    JCheckBox imagePathCheckBox;
+    JCheckBox imageUrlData;
+    JButton searchComputer;
 
     JTextArea subtext;
     JLabel subtextLabel;
@@ -64,21 +91,24 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JTextField backgroundColorG;
     JTextField backgroundColorB;
     JLabel colorLabel;
+    JLabel colorLabel2;
 
     JLabel editorTitle;
     private String[] userData;
     String billboardName;
 
 
-    public BillboardEditor (String title, String[] userDataInput, String billboardNameInput) throws HeadlessException {
+    public BillboardEditor (String title, String[] userDataInput, String billboardNameInput, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
         this.billboardName = billboardNameInput;
+        this.newBillboard = newBillboard;
     }
 
     public void SetGUI () {
         // Set preliminaries
         setVisible(true);
+        setResizable(false);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -86,7 +116,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         pnl1 = createPanel(Color.WHITE);
         pnl2 = createPanel(Color.WHITE);
         pnl3 = createPanel(Color.WHITE);
-        pnl4 = createPanel(Color.WHITE);
+        pnl4 = createPanel(Color.ORANGE);
         pnlBtn = createPanel(Color.GRAY);
 
         // Set sizes of the panels
@@ -135,10 +165,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         constraints1.anchor = GridBagConstraints.NORTHWEST;
         constraints1.insets = new Insets(6,3,6,3);
 
+        name = createTextField(billboardName);
+        name.setEnabled(false);
+        name.setColumns(30);
+        JLabel nameLabel = new JLabel("Name");
+
         title = createTextField("Insert billboard title");
-        title.setColumns(20);
-        title.setEnabled(false);
-        title.setText(billboardName);
+        title.setColumns(30);
         JLabel titleLabel = new JLabel("Title");
         titleColorR = createTextField("R");
         titleColorR.setColumns(3);
@@ -147,11 +180,15 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         titleColorB = createTextField("B");
         titleColorB.setColumns(3);
 
-        imagePath = createTextField("Specify the images path");
-        imagePath.setColumns(20);
+        imagePath = createTextField("Specify the images path/ a byte representation");
+        imagePath.setColumns(30);
         imagePathLabel = new JLabel("Image Path");
+        imageUrlData = new JCheckBox("Image a byte array?");
+        searchComputer = createButton("Browse PC");
+
 
         subtext = createTextArea("Billboard subtext");
+        subtext.setColumns(30);
         subtextLabel = new JLabel("Billboard Subtext");
         subtextColorR = createTextField("R");
         subtextColorR.setColumns(3);
@@ -160,7 +197,8 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         subtextColorB = createTextField("B");
         subtextColorB.setColumns(3);
 
-        colorLabel = new JLabel("Color (0-255)");
+        colorLabel = new JLabel("Color");
+        colorLabel2 = new JLabel("(0-255)");
 
         backgroundColorLabel = new JLabel("Background Color");
         backgroundColorR = createTextField("R");
@@ -170,32 +208,47 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         backgroundColorB = createTextField("B");
         backgroundColorB.setColumns(3);
 
-        addToPanel(pnl3, title, constraints1,3, 1, 2, 1);
-        addToPanel(pnl3, titleLabel, constraints1, 0, 1, 2, 1);
-        addToPanel(pnl3, titleColorR, constraints1, 5, 1, 2, 1);
-        addToPanel(pnl3, titleColorG, constraints1, 7, 1, 2, 1);
-        addToPanel(pnl3, titleColorB, constraints1, 9, 1, 2, 1);
 
-        addToPanel(pnl3, colorLabel, constraints1, 7, 0, 2, 1);
+        addToPanel(pnl3, name, constraints1,3, 1, 2, 1);
+        addToPanel(pnl3, nameLabel, constraints1, 0, 1, 2, 1);
 
-        addToPanel(pnl3, imagePath, constraints1, 3, 2, 2, 1);
-        addToPanel(pnl3, imagePathLabel, constraints1, 0, 2, 2, 1);
+        addToPanel(pnl3, title, constraints1,3, 2, 2, 1);
+        addToPanel(pnl3, titleLabel, constraints1, 0, 2, 2, 1);
+        addToPanel(pnl3, titleColorR, constraints1, 5, 2, 2, 1);
+        addToPanel(pnl3, titleColorG, constraints1, 7, 2, 2, 1);
+        addToPanel(pnl3, titleColorB, constraints1, 9, 2, 2, 1);
 
-        addToPanel(pnl3, subtext, constraints1, 3, 3, 2, 1);
-        addToPanel(pnl3, subtextLabel, constraints1, 0, 3, 2, 1);
-        addToPanel(pnl3, subtextColorR, constraints1, 5, 3, 2, 1);
-        addToPanel(pnl3, subtextColorG, constraints1, 7, 3, 2, 1);
-        addToPanel(pnl3, subtextColorB, constraints1, 9, 3, 2, 1);
+        addToPanel(pnl3, colorLabel, constraints1, 5, 0, 2, 1);
+        addToPanel(pnl3, colorLabel2, constraints1, 7, 0, 2, 1);
 
-        addToPanel(pnl3, backgroundColorLabel, constraints1, 0, 4, 2, 1);
-        addToPanel(pnl3, backgroundColorR, constraints1, 5, 4, 2, 1);
-        addToPanel(pnl3, backgroundColorG, constraints1, 7, 4, 2, 1);
-        addToPanel(pnl3, backgroundColorB, constraints1, 9, 4, 2, 1);
+        addToPanel(pnl3, imagePath, constraints1, 3, 3, 2, 1);
+        addToPanel(pnl3, imagePathLabel, constraints1, 0, 3, 2, 1);
+        addToPanel(pnl3, imageUrlData, constraints1, 3, 5, 2, 1);
+        addToPanel(pnl3, searchComputer, constraints1, 3, 4, 2,1);
+
+        addToPanel(pnl3, subtext, constraints1, 3, 6, 2, 1);
+        addToPanel(pnl3, subtextLabel, constraints1, 0, 6, 2, 1);
+        addToPanel(pnl3, subtextColorR, constraints1, 5, 6, 2, 1);
+        addToPanel(pnl3, subtextColorG, constraints1, 7, 6, 2, 1);
+        addToPanel(pnl3, subtextColorB, constraints1, 9, 6, 2, 1);
+
+        addToPanel(pnl3, backgroundColorLabel, constraints1, 0, 7, 2, 1);
+        addToPanel(pnl3, backgroundColorR, constraints1, 5, 7, 2, 1);
+        addToPanel(pnl3, backgroundColorG, constraints1, 7, 7, 2, 1);
+        addToPanel(pnl3, backgroundColorB, constraints1, 9, 7, 2, 1);
 
         editorTitle = new JLabel();
         editorTitle.setText("<html><h1>Billboard Editor</h1></html>");
         editorTitle.setBounds(0, 20, 200, 50);
-        addToPanel(pnl4, editorTitle, constraints1, 9, 4, 2, 1);
+        addToPanel(pnl4, editorTitle, constraints1, 9, 5, 2, 1);
+
+        if (newBillboard == false) {
+            existingBillboardText();
+        }
+    }
+
+    private void existingBillboardText () {
+        return;
     }
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
@@ -232,6 +285,114 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         panel.setBackground(color);
         return panel;
     }
+    
+    private boolean GetTextFields() {
+        titleBillboard = title.getText();
+        titleRBillboard = titleColorR.getText();
+        titleGBillboard = titleColorG.getText();
+        titleBBillboard = titleColorB.getText();
+
+        imagePathBillboard = imagePath.getText();
+        System.out.println(imagePathBillboard);
+
+        if (imageUrlData.isSelected()) {
+            urlBillboard = false;
+        } else {
+            urlBillboard = true;
+        }
+
+        subtextBillboard = subtext.getText();
+        subtextRBillboard = subtextColorR.getText();
+        subtextGBillboard = subtextColorG.getText();
+        subtextBBillboard = subtextColorB.getText();
+
+        backgroundRBillboard = backgroundColorR.getText();
+        backgroundGBillboard = backgroundColorG.getText();
+        backgroundBBillboard = backgroundColorB.getText();
+
+        if ((titleRBillboard.length() > 0) && (titleGBillboard.length() > 0) && (titleBBillboard.length() > 0)) {
+            // Convert title colours to ints
+            int titleRInt = -1;
+            int titleGInt = -1;
+            int titleBInt = -1;
+            try {
+                titleRInt = Integer.parseInt(titleRBillboard);
+                titleGInt = Integer.parseInt(titleGBillboard);
+                titleBInt = Integer.parseInt(titleBBillboard);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Title colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+
+            if (((titleRInt < 0) || (titleRInt > 255)) || ((titleGInt < 0) || (titleGInt > 255)) || ((titleBInt < 0) || (titleBInt > 255))) {
+                JOptionPane.showMessageDialog(this, "Title colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+        }
+
+        if ((subtextRBillboard.length() > 0) && (subtextGBillboard.length() > 0) && (subtextBBillboard.length() > 0)) {
+            // Convert title colours to ints
+            int subtextRInt = -1;
+            int subtextGInt = -1;
+            int subtextBInt = -1;
+            try {
+                subtextRInt = Integer.parseInt(subtextRBillboard);
+                subtextGInt = Integer.parseInt(subtextGBillboard);
+                subtextBInt = Integer.parseInt(subtextBBillboard);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Subtext colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+
+            if (((subtextRInt < 0) || (subtextRInt > 255)) || ((subtextGInt < 0) || (subtextGInt > 255)) || ((subtextBInt < 0) || (subtextBInt > 255))) {
+                JOptionPane.showMessageDialog(this, "Subtext colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+        }
+
+        if ((backgroundRBillboard.length() > 0) && (backgroundGBillboard.length() > 0) && (backgroundBBillboard.length() > 0)) {
+            // Convert title colours to ints
+            int backgroundRInt = -1;
+            int backgroundGInt = -1;
+            int backgroundBInt = -1;
+            try {
+                backgroundRInt = Integer.parseInt(backgroundRBillboard);
+                backgroundGInt = Integer.parseInt(backgroundGBillboard);
+                backgroundBInt = Integer.parseInt(backgroundBBillboard);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Background colours must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+
+            if (((backgroundRInt < 0) || (backgroundRInt > 255)) || ((backgroundGInt < 0) || (backgroundGInt > 255)) || ((backgroundBInt < 0) || (backgroundBInt > 255))) {
+                JOptionPane.showMessageDialog(this, "Background colours must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+        }
+
+        if (urlBillboard == true) {
+            BufferedImage myPicture;
+            try {
+                myPicture = ImageIO.read(new File(imagePathBillboard));
+            } catch (IOException e){
+                JOptionPane.showMessageDialog(this, "Invalid Url.");
+                return false;
+            }
+        } else if (urlBillboard == false) {
+            byte[] imageByte;
+            BufferedImage myPicture;
+            try {
+                imageByte = Base64.getDecoder().decode(imagePathBillboard);
+                myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
+            } catch (IOException e){
+                JOptionPane.showMessageDialog(this, "Invalid Byte Array.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     @Override
     public void run() {
@@ -246,19 +407,45 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             dispose();
             MainMenu.create(userData);
         } else if (source == btnSave) {
-            System.out.println(2);
+            validFlag = GetTextFields();
         } else if (source == btnPreview) {
-            SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
-        }
-        else if (source == btnCreateBillboard){
-            JOptionPane.showMessageDialog(null, "Billboard Created Successfully!\n" +
-                    "NOT REALLY, PLEASE INTEGRATE TO SERVER");
-            dispose();
-            MainMenu.create(userData);
+            ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
+            actionPerformed(btnSaveSim);
+
+            if (validFlag) {
+                try {
+                    xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
+                            imagePathBillboard, urlBillboard,
+                            subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
+                            backgroundRBillboard, backgroundGBillboard, backgroundBBillboard);
+                } catch (ParserConfigurationException ex) {
+                    ex.printStackTrace();
+                } catch (TransformerException ex) {
+                    ex.printStackTrace();
+                }
+                BillboardViewer.create(xmlBillboard);
+            }
+        } else if (source == searchComputer) {
+             System.out.println("TODO: Search Computer files");
+
+        } else if (source == btnCreateBillboard){
+            JOptionPane.showMessageDialog(null, "Press ok to send billboard to server");
+
+            ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
+            actionPerformed(btnSaveSim);
+
+            if (validFlag) {
+                dispose();
+                MainMenu.create(userData);
+            }
         }
     }
 
-    public static void create(String[] userData, String billboardName) {
-        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName));
+    public static void create(String[] userData, String billboardName, boolean newBillboard) {
+        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
+    }
+
+    public static void create(String[] userData, String billboardName, boolean newBillboard) {
+        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
     }
 }
