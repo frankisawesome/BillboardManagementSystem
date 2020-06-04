@@ -25,9 +25,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import javax.swing.border.Border;
@@ -317,7 +318,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
                     titleBillboard = element.getTextContent();
-                    System.out.println(titleBillboard);
+                    title.setText(titleBillboard);
                     String dummyTitleColor = element.getAttribute("colour");
                     titleRBillboard = String.valueOf(Integer.parseInt(dummyTitleColor.substring(1,3), 16));
                     titleGBillboard = String.valueOf(Integer.parseInt(dummyTitleColor.substring(3,5), 16));
@@ -660,7 +661,27 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 BillboardViewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
-             System.out.println("TODO: Search Computer files");
+             JFileChooser j = new JFileChooser("C:");
+             int approveVal = j.showSaveDialog(BillboardEditor.this);
+
+             if (approveVal == JFileChooser.APPROVE_OPTION) {
+                 String fileName = j.getSelectedFile().getName();
+                 String tempDirectory = j.getCurrentDirectory().toString();
+                 String tempImagePath = tempDirectory + "\\" + fileName;
+
+                 try {
+                     FileInputStream fis = new FileInputStream(tempImagePath);
+                     byte[] bytes = fis.readAllBytes();
+                     String s = Base64.getEncoder().encodeToString(bytes);
+                     imagePath.setText(s);
+                     imageUrlData.setSelected(true);
+                 } catch (FileNotFoundException ex) {
+                     ex.printStackTrace();
+                 } catch (IOException ex) {
+                     ex.printStackTrace();
+                 }
+
+             }
 
         } else if (source == btnCreateBillboard){
             JOptionPane.showMessageDialog(null, "Press ok to send billboard to server");
