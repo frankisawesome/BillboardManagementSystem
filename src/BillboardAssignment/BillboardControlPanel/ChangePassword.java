@@ -109,9 +109,11 @@ public class ChangePassword extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                //If request type is 0 - change own password, load main menu.
+                //If request type is 0 - change own password, load main menu. Else Load Edit User Menu
                 if (requestType == 0) {
                     MainMenu.create(UserData);
+                } else {
+                    EditUser.create(UserData, editingUserData);
                 }
             }
         });

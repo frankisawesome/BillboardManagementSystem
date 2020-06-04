@@ -85,7 +85,7 @@ public class EditUser extends JFrame {
                     //Dialog for user confirmation that they really want to delete the account.
                     int dialogButton = JOptionPane.YES_NO_OPTION;
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to " +
-                            "PERMANENTLY delete this account?\n User - " + editingUserData[0], "Warning", dialogButton);
+                            "PERMANENTLY delete this account?\n User - " + editingUserData[5], "Warning", dialogButton);
 
                     //If user confirms, call function to delete User
                     if (dialogResult == JOptionPane.YES_OPTION) {
