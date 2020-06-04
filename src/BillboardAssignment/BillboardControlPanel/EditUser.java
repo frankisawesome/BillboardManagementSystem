@@ -387,7 +387,7 @@ public class EditUser extends JFrame {
      * Changes the GUI according to the data of the user being edited.
      */
     private void PersonaliseWindow() {
-        labelUsername.setText(("User - " + editingUserData[0]));
+        labelUsername.setText(("User - " + editingUserData[5]));
         buttonAddCreate.setVisible(editingUserData[1].equals("0"));
         buttonAddEdit.setVisible(editingUserData[2].equals("0"));
         buttonAddSchedule.setVisible(editingUserData[3].equals("0"));
