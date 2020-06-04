@@ -435,7 +435,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
      */
     private int CreateBillboardRequest(String billboardName, String xmlBillboard, String[] userData) {
         try {
-            HashMap<String, String> requestBody = requestBodyWithKey();
+            HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("keyId", userData[1]);
             requestBody.put("billboardName", billboardName);
             requestBody.put("content", xmlBillboard);
