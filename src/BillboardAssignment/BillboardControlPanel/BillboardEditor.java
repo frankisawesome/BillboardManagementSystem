@@ -10,10 +10,18 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
+import org.w3c.dom.Attr;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,13 +33,14 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     // Boolean deciding if new billboard or existing
     Boolean newBillboard;
+    Boolean validFlag;
     // Strings of text defining Billboard
     String titleBillboard;
     String titleRBillboard;
     String titleGBillboard;
     String titleBBillboard;
     String imagePathBillboard;
-    boolean byteBillboard;
+    boolean urlBillboard;
     String subtextBillboard;
     String subtextRBillboard;
     String subtextGBillboard;
@@ -277,7 +286,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         return panel;
     }
     
-    private void GetTextFields() {
+    private boolean GetTextFields() {
         titleBillboard = title.getText();
         titleRBillboard = titleColorR.getText();
         titleGBillboard = titleColorG.getText();
@@ -287,9 +296,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         System.out.println(imagePathBillboard);
 
         if (imageUrlData.isSelected()) {
-            byteBillboard = false;
+            urlBillboard = false;
         } else {
-            byteBillboard = true;
+            urlBillboard = true;
         }
 
         subtextBillboard = subtext.getText();
@@ -300,6 +309,88 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         backgroundRBillboard = backgroundColorR.getText();
         backgroundGBillboard = backgroundColorG.getText();
         backgroundBBillboard = backgroundColorB.getText();
+
+        if ((titleRBillboard.length() > 0) && (titleGBillboard.length() > 0) && (titleBBillboard.length() > 0)) {
+            // Convert title colours to ints
+            int titleRInt = -1;
+            int titleGInt = -1;
+            int titleBInt = -1;
+            try {
+                titleRInt = Integer.parseInt(titleRBillboard);
+                titleGInt = Integer.parseInt(titleGBillboard);
+                titleBInt = Integer.parseInt(titleBBillboard);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Title colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+
+            if (((titleRInt < 0) || (titleRInt > 255)) || ((titleGInt < 0) || (titleGInt > 255)) || ((titleBInt < 0) || (titleBInt > 255))) {
+                JOptionPane.showMessageDialog(this, "Title colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+        }
+
+        if ((subtextRBillboard.length() > 0) && (subtextGBillboard.length() > 0) && (subtextBBillboard.length() > 0)) {
+            // Convert title colours to ints
+            int subtextRInt = -1;
+            int subtextGInt = -1;
+            int subtextBInt = -1;
+            try {
+                subtextRInt = Integer.parseInt(subtextRBillboard);
+                subtextGInt = Integer.parseInt(subtextGBillboard);
+                subtextBInt = Integer.parseInt(subtextBBillboard);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Subtext colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+
+            if (((subtextRInt < 0) || (subtextRInt > 255)) || ((subtextGInt < 0) || (subtextGInt > 255)) || ((subtextBInt < 0) || (subtextBInt > 255))) {
+                JOptionPane.showMessageDialog(this, "Subtext colour must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+        }
+
+        if ((backgroundRBillboard.length() > 0) && (backgroundGBillboard.length() > 0) && (backgroundBBillboard.length() > 0)) {
+            // Convert title colours to ints
+            int backgroundRInt = -1;
+            int backgroundGInt = -1;
+            int backgroundBInt = -1;
+            try {
+                backgroundRInt = Integer.parseInt(backgroundRBillboard);
+                backgroundGInt = Integer.parseInt(backgroundGBillboard);
+                backgroundBInt = Integer.parseInt(backgroundBBillboard);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Background colours must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+
+            if (((backgroundRInt < 0) || (backgroundRInt > 255)) || ((backgroundGInt < 0) || (backgroundGInt > 255)) || ((backgroundBInt < 0) || (backgroundBInt > 255))) {
+                JOptionPane.showMessageDialog(this, "Background colours must be integers in the range of 0-255 inclusive");
+                return false;
+            }
+        }
+
+        if (urlBillboard == true) {
+            BufferedImage myPicture;
+            try {
+                myPicture = ImageIO.read(new File(imagePathBillboard));
+            } catch (IOException e){
+                JOptionPane.showMessageDialog(this, "Invalid Url.");
+                return false;
+            }
+        } else if (urlBillboard == false) {
+            byte[] imageByte;
+            BufferedImage myPicture;
+            try {
+                imageByte = Base64.getDecoder().decode(imagePathBillboard);
+                myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
+            } catch (IOException e){
+                JOptionPane.showMessageDialog(this, "Invalid Byte Array.");
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -316,32 +407,42 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             dispose();
             MainMenu.create(userData);
         } else if (source == btnSave) {
-            GetTextFields();
-            System.out.println(2);
+            validFlag = GetTextFields();
         } else if (source == btnPreview) {
             ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
             actionPerformed(btnSaveSim);
 
-            try {
-                xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
-                        imagePathBillboard, byteBillboard,
-                subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
-                        backgroundRBillboard, backgroundGBillboard, backgroundBBillboard);
-            } catch (ParserConfigurationException ex) {
-                ex.printStackTrace();
-            } catch (TransformerException ex) {
-                ex.printStackTrace();
+            if (validFlag) {
+                try {
+                    xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
+                            imagePathBillboard, urlBillboard,
+                            subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
+                            backgroundRBillboard, backgroundGBillboard, backgroundBBillboard);
+                } catch (ParserConfigurationException ex) {
+                    ex.printStackTrace();
+                } catch (TransformerException ex) {
+                    ex.printStackTrace();
+                }
+                BillboardViewer.create(xmlBillboard);
             }
-            BillboardViewer.create(xmlBillboard);
         } else if (source == searchComputer) {
              System.out.println("TODO: Search Computer files");
 
         } else if (source == btnCreateBillboard){
-            JOptionPane.showMessageDialog(null, "Billboard Created Successfully!\n" +
-                    "NOT REALLY, PLEASE INTEGRATE TO SERVER");
-            dispose();
-            MainMenu.create(userData);
+            JOptionPane.showMessageDialog(null, "Press ok to send billboard to server");
+
+            ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
+            actionPerformed(btnSaveSim);
+
+            if (validFlag) {
+                dispose();
+                MainMenu.create(userData);
+            }
         }
+    }
+
+    public static void create(String[] userData, String billboardName, boolean newBillboard) {
+        SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboardName, newBillboard));
     }
 
     public static void create(String[] userData, String billboardName, boolean newBillboard) {

@@ -41,7 +41,7 @@ public class CreateBillboard extends JFrame {
                 MainMenu.create(UserData);
             }
         });
-/*
+
         //Listener for create button, will open the billboard design module.
         buttonCreate.addActionListener(new ActionListener() {
             @Override
@@ -56,7 +56,7 @@ public class CreateBillboard extends JFrame {
             }
         });
 
- */
+
     }
 
     /**
