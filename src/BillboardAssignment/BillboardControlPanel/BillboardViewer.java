@@ -81,7 +81,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         if (attributeValue.isEmpty()) {
             backgroundColor = Color.WHITE;
         } else {
-            System.out.println(attributeValue);
             backgroundColor = Color.decode(attributeValue);
         }
 
@@ -93,9 +92,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
                     title = element.getTextContent();
-                    System.out.println(title);
                     titleColor = element.getAttribute("colour");
-                    System.out.println(titleColor);
                 } else if (element.getTagName() == "picture") {
                     if ((element.hasAttribute("url")) && (!element.hasAttribute("data"))) {
                         image = element.getAttribute("url");
@@ -107,7 +104,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 } else if (element.getTagName() == "information") {
                     subtext = element.getTextContent();
                     subtextColor = element.getAttribute("colour");
-                    System.out.println(subtextColor);
                 }
             }
         }

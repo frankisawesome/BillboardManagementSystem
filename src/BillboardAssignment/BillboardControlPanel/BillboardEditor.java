@@ -300,7 +300,6 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             backgroundColorG.setText(backgroundGBillboard);
             backgroundColorB.setText(backgroundBBillboard);
         } else {
-            System.out.println(attributeValue);
             backgroundRBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(1,3), 16));
             backgroundGBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(3,5), 16));
             backgroundBBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(5,7), 16));
@@ -415,8 +414,6 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             imagePathBillboard = "";
         }
 
-        System.out.println(imagePathBillboard);
-
         subtextBillboard = subtext.getText();
         subtextRBillboard = subtextColorR.getText();
         subtextGBillboard = subtextColorG.getText();
@@ -528,18 +525,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             requestBody.put("content", xmlBillboard);
             requestBody.put("key", userData[0]);
 
-            System.out.println(userData[1]);
-            System.out.println(userData[0]);
-            System.out.println(billboardName);
-            System.out.println(xmlBillboard);
-
             //Send Request
             ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "create", requestBody);
             ServerResponse response = request.getResponse();
 
             //If Successful, return 1, else return 0 and give error dialog.
             if (response.status().equals("ok")) {
-                System.out.println("ok");
                 return (1);
             } else {
                 //Check if error was due to session key expiry and process accordingly
@@ -552,12 +543,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 //If not then treat as generic error
                 JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
                         response.status());
-                System.out.println("request rejected");
                 return (0);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \n Create Billboard | " + e.getMessage());
-            System.out.println("contact it");
             return (0);
         }
     }
@@ -576,18 +565,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             requestBody.put("newContent", xmlBillboard);
             requestBody.put("key", userData[0]);
 
-            System.out.println(userData[1]);
-            System.out.println(userData[0]);
-            System.out.println(billboardID);
-            System.out.println(xmlBillboard);
-
             //Send Request
             ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "edit billboard", requestBody);
             ServerResponse response = request.getResponse();
 
             //If Successful, return 1, else return 0 and give error dialog.
             if (response.status().equals("ok")) {
-                System.out.println("ok");
                 return (1);
             } else {
                 //Check if error was due to session key expiry and process accordingly
@@ -600,12 +583,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 //If not then treat as generic error
                 JOptionPane.showMessageDialog(null, "Error, request rejected by server\n" +
                         response.status());
-                System.out.println("request rejected");
                 return (0);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Please Contact IT Support and Quote the Following: \nEdit Billboard | " + e.getMessage());
-            System.out.println("contact it");
             return (0);
         }
     }
@@ -661,7 +642,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 BillboardViewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
-             JFileChooser j = new JFileChooser("C:");
+             JFileChooser j = new JFileChooser();
              int approveVal = j.showSaveDialog(BillboardEditor.this);
 
              if (approveVal == JFileChooser.APPROVE_OPTION) {
