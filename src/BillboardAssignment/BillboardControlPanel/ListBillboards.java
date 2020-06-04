@@ -203,7 +203,8 @@ public class ListBillboards extends JFrame {
         buttonEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML EDITOR BILLY");
+                dispose();
+                BillboardEditor.create(UserData, billboardList[selection][2], false);
             }
         });
 
@@ -211,7 +212,9 @@ public class ListBillboards extends JFrame {
         buttonPreview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "PLEASE LINK TO BILLBOARD XML VIEWER BILLY");
+                JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
+                        "Press Escape to Exit Preview");
+                BillboardViewer.create(billboardList[selection][3]);
             }
         });
     }
@@ -222,13 +225,44 @@ public class ListBillboards extends JFrame {
      * @return void
      */
     private void DeleteBillboard() {
-        JOptionPane.showMessageDialog(null, "Billboard successfully deleted! NOT REALLY, NOT LINKED TO SERVER");
+        try {
+            //Sey up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("key", UserData[0]);
+            requestBody.put("billboardId", billboardList[selection][0]);
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "delete billboard", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //Catch any error messages returned by server
+            if (!response.status().equals("ok")) {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                }
+                //Otherwise, generic error.
+                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete billboard|" + response.status());
+            }
+            else {
+                //If Response is ok (no errors)
+                JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
+                dispose();
+                ListBillboards.create(UserData);
+            }
+        }
+        catch (Exception f) {
+            JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Delete Billboard |" + f.getMessage());
+        }
     }
 
     /**
      * Queries database and returns list of all billboards (id, author, name)
      *
-     * @return String[][] list of all billboards (id, author, name)
+     * @return String[][] list of all billboards (id, author, name, xml)
      */
     private String[][] FetchBillboards() {
         try {
