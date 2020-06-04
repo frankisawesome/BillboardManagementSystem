@@ -102,7 +102,7 @@ public class CreateUser extends JFrame {
             //Setup Server Request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("keyId", UserData[1]);
-            requestBody.put("newUserId", id);
+            requestBody.put("newUserName", id);
             requestBody.put("password", pwd);
             requestBody.put("key", UserData[0]);
 
