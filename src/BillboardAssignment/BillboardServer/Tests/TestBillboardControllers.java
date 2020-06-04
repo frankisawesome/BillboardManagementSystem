@@ -79,4 +79,11 @@ public class TestBillboardControllers {
         assertEquals(true, response.body());
     }
 
+    @Test
+    void checkGetCurrent() throws Exception {
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "current");
+        ServerResponse response = request.getResponse();
+        assertEquals("ok", response.status());
+    }
+
 }

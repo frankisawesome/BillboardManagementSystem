@@ -1,6 +1,7 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Schedule;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
@@ -23,6 +24,9 @@ public class ScheduleController extends Controller {
             case "remove":
                 response = remove();
                 break;
+            case "get schedule":
+                response = getSchedule();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
@@ -39,6 +43,13 @@ public class ScheduleController extends Controller {
         return useDbTryCatch(() -> {
             scheduleManager.removeFromSchedule(body.get("billboardName"));
             return new ServerResponse("Schedule removed", "ok");
+        });
+    }
+
+    private ServerResponse getSchedule() {
+        return useDbTryCatch(() -> {
+            Schedule schedule = scheduleManager.scheduledBillboard();
+            return new ServerResponse(schedule, "ok");
         });
     }
 
