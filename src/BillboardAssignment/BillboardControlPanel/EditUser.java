@@ -85,7 +85,7 @@ public class EditUser extends JFrame {
                     //Dialog for user confirmation that they really want to delete the account.
                     int dialogButton = JOptionPane.YES_NO_OPTION;
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to " +
-                            "PERMANENTLY delete this account?\n User - " + editingUserData[0], "Warning", dialogButton);
+                            "PERMANENTLY delete this account?\n User - " + editingUserData[5], "Warning", dialogButton);
 
                     //If user confirms, call function to delete User
                     if (dialogResult == JOptionPane.YES_OPTION) {
@@ -387,7 +387,7 @@ public class EditUser extends JFrame {
      * Changes the GUI according to the data of the user being edited.
      */
     private void PersonaliseWindow() {
-        labelUsername.setText(("User - " + editingUserData[0]));
+        labelUsername.setText(("User - " + editingUserData[5]));
         buttonAddCreate.setVisible(editingUserData[1].equals("0"));
         buttonAddEdit.setVisible(editingUserData[2].equals("0"));
         buttonAddSchedule.setVisible(editingUserData[3].equals("0"));

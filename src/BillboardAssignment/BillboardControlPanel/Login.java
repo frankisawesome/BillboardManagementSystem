@@ -68,9 +68,10 @@ public class Login extends JFrame {
                     SessionKey = loginReturn[1];
                     dispose();
                     //Store ID and Session key in an array of user data
-                    String[] userData = {"", "", "", "", "", ""};
+                    String[] userData = {"", "", "", "", "", "", ""};
                     userData[0] = SessionKey;
-                    userData[1] = id;
+                    userData[1] = loginReturn[2]; //User ID Returned
+                    userData[6] = id;
                     MainMenu.create(userData);
                 }
                 //If Login Unsuccessful
@@ -116,7 +117,7 @@ public class Login extends JFrame {
     private String[] SendLoginRequest(String id, String pwd) {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
-        requestBody.put("id", id);
+        requestBody.put("username", id);
         requestBody.put("password", pwd);
         //Send Request
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
@@ -125,7 +126,7 @@ public class Login extends JFrame {
             if (response.status().equals("ok")) {
                 //If response ok, return session key and code 1 - successful
 
-                String[] returnVal = {"1", response.body().sessionKey};
+                String[] returnVal = {"1", response.body().sessionKey, String.valueOf(response.body().getID())};
                 return (returnVal);
             } else {
                 // If response fail, return code 2 and error message.
