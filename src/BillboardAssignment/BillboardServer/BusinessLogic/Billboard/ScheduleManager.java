@@ -52,45 +52,23 @@ public class ScheduleManager {
 
         LocalTime current = LocalTime.parse(currentTime);
 
-        // get all billboards where day == current day
+        // get all billboards where day == current day and time is between start and end
 
-        ArrayList<Schedule> Schedules = scheduleDatabase.getAllObjects();
-        ArrayList<Integer> toRemove = new ArrayList<>();
+        ArrayList<Schedule> schedules = scheduleDatabase.getAllObjects();
+        ArrayList<Schedule> schedulesToShowShortlist = new ArrayList<>();
 
-        for (int i = 0; i < Schedules.size(); i++) {
-            if (Schedules.get(i).day != currentDay) {
-                toRemove.add(i);
+        for (int i = 0; i < schedules.size(); i++) {
+            if (schedules.get(i).day == currentDay && /* Is the day of the schedule today? */
+                    (current.isAfter(schedules.get(i).start) || current.equals(schedules.get(i).start)) /* Is the start time <= Right now? */ &&
+                    current.isBefore(schedules.get(i).end) /* Is the end time > right now?*/) {
+                schedulesToShowShortlist.add(schedules.get(i));
             }
         }
 
-        for (int i = Schedules.size() - 1; i >= 0; i--) {
-            if (toRemove.contains(i)) {
-                Schedules.remove(i);
-            }
-        }
+        // Get the billboard with the latest starting time
+        Schedule currentBoard = schedules.get(0);
 
-        // Get all of those billboards where start time <= current time < end time
-
-        toRemove.clear();
-
-        //for (Schedule billboard : Schedules) {
-        for (int i = 0; i < Schedules.size(); i++) {
-            if (!((current.isAfter(Schedules.get(i).start) || current.equals(Schedules.get(i).start)) && current.isBefore(Schedules.get(i).end))) {
-                toRemove.add(i);
-            }
-        }
-
-        for (int i = Schedules.size() - 1; i >= 0; i--) {
-            if (toRemove.contains(i)) {
-                Schedules.remove(i);
-            }
-        }
-
-        // Show the billboard with the latest starting time
-
-        Schedule currentBoard = Schedules.get(0);
-
-        for (Schedule billboard : Schedules) {
+        for (Schedule billboard : schedules) {
             if (billboard.start.isAfter(currentBoard.start) || billboard.start.equals(currentBoard.start)) {
                 currentBoard = billboard;
             }
