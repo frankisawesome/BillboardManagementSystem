@@ -1,10 +1,13 @@
 package BillboardAssignment.BillboardServer.Server;
 
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Schedule;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
+import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Database.BillboardSQLiteDatabase;
 import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
-import BillboardAssignment.BillboardServer.Server.Controllers.BillboardController;
-import BillboardAssignment.BillboardServer.Server.Controllers.TestController;
-import BillboardAssignment.BillboardServer.Server.Controllers.UserController;
+import BillboardAssignment.BillboardServer.Controllers.BillboardController;
+import BillboardAssignment.BillboardServer.Controllers.TestController;
+import BillboardAssignment.BillboardServer.Controllers.UserController;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.SessionKeyManager;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
@@ -27,6 +30,7 @@ public class BillboardServer {
     ServerSocket server;
     UserManager userManager;
     BillboardManager billboardManager;
+    ScheduleManager scheduleManager;
 
     /**
      * A main method for creating a server instance and running it
@@ -101,8 +105,12 @@ public class BillboardServer {
         Queryable<Billboard> billboardDb = new DatabaseArray<>();
         billboardDb.initialiseDatabase("Billboards");
 
+        Queryable<Schedule> scheduleDb = new DatabaseArray<>();
+        scheduleDb.initialiseDatabase("Schedules");
+
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
         billboardManager = new BillboardManager(billboardDb, database2, database);
+        scheduleManager = new ScheduleManager(scheduleDb);
         userManager.createFirstUser();
         billboardManager.createFirstBillboard();
     }
@@ -145,6 +153,9 @@ public class BillboardServer {
                     break;
                 case BILLBOARD:
                     response = BillboardController.use(request.requestMessage, request.requestBody, billboardManager);
+                    break;
+                case SCHEDUELE:
+                    response = ScheduleController.use(request.requestMessage, request.requestBody, scheduleManager);
                     break;
                 default:
                     response = new ServerResponse<String>("", "Request type must be of requestType enum");

@@ -18,11 +18,11 @@ public class ScheduleManager {
     }
 
     // Add a new instance of a billboard to the schedule
-    public Schedule addToSchedule(String[] billboardInfo) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
 
         int ID = scheduleDatabase.getMaxID() + 1;
 
-        Schedule addBillboard = new Schedule (ID, billboardInfo[0], billboardInfo[1], LocalTime.parse(billboardInfo[2]), LocalTime.parse(billboardInfo[3]));
+        Schedule addBillboard = new Schedule (ID, billboardName, scheduleDay, LocalTime.parse(startTime), LocalTime.parse(endTime));
 
         scheduleDatabase.addObject(addBillboard);
 
@@ -43,7 +43,7 @@ public class ScheduleManager {
     }
 
     // Determine the billboard to be displayed at the current time
-    public Schedule scheduledBillboard() throws DatabaseNotAccessibleException {
+    public Schedule scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         LocalDateTime currentDayTime = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("EEEE HH:mm");
         String formattedDate = currentDayTime.format(myFormatObj);
@@ -52,45 +52,28 @@ public class ScheduleManager {
 
         LocalTime current = LocalTime.parse(currentTime);
 
-        // get all billboards where day == current day
+        // get all billboards where day == current day and time is between start and end
 
-        ArrayList<Schedule> Schedules = scheduleDatabase.getAllObjects();
-        ArrayList<Integer> toRemove = new ArrayList<>();
+        ArrayList<Schedule> schedules = scheduleDatabase.getAllObjects();
+        ArrayList<Schedule> schedulesToShowShortlist = new ArrayList<>();
 
-        for (int i = 0; i < Schedules.size(); i++) {
-            if (Schedules.get(i).day != currentDay) {
-                toRemove.add(i);
+        for (int i = 0; i < schedules.size(); i++) {
+            if (schedules.get(i).day.equals(currentDay) && /* Is the day of the schedule today? */
+                    (current.isAfter(schedules.get(i).start) || current.equals(schedules.get(i).start)) /* Is the start time <= Right now? */ &&
+                    current.isBefore(schedules.get(i).end) /* Is the end time > right now?*/) {
+                schedulesToShowShortlist.add(schedules.get(i));
             }
         }
 
-        for (int i = Schedules.size() - 1; i >= 0; i--) {
-            if (toRemove.contains(i)) {
-                Schedules.remove(i);
-            }
+        /* If there are no databases at this time then throw error */
+        if (schedulesToShowShortlist.size() == 0){
+            throw new DatabaseObjectNotFoundException("DatabaseSchedule", 1);
         }
 
-        // Get all of those billboards where start time <= current time < end time
+        // Get the billboard with the latest starting time
+        Schedule currentBoard = schedulesToShowShortlist.get(0);
 
-        toRemove.clear();
-
-        //for (Schedule billboard : Schedules) {
-        for (int i = 0; i < Schedules.size(); i++) {
-            if (!((current.isAfter(Schedules.get(i).start) || current.equals(Schedules.get(i).start)) && current.isBefore(Schedules.get(i).end))) {
-                toRemove.add(i);
-            }
-        }
-
-        for (int i = Schedules.size() - 1; i >= 0; i--) {
-            if (toRemove.contains(i)) {
-                Schedules.remove(i);
-            }
-        }
-
-        // Show the billboard with the latest starting time
-
-        Schedule currentBoard = Schedules.get(0);
-
-        for (Schedule billboard : Schedules) {
+        for (Schedule billboard : schedulesToShowShortlist) {
             if (billboard.start.isAfter(currentBoard.start) || billboard.start.equals(currentBoard.start)) {
                 currentBoard = billboard;
             }

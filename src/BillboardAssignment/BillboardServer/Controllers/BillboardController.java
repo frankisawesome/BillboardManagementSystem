@@ -1,11 +1,10 @@
-package BillboardAssignment.BillboardServer.Server.Controllers;
+package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,10 +17,8 @@ public class BillboardController extends Controller {
     }
     protected void handle() {
         switch (message) {
-            case "get one":
-                response = new ServerResponse("<billboard background=\"#8996FF\">\n" +
-                        "<picture url=\"https://cloudstor.aarnet.edu.au/plus/s/5fhToroJL0nMKvB/download\"/>\n" +
-                        "</billboard>", "ok");
+            case "current":
+                response = getCurrent();
                 break;
             case "create":
                 response = create();
@@ -44,6 +41,10 @@ public class BillboardController extends Controller {
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
+    }
+
+    private ServerResponse getCurrent() {
+        return useDbTryCatch(() -> new ServerResponse(billboardManager.get("first"), "ok"));
     }
 
     private ServerResponse create() {
