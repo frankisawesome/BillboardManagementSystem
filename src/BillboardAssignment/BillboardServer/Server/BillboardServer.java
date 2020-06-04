@@ -1,5 +1,7 @@
 package BillboardAssignment.BillboardServer.Server;
 
+import BillboardAssignment.BillboardServer.Database.BillboardSQLiteDatabase;
+import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
 import BillboardAssignment.BillboardServer.Server.Controllers.BillboardController;
 import BillboardAssignment.BillboardServer.Server.Controllers.TestController;
 import BillboardAssignment.BillboardServer.Server.Controllers.UserController;
@@ -49,6 +51,7 @@ public class BillboardServer {
             //initialising the server with props read from file
             init(getPortFromProps());
             setUpDbs();
+            //setUpSqlDbs();
         }
         //catch file not found before IO as there's only one possible cause
         catch (FileNotFoundException e) {
@@ -96,6 +99,22 @@ public class BillboardServer {
         database2.initialiseDatabase("SessionKeys");
 
         Queryable<Billboard> billboardDb = new DatabaseArray<>();
+        billboardDb.initialiseDatabase("Billboards");
+
+        userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
+        billboardManager = new BillboardManager(billboardDb, database2, database);
+        userManager.createFirstUser();
+        billboardManager.createFirstBillboard();
+    }
+
+    private void setUpSqlDbs() throws Exception {
+        Queryable<User> database = new UserSQLiteDatabase();
+        database.initialiseDatabase("Users");
+
+        Queryable<UserSessionKey> database2 = new DatabaseArray<UserSessionKey>();
+        database2.initialiseDatabase("SessionKeys");
+
+        Queryable<Billboard> billboardDb = new BillboardSQLiteDatabase();
         billboardDb.initialiseDatabase("Billboards");
 
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);

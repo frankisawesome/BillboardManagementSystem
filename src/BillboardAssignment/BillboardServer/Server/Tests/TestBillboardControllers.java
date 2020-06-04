@@ -69,4 +69,14 @@ public class TestBillboardControllers {
         assertEquals(true, response.body());
     }
 
+    @Test
+    void checkValidateName() throws Exception {
+        HashMap<String, String> requestBody = requestBodyWithKey();
+        requestBody.put("name", "newbb");
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "validate name", requestBody);
+        ServerResponse response = request.getResponse();
+        assertEquals("ok", response.status());
+        assertEquals(true, response.body());
+    }
+
 }

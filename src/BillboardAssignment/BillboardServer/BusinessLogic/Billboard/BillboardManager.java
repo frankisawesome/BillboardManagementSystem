@@ -20,7 +20,7 @@ public class BillboardManager extends UserManager {
     }
 
     public void create(Billboard newBillboard, UserSessionKey key) throws InsufficentPrivilegeException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException, OutOfDateSessionKeyException, IncorrectSessionKeyException, DatabaseLogicException {
-       checkSessionKeyPrivileges(key, UserPrivilege.CreateBillboards);
+      checkSessionKeyPrivileges(key, UserPrivilege.CreateBillboards);
 
        int id = billboardDb.getMaxID();
 
@@ -33,6 +33,21 @@ public class BillboardManager extends UserManager {
         checkSessionKeyPrivileges(key, UserPrivilege.EditAllBillboards);
 
         return billboardDb.getAllObjects();
+    }
+
+    public boolean validateName(UserSessionKey key, String name) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException {
+        checkSessionKeyPrivileges(key, UserPrivilege.EditAllBillboards);
+
+        try {
+            ArrayList<Billboard> billboard =  billboardDb.getWhere("name", name, new Billboard("", "", 0));
+            if (billboard.size() == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     public void rename(int billboardId, String newName, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, DatabaseLogicException {
