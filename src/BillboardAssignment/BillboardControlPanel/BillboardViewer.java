@@ -216,11 +216,13 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         try {
             SetGUI();
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ParserConfigurationException");
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "IOException");
         } catch (SAXException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "SAXException");
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "NullPointerException");
         }
     }
 

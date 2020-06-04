@@ -33,6 +33,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -642,7 +643,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 BillboardViewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
+             FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpeg", "png", "bmp", "jpg");
              JFileChooser j = new JFileChooser();
+             j.setFileFilter(filter);
+             j.setAcceptAllFileFilterUsed(false);
              int approveVal = j.showSaveDialog(BillboardEditor.this);
 
              if (approveVal == JFileChooser.APPROVE_OPTION) {
