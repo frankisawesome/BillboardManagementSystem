@@ -24,6 +24,14 @@ public class TestScheduleControllers {
     }
 
     @Test
+    void getCurrentSchedule() throws Exception {
+        HashMap<String, String> requestBody = requestBodyWithKey();
+        ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "get schedule", requestBody);
+        ServerResponse response = request.getResponse();
+        assertEquals("ok", response.status());
+    }
+
+    @Test
     void testRemoveSchedule() throws Exception {
         HashMap<String, String> requestBody = requestBodyWithKey();
         requestBody.put("billboardName", "first");
@@ -31,6 +39,5 @@ public class TestScheduleControllers {
         ServerResponse response = request.getResponse();
         assertEquals("ok", response.status());
     }
-
 
 }
