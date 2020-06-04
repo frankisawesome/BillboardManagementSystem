@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.Server.Controllers;
+package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
@@ -11,5 +11,5 @@ import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleExcepti
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
 public interface DbOperation {
-    ServerResponse execution() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException, PrivilegeStringInvalidException, RemoveOwnEditUsersPrivilegeException, RemoveOwnUserException;
+    ServerResponse execution() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException, PrivilegeStringInvalidException, RemoveOwnEditUsersPrivilegeException, RemoveOwnUserException, NoSuchFieldException;
 }
