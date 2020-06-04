@@ -98,6 +98,8 @@ public abstract class Controller {
             return errorResponse("You appear to be trying to delete yourself as a user, that's a no-op");
         } catch (RemoveOwnEditUsersPrivilegeException e) {
             return errorResponse("You appear to be trying to remove your own EditUser privilege, that's a no-op");
+        } catch (NoSuchFieldException e) {
+            return errorResponse("Billboard not set for schedule yet");
         }
         catch (Exception e) {
             return errorResponse(e.getMessage());
