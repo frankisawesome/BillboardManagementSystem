@@ -24,9 +24,7 @@ public class TestScheduleManager {
         System.out.println(test.name);
     }
 
-    // Test removing without any billboards in the database - Throws error currently due to unhandled exception in
-    // getAllObjects method
-    /*
+    // Test removing without any billboards in the database - Throws object not found exception in getAllObjects method
     @Test
     void removeFromSchedule() throws DatabaseObjectNotFoundException, NoSuchFieldException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, DatabaseLogicException, IncorrectSessionKeyException, InsufficentPrivilegeException {
         scheduleManager.removeFromSchedule("Billboard 2");
@@ -34,7 +32,7 @@ public class TestScheduleManager {
         for (Schedule billboard : billboards) {
             System.out.print(billboard.name);
         }
-    }*/
+    }
 
     // Test removing with billboards
     @Test
@@ -51,6 +49,22 @@ public class TestScheduleManager {
         ArrayList<Schedule> billboards = scheduleManager.scheduleDatabase.getAllObjects();
         for (Schedule billboard : billboards) {
             System.out.println(billboard.name);
+        }
+    }
+
+    // Test removing without the targeted billboard currently in the schedule - Throws object not found exception in getAllObjects method
+    @Test
+    void removeFromSchedule3() throws DatabaseObjectNotFoundException, NoSuchFieldException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, DatabaseLogicException, IncorrectSessionKeyException, InsufficentPrivilegeException {
+        System.out.println("Test removing a billboard which isn't scheduled");
+        Schedule test = scheduleManager.addToSchedule("Billboard", "Tuesday", "16:50", "17:00");
+        System.out.println(test.name);
+        test = scheduleManager.addToSchedule("Billboard 3", "Tuesday", "09:50", "10:20");
+        System.out.println(test.name);
+
+        scheduleManager.removeFromSchedule("Billboard 2");
+        ArrayList<Schedule> billboards = scheduleManager.scheduleDatabase.getAllObjects();
+        for (Schedule billboard : billboards) {
+            System.out.print(billboard.name);
         }
     }
 
