@@ -5,6 +5,7 @@ import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
 import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
@@ -329,6 +330,14 @@ public class BillboardScheduler {
             e.printStackTrace();
         }
 
+        ServerRequest requestForBillboards = new ServerRequest(RequestType.BILLBOARD, "list billboards", requestBody);
+        try {
+            ServerResponse<ArrayList<Billboard>> billboards = requestForBillboards.getResponse();
+            System.out.println(billboards.body().get(0).name);
+            System.out.println(billboards.body().get(0).creatorId);
+        } catch (Exception e ){
+            e.printStackTrace();
+        }
         // The text options for the dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
         String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};
