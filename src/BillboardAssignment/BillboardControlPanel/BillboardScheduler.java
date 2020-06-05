@@ -1,6 +1,8 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -52,6 +54,8 @@ public class BillboardScheduler {
     JFrame frame;
     JTable table;
     JScrollPane scrollPane;
+
+    ScheduleManager scheduleManager;
 
     /**
      * A method which locates the index of a string within an array
@@ -181,20 +185,35 @@ public class BillboardScheduler {
 
         String schedule;
 
+        int start_24 = changeTime(start_hour);
+        int end_24 = changeTime(hours_int);
+
+        // Convert to 24 hour time and convert to a string
+        String start_string = Integer.toString(start_24);
+        String end_string = Integer.toString(end_24);
+
+        if (start_24 < 10) {
+            start_string = "0" + start_string;
+        }
+
+        if (end_24 < 10) {
+            end_string = "0" + end_string;
+        }
+
         // Create the starting time string to be added to the table.
         // Add a 0 before the minutes if it's a single digit
         if (minutes_int >= 10) {
-            schedule = name + " " + start_hour + ":" + minutes_int + am_or_pm;
+            schedule = name + " " + start_string + ":" + minutes_int + am_or_pm;
         } else {
-            schedule = name + " " + start_hour + ":0" + minutes_int + am_or_pm;
+            schedule = name + " " + start_string + ":0" + minutes_int + am_or_pm;
         }
 
         // Add the ending time string to the starting time, separated by -
         // Add a 0 before the minutes if it's a single digit
         if (total_minutes >= 10) {
-            schedule = schedule + " - " + hours_int + ":" + total_minutes + am_or_pm2;
+            schedule = schedule + " - " + end_string + ":" + total_minutes + am_or_pm2;
         } else {
-            schedule = schedule + " - " + hours_int + ":0" + total_minutes + am_or_pm2;
+            schedule = schedule + " - " + end_string + ":0" + total_minutes + am_or_pm2;
         }
 
         schedule += " ";
@@ -203,6 +222,8 @@ public class BillboardScheduler {
         if (columnnum != -1 && rownum != -1){
             String current = (String) table.getModel().getValueAt(rownum, columnnum);
             table.setValueAt(current+schedule, rownum, columnnum);
+
+            //scheduleManager.addToSchedule(name, day, start_string, end_string);
         }
     }
 
