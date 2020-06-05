@@ -230,8 +230,7 @@ public class ListBillboards extends JFrame {
                 if (dialogResult == JOptionPane.YES_OPTION) {
                     if (CheckScheduled() == true) {
                         UnscheduleBillboard();
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(null, "Billboard Successfully Unscheduled!");
                     }
                 }

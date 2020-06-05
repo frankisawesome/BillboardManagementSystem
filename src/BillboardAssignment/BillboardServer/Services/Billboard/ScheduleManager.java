@@ -53,16 +53,28 @@ public class ScheduleManager {
         return scheduleDatabase.getAllObjects();
     }
 
-    public void scheduleFirstBillboard() throws DatabaseNotAccessibleException, DatabaseLogicException {
-        int ID = scheduleDatabase.getMaxID() + 1;
+    public void scheduleFirstBillboard() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, NoSuchFieldException {
+        if (!checkIfScheduled("first")) {
+            int ID = scheduleDatabase.getMaxID() + 1;
 
-        Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("00:00"), LocalTime.parse("23:59"));
+            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("00:00"), LocalTime.parse("23:59"));
 
-        scheduleDatabase.addObject(addBillboard);
+            scheduleDatabase.addObject(addBillboard);
+        }
     }
 
     public boolean checkIfScheduled(String name, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, NoSuchFieldException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
+
+        ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
+        if (schedules.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean checkIfScheduled(String name) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
 
         ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
         if (schedules.size() == 0) {
