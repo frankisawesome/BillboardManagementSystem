@@ -204,15 +204,15 @@ public class BillboardPreviewer extends JFrame implements ActionListener, Runnab
             setLayout(new BorderLayout());
             pnl1.setPreferredSize(new Dimension(screenSize.width / 8,screenSize.height));
             pnl2.setPreferredSize(new Dimension(screenSize.width / 8,screenSize.height));
-            pnl3.setPreferredSize(new Dimension(6 * screenSize.width / 8,screenSize.height / 2));
+            pnl5.setPreferredSize(new Dimension(6 * screenSize.width / 8,screenSize.height / 2));
             pnl4.setPreferredSize(new Dimension(screenSize.width,screenSize.height / 4));
-            pnl5.setPreferredSize(new Dimension(screenSize.width,screenSize.height / 4));
+            pnl3.setPreferredSize(new Dimension(screenSize.width,screenSize.height / 4));
 
             this.getContentPane().add(pnl1, BorderLayout.WEST);
             this.getContentPane().add(pnl2, BorderLayout.EAST);
-            this.getContentPane().add(pnl3, BorderLayout.CENTER);
+            this.getContentPane().add(pnl5, BorderLayout.CENTER);
             this.getContentPane().add(pnl4, BorderLayout.NORTH);
-            this.getContentPane().add(pnl5, BorderLayout.SOUTH);
+            this.getContentPane().add(pnl3, BorderLayout.SOUTH);
         } else if ((titleFlg == true) && (imageFlg == true) && (subtextFlg == false)) {
             // Rule: if title and text are supplied set title to top 1/3rd and image to bottom 2/3rds of JFrame
             setLayout(new GridBagLayout());
