@@ -1,6 +1,13 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
+
+import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -8,15 +15,33 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.util.HashMap;
 
+/**
+ * A custom renderer to allow multiple lines in a table cell
+ */
 class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {
 
+    /**
+     * The method to create a new custom table cell renderer
+     * @return N/A
+     */
     public MultiLineCellRenderer() {
         setLineWrap(true);
         setWrapStyleWord(true);
         setOpaque(true);
     }
 
+    /**
+     * A method which adjusts the height of a table cell based on the contents
+     * @param table The JTable object whose contents are being edited
+     * @param value The information currently in the table cell
+     * @param isSelected A boolean of whether the table cell is currently selected
+     * @param hasFocus A boolean of whether the table cell currently has focus
+     * @param row An integer of the cell's row
+     * @param column An integer of the cell's column
+     * @return The table cell component
+     */
     @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                              boolean hasFocus, int row, int column) {
         setText((value == null) ? "" : value.toString());
@@ -27,12 +52,21 @@ class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {
     }
 }
 
+/**
+ * The GUI for the calendar table and billboard scheduling inputs
+ */
 public class BillboardScheduler {
 
     JFrame frame;
     JTable table;
     JScrollPane scrollPane;
 
+    /**
+     * A method which locates the index of a string within an array
+     * @param arr The string array which is being searched to find the desired index
+     * @param t The string of which the index is being found
+     * @return An integer representing the index of the desired string within the array
+     */
     public static int findIndex(String arr[], String t)
     {
         // find length of array
@@ -41,8 +75,7 @@ public class BillboardScheduler {
 
         // traverse in the array
         while (i < len) {
-            // if the i-th element is t
-            // then return the index
+            // if the i-th element is t, return the index
             if (arr[i].equals(t)) {
                 return i;
             }
@@ -53,6 +86,11 @@ public class BillboardScheduler {
         return -1;
     }
 
+    /**
+     * A method which converts afternoon times to and from 24 hour time
+     * @param time An integer of the hour as it is currently being shown
+     * @return An integer of the new hour which has been converted
+     */
     public static int changeTime(int time) {
         if (time >= 12) {
             if (time == 13) {
@@ -91,8 +129,20 @@ public class BillboardScheduler {
         return time;
     }
 
+    /**
+     * A method which formats and adds a new string to the calendar table
+     * @param hours_int An integer of the starting time of the billboard
+     * @param start_hour An integer copy of hours_int to check whether the time is am or pm when converted to 24 hour
+     * @param minutes_int An integer of the starting minute of the billboard in the hour
+     * @param add_minutes An integer of the inputted number of minutes to be added to the starting time
+     * @param name A string of the name of the billboard to be added
+     * @param day A string of the day in which the billboard is to be scheduled
+     * @param columnNames A string array of the column names ('Time' + the Days) in the table
+     * @param rowNames A string array of the row names (9am - 4pm times) in the table
+     * @return void
+     */
     public void addToCalendar(int hours_int, int start_hour, int minutes_int, int add_minutes,
-                              String name, String day, String[] columnNames, String[] rowNames) {
+                              String name, String day, String[] columnNames, String[] rowNames) throws Exception {
         String am_or_pm;
 
         start_hour = changeTime(start_hour);
@@ -139,31 +189,83 @@ public class BillboardScheduler {
 
         String schedule;
 
-        // Print a 0 before the minutes if single digits
+        int start_24 = changeTime(start_hour);
+        int end_24 = changeTime(hours_int);
+
+        // Convert to 24 hour time and convert to a string
+        String start_string = Integer.toString(start_24);
+        String end_string = Integer.toString(end_24);
+        String start_string_mins;
+        String end_string_mins;
+
+        if (start_24 < 10) {
+            start_string = "0" + start_string;
+        }
+
+        if (end_24 < 10) {
+            end_string = "0" + end_string;
+        }
+
+        // Create the starting time string to be added to the table.
+        // Add a 0 before the minutes if it's a single digit
         if (minutes_int >= 10) {
-            schedule = name + " " + start_hour + ":" + minutes_int + am_or_pm;
+            start_string_mins = ":" + minutes_int;
         } else {
-            schedule = name + " " + start_hour + ":0" + minutes_int + am_or_pm;
+            start_string_mins = ":0" + minutes_int;
         }
 
+        schedule = name + " " + start_string + start_string_mins + am_or_pm;
+
+        // Add the ending time string to the starting time, separated by -
+        // Add a 0 before the minutes if it's a single digit
         if (total_minutes >= 10) {
-            schedule = schedule + " - " + hours_int + ":" + total_minutes + am_or_pm2;
+            end_string_mins = ":" + total_minutes;
         } else {
-            schedule = schedule + " - " + hours_int + ":0" + total_minutes + am_or_pm2;
+            end_string_mins = ":0" + total_minutes;
+
         }
 
+        schedule = schedule + " - " + end_string + end_string_mins + am_or_pm2;
         schedule += " ";
 
+        // If the day and time are valid, add the billboard to the table
         if (columnnum != -1 && rownum != -1){
-            String current = (String) table.getModel().getValueAt(rownum, columnnum);
-            table.setValueAt(current+schedule, rownum, columnnum);
+            try {
+                // Send to schedule database
+                HashMap<String, String> requestBody = requestBodyWithKey();
+                requestBody.put("billboardName", name);
+                requestBody.put("day", day);
+                requestBody.put("startTime", start_string + start_string_mins);
+                requestBody.put("endTime", end_string + end_string_mins);
+                ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "set", requestBody);
+                ServerResponse response = request.getResponse();
+
+                //Check that response is ok, if so add the billboard to the table
+                if (response.status().equals("ok")) {
+                    String current = (String) table.getModel().getValueAt(rownum, columnnum);
+                    table.setValueAt(current+schedule, rownum, columnnum);
+                } else {
+                    System.out.println(response.status());
+                    JOptionPane.showMessageDialog(null, "Error! Something went wrong scheduling" +
+                            " the billboard in the server.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
+    /**
+     * A method to check whether the duration and repeat values inputted by the user are numeric
+     * @param num The string entered by the user
+     * @return A boolean representing whether or not the string is able to be parsed as an integer
+     */
     public static boolean isNumeric(String num) {
+        // If the string is empty, return null
         if (num == null) {
             return false;
         }
+        // Return true if the string can be represented as an integer, or false if it cannot
         try {
             Integer.parseInt(num);
         } catch (NumberFormatException nfe) {
@@ -172,6 +274,11 @@ public class BillboardScheduler {
         return true;
     }
 
+    /**
+     * The scheduler object constructor. Creates the GUI with a number of event listeners
+     * @param UserData Array containing session key and user ID for user performing the request
+     * @return N/A
+     */
     BillboardScheduler(String[] UserData)
     {
         // Frame initialisation
@@ -180,7 +287,7 @@ public class BillboardScheduler {
         // Frame Title
         frame.setTitle("BillboardScheduler");
 
-        // Data to be displayed in the JTable
+        // Initial data to be displayed in the JTable
         String[][] data = {
                 { "8am", "", "", "", "", "" },
                 { "9am", "", "", "", "", "" },
@@ -193,26 +300,27 @@ public class BillboardScheduler {
                 { "4pm", "", "", "", "", "" },
         };
 
-        // Column Names
+        // Column names and row names of the table
         String[] columnNames = { "Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
         String[] rowNames = {"8 am", "9 am", "10 am", "11 am", "12 pm", "1 pm", "2 pm", "3 pm", "4 pm"};
 
         // Initializing the JTable
         table = new JTable(data, columnNames);
-        //table.setBounds(30, 40, 300, 200);
         table.setEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
         table.setDefaultRenderer(Object.class, new MultiLineCellRenderer());
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(0).setMaxWidth(50);
 
-        // adding it to JScrollPane
+        // Add the table to a JScrollPane
         scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
+        // The text options for the dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
         String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};
 
+        // The JLabels and their corresponding text entries and dropdown menus
         JLabel name = new JLabel("Billboard Name");
         JComboBox dropdown = new JComboBox(placeholder_names);
         JLabel day = new JLabel("Scheduled Day");
@@ -224,15 +332,19 @@ public class BillboardScheduler {
         JLabel run_time = new JLabel("Duration (minutes)");
         JTextField time_field = new JTextField(5);
 
+        // The checkboxes for repeating
         JCheckBox Checkbox1 = new JCheckBox("Repeat Daily");
         JCheckBox Checkbox2 = new JCheckBox("Repeat Hourly");
         JCheckBox Checkbox3 = new JCheckBox("Repeat every [ ] minutes");
 
+        // A disappearing text box for the repeating minutes option
         JTextField repeat_minutes = new JTextField(5);
         repeat_minutes.setVisible(false);
 
+        // The button to add a new billboard with the entered specifications
         JButton button = new JButton("   Schedule   ");
 
+        // Add all the elements to a JPanel
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -284,17 +396,20 @@ public class BillboardScheduler {
 
         final String[] repeat = {""};
 
+        // Add a header with a title to the GUI
         JLabel title = new JLabel("Billboard Schedule");
         title.setFont(new Font("", Font.PLAIN, 20));
         JPanel header = new JPanel();
         header.add(title);
         frame.add(header, BorderLayout.NORTH);
 
+        // Add a footer containing a button to return to the main menu
         JButton exit = new JButton("Return to Main Menu");
         JPanel bottom = new JPanel();
         bottom.add(exit);
         frame.add(bottom, BorderLayout.SOUTH);
 
+        // An event listener for the exit button to return to the menu upon being pressed
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -303,6 +418,8 @@ public class BillboardScheduler {
             }
         });
 
+        // An event listener for the schedule button to add a billboard to the table using the unputted values
+        // and reset all the entries afterwards
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -326,14 +443,22 @@ public class BillboardScheduler {
                     if (0 <= minutes_int && minutes_int <= 59) {
                         if (add_minutes > 0) {
                             if (repeat[0].equals("")) {
-                                addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                        name, day, columnNames, rowNames);
+                                try {
+                                    addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                            name, day, columnNames, rowNames);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
                             }
                             else if (repeat[0].equals("Daily")) {
                                 int day_index = findIndex(columnNames, day);
                                 while (day_index < 6) {
-                                    addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                            name, columnNames[day_index], columnNames, rowNames);
+                                    try {
+                                        addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                                name, columnNames[day_index], columnNames, rowNames);
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
                                     day_index++;
                                 }
                             }
@@ -348,8 +473,12 @@ public class BillboardScheduler {
                                     int end_time = hours_int*60 + minutes_int;
 
                                     while (end_time < 1020) {
-                                        addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                                name, day, columnNames, rowNames);
+                                        try {
+                                            addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                                    name, day, columnNames, rowNames);
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        }
                                         end_time += repeat_int;
 
                                         minutes_int += repeat_int;
@@ -378,7 +507,6 @@ public class BillboardScheduler {
                             "for both start minute and duration.");
                 }
 
-                //hour_field.setText("");
                 minute_field.setText("");
                 time_field.setText("");
                 repeat_minutes.setText("");
@@ -390,6 +518,7 @@ public class BillboardScheduler {
             }
         });
 
+        // Add an event listener to check and uncheck the repeat daily box
         Checkbox1.addItemListener(new java.awt.event.ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -404,6 +533,7 @@ public class BillboardScheduler {
             }
         });
 
+        // Add an event listener to check and uncheck the repeat hourly box
         Checkbox2.addItemListener(new java.awt.event.ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -418,6 +548,8 @@ public class BillboardScheduler {
             }
         });
 
+        // Add an event listener to check and uncheck the repeat minutely box and show or hide
+        // the corresponding text entry field
         Checkbox3.addItemListener(new java.awt.event.ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -436,17 +568,20 @@ public class BillboardScheduler {
         });
 
         frame.add(panel, BorderLayout.WEST);
-
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
-
         // Frame Size
         frame.setSize(1400, 400);
         // Frame Visible = true
         frame.setVisible(true);
     }
 
-    public static void create(String[] args, String[] UserData)
+    /**
+     * The method to create a new instance of the schedule GUI
+     * @param UserData Array containing session key and user ID for user performing the request
+     * @return void
+     */
+    public static void create(String[] UserData)
     {
         new BillboardScheduler(UserData);
     }
