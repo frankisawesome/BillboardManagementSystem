@@ -52,6 +52,14 @@ public class ScheduleManager {
         return scheduleDatabase.getAllObjects();
     }
 
+    public void scheduleFirstBillboard() throws DatabaseNotAccessibleException, DatabaseLogicException {
+        int ID = scheduleDatabase.getMaxID() + 1;
+
+        Schedule addBillboard = new Schedule (ID, "first", "Friday", LocalTime.parse("00:00"), LocalTime.parse("23:59"));
+
+        scheduleDatabase.addObject(addBillboard);
+    }
+
     // Determine the billboard to be displayed at the current time
     public String scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         LocalDateTime currentDayTime = LocalDateTime.now();
