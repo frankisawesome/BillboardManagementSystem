@@ -389,6 +389,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                     } else if ((element.hasAttribute("data")) && (!element.hasAttribute("url"))) {
                         // Set the image fields according to the Data tag
                         imagePathBillboard = element.getAttribute("data");
+                        imagePath.setText(imagePathBillboard);
                         imageUrlData.setSelected(true);
                         if (imagePathBillboard == "") {
                             noImage.setSelected(true);
