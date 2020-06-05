@@ -327,11 +327,10 @@ public class BillboardScheduler {
         scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
-
         HashMap<String, String> requestBody = new HashMap<>();
         requestBody.put("key", UserData[0]);
         requestBody.put("keyId",UserData[1]);
-        /*
+
         ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
         try {
             ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
@@ -339,16 +338,38 @@ public class BillboardScheduler {
             if (schedules.status().equals("ok")) {
                 for (Schedule billboard : schedules.body()) {
                     int columnnum = findIndex(columnNames, billboard.day);
+
+                    // Locate where to place the billboard in the calendar, and what am/pm to label each time
                     String hour_string = billboard.start.toString().split(":")[0];
                     if (hour_string.charAt(0) == '0') {
                         hour_string.substring(1);
                     }
-                    int convert_hour = changeTime(Integer.parseInt(hour_string));
+                    int convert_hour = Integer.parseInt(hour_string);
                     System.out.println(convert_hour);
                     hour_string = Integer.toString(convert_hour);
-                    int rownum = findIndex(rowNames, hour_string);
+                    String am_pm;
+                    String am_pm2;
+                    if (convert_hour >= 12) {
+                        am_pm = "pm";
+                    } else {
+                        am_pm = "am";
+                    }
 
-                    String schedule = billboard.name + " " + billboard.start + " - " + billboard.end;
+                    String hour_string2 = billboard.end.toString().split(":")[0];
+                    if (hour_string2.charAt(0) == '0') {
+                        hour_string2.substring(1);
+                    }
+                    int convert_hour2 = Integer.parseInt(hour_string2);
+
+                    if (convert_hour2 >= 12) {
+                        am_pm2 = "pm";
+                    } else {
+                        am_pm2 = "am";
+                    }
+
+                    int rownum = findIndex(rowNames, hour_string + " " + am_pm);
+
+                    String schedule = billboard.name + " " + billboard.start + am_pm + " - " + billboard.end + am_pm2;
 
                     String current = (String) table.getModel().getValueAt(rownum, columnnum);
                     table.setValueAt(current+schedule, rownum, columnnum);
@@ -356,7 +377,7 @@ public class BillboardScheduler {
             }
         } catch (Exception e ){
             e.printStackTrace();
-        }*/
+        }
 
         String[] billboard_options = new String[0];
 
