@@ -10,6 +10,9 @@ import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
+/**
+ * A interface only used with lambda functions that perform db operations
+ */
 public interface DbOperation {
     ServerResponse execution() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, DatabaseLogicException, PrivilegeStringInvalidException, RemoveOwnEditUsersPrivilegeException, RemoveOwnUserException, NoSuchFieldException;
 }

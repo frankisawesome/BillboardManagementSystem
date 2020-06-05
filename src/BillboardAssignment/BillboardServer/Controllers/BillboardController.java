@@ -8,13 +8,30 @@ import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardMana
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Child class of controller, handles billboard related requests using a billboardManager
+ */
 public class BillboardController extends Controller {
+    /**
+     * Manages all db logic required
+     */
     private BillboardManager billboardManager;
 
+    /**
+     * Child constructor
+     * @param message request message
+     * @param body request body
+     * @param billboardManager billboard manager
+     */
     private BillboardController(String message, HashMap<String, String> body, BillboardManager billboardManager) {
         super(message, body);
         this.billboardManager = billboardManager;
     }
+
+    /**
+     * handles the requests by invoking appropriate private method based on message
+     */
+    @Override
     protected void handle() {
         switch (message) {
             case "current":
@@ -43,10 +60,18 @@ public class BillboardController extends Controller {
         }
     }
 
+    /**
+     * Get the currently scheduled billboard
+     * @return response with Billboard body or error
+     */
     private ServerResponse getCurrent() {
         return useDbTryCatch(() -> new ServerResponse(billboardManager.get("first"), "ok"));
     }
 
+    /**
+     * Create new billboard in db
+     * @return success or error message
+     */
     private ServerResponse create() {
         return useDbTryCatch(() -> {
             Billboard billboard = new Billboard(body.get("billboardName"), body.get("content"),Integer.parseInt(body.get("keyId")));
@@ -56,6 +81,10 @@ public class BillboardController extends Controller {
         });
     }
 
+    /**
+     * Validates a billboard name by checking for duplicates
+     * @return response with boolean indicating if valid or not
+     */
     private ServerResponse validateName() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -68,6 +97,10 @@ public class BillboardController extends Controller {
         });
     }
 
+    /**
+     * List all billboards
+     * @return response with a ArrayList of all billboards
+     */
     private ServerResponse list() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -76,6 +109,10 @@ public class BillboardController extends Controller {
         });
     }
 
+    /**
+     * Delete a billboard based on id
+     * @return success or error message
+     */
     private ServerResponse delete() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -84,6 +121,10 @@ public class BillboardController extends Controller {
         });
     }
 
+    /**
+     * Rename a billboard
+     * @return success or error message
+     */
     private ServerResponse rename() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -92,6 +133,10 @@ public class BillboardController extends Controller {
         });
     }
 
+    /**
+     * Edit a billboard's content
+     * @return success or error message
+     */
     private ServerResponse edit() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -100,6 +145,13 @@ public class BillboardController extends Controller {
         });
     }
 
+    /**
+     * The only method that should be invoked outside of this class - instantiates controller, handles request and returns response
+     * @param message request message
+     * @param body request body
+     * @param billboardManager billboard manager
+     * @return corresponding server response
+     */
     public static ServerResponse use(String message, HashMap<String, String> body, BillboardManager billboardManager) {
         BillboardController controller = new BillboardController(message, body, billboardManager);
         controller.handle();
