@@ -84,14 +84,17 @@ public class UserManager {
      * @throws DatabaseNotAccessibleException If the database can't be connected to
      * @throws DatabaseLogicException
      */
-    public User createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException {
-        String onceHashedPassword = "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ";
-        UserDataInput userToAdd = new UserDataInput(UserManager.defaultAdminUserID, onceHashedPassword, new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
-        User userWithNewPassword = passwords.hashNewPassword(userToAdd);
+    public void createFirstUser() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException {
+        try {
+            User user = getUser(69420);
+        } catch (DatabaseObjectNotFoundException e) {
+            String onceHashedPassword = "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ";
+            UserDataInput userToAdd = new UserDataInput(UserManager.defaultAdminUserID, onceHashedPassword, new UserPrivilege[]{UserPrivilege.CreateBillboards, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.EditUsers}, "admin");
+            User userWithNewPassword = passwords.hashNewPassword(userToAdd);
 
-        userDatabase.addObject(userWithNewPassword);
 
-        return userWithNewPassword;
+            userDatabase.addObject(userWithNewPassword);
+        }
     }
 
 
