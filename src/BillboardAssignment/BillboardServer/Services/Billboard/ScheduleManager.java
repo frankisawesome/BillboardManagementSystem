@@ -13,6 +13,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Class for managing billboard schedules
+ *
+ * Note that most validation is done in the front-end, so this class doesn't have a massive amount of error checking
+ */
 public class ScheduleManager {
     public Queryable<Schedule> scheduleDatabase;
     private UserManager userManager;
@@ -23,6 +28,22 @@ public class ScheduleManager {
     }
 
     // Add a new instance of a billboard to the schedule
+
+    /**
+     * Adds a new scheduled billboard time to the schedule.
+     * @param billboardName Name of billboard to be scheduled
+     * @param scheduleDay Day of billboard to be scheduled, in full Capitalised form: Monday, Tuesday, etc.
+     * @param startTime Startime in format hh:mm
+     * @param endTime end time in the format hh:mm
+     * @param key Session key with correct user permissions
+     * @return The schedule object that was added
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseLogicException
+     * @throws DatabaseObjectNotFoundException
+     * @throws InsufficentPrivilegeException
+     * @throws OutOfDateSessionKeyException
+     * @throws IncorrectSessionKeyException
+     */
     public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime, UserSessionKey key ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
         int ID = scheduleDatabase.getMaxID() + 1;
@@ -34,7 +55,19 @@ public class ScheduleManager {
         return addBillboard;
     }
 
-    // When a billboard is removed from the system, remove all instances of it from scheduling
+
+    /**
+     * When a billboard is removed from the system, remove all instances of it from scheduling
+     * @param billboardToRemove Name of billboard to be removed
+     * @param key Session key with valid rights
+     * @return current Schedule database
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     * @throws NoSuchFieldException
+     * @throws OutOfDateSessionKeyException
+     * @throws InsufficentPrivilegeException
+     * @throws IncorrectSessionKeyException
+     */
     public Queryable<Schedule> removeFromSchedule(String billboardToRemove, UserSessionKey key) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException, OutOfDateSessionKeyException, InsufficentPrivilegeException, IncorrectSessionKeyException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
         LocalTime fakeTime = LocalTime.parse("00:00");
@@ -50,10 +83,22 @@ public class ScheduleManager {
         return scheduleDatabase;
     }
 
+    /**
+     * Get all schedules
+     * @return All schedule objects in DB
+     * @throws DatabaseNotAccessibleException
+     */
     public ArrayList<Schedule> getAllSchedules() throws DatabaseNotAccessibleException {
         return scheduleDatabase.getAllObjects();
     }
 
+    /**
+     * Schedule the set initial placeholder billboard
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseLogicException
+     * @throws DatabaseObjectNotFoundException
+     * @throws NoSuchFieldException
+     */
     public void scheduleFirstBillboard() throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, NoSuchFieldException {
         if (!checkIfScheduled("first")) {
             int ID = scheduleDatabase.getMaxID() + 1;
@@ -64,6 +109,18 @@ public class ScheduleManager {
         }
     }
 
+    /**
+     * Check if a given billboard has a schedule in the database
+     * @param name Name of the billboard
+     * @param key Session key with rights
+     * @return iff billboard is in the schedule database
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws InsufficentPrivilegeException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     * @throws NoSuchFieldException
+     */
     public boolean checkIfScheduled(String name, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, NoSuchFieldException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
 
@@ -75,6 +132,17 @@ public class ScheduleManager {
         }
     }
 
+    /**
+     * Check if a given billboard has a schedule in the database - no key required version
+     * @param name Name of the billboard
+     * @return iff billboard is in the schedule database
+     * @throws OutOfDateSessionKeyException
+     * @throws DatabaseNotAccessibleException
+     * @throws InsufficentPrivilegeException
+     * @throws IncorrectSessionKeyException
+     * @throws DatabaseObjectNotFoundException
+     * @throws NoSuchFieldException
+     */
     public boolean checkIfScheduled(String name) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
         try {
             ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
@@ -84,7 +152,12 @@ public class ScheduleManager {
         return true;
     }
 
-    // Determine the billboard to be displayed at the current time
+    /**
+     * Determine the current billboard to be displayed, depending on the scheduled times
+     * @return Either the name of the billboard that should be displayed right now, or an empty string
+     * @throws DatabaseNotAccessibleException
+     * @throws DatabaseObjectNotFoundException
+     */
     public String scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         LocalDateTime currentDayTime = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("EEEE HH:mm");

@@ -5,6 +5,9 @@ import BillboardAssignment.BillboardServer.Database.Identifiable;
 import java.io.Serializable;
 import java.time.LocalTime;
 
+/**
+ * Class for the storage of billboard schedules
+ */
 public class Schedule implements Identifiable, Serializable {
     public int id;
     public String name;
