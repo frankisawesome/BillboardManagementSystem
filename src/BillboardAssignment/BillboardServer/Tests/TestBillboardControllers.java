@@ -62,8 +62,8 @@ public class TestBillboardControllers {
     @Test
     void checkIfSchedueled() throws Exception {
         HashMap<String, String> requestBody = requestBodyWithKey();
-        requestBody.put("billboardName", "mybb");
-        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "is schedueled", requestBody);
+        requestBody.put("billboardName", "first");
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "is scheduled", requestBody);
         ServerResponse response = request.getResponse();
         assertEquals("ok", response.status());
         assertEquals(true, response.body());

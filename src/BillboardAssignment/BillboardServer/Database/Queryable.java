@@ -122,6 +122,4 @@ public interface Queryable<E extends Identifiable> {
      * @throws DatabaseMultipleMatchException
      */
     ArrayList<E> getWhere(String parameterName, String parameterValue, E dummyObject) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException;
-
-
 }

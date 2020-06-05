@@ -5,9 +5,11 @@ import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
-import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -15,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -60,6 +63,7 @@ public class BillboardScheduler {
     JFrame frame;
     JTable table;
     JScrollPane scrollPane;
+    String[] UserData;
 
     /**
      * A method which locates the index of a string within an array
@@ -232,7 +236,9 @@ public class BillboardScheduler {
         if (columnnum != -1 && rownum != -1){
             try {
                 // Send to schedule database
-                HashMap<String, String> requestBody = requestBodyWithKey();
+                HashMap<String, String> requestBody = new HashMap<>();
+                requestBody.put("keyId", UserData[1]);
+                requestBody.put("key", UserData[0]);
                 requestBody.put("billboardName", name);
                 requestBody.put("day", day);
                 requestBody.put("startTime", start_string + start_string_mins);
@@ -281,6 +287,7 @@ public class BillboardScheduler {
      */
     BillboardScheduler(String[] UserData)
     {
+        this.UserData = UserData;
         // Frame initialisation
         frame = new JFrame();
 
@@ -316,6 +323,25 @@ public class BillboardScheduler {
         scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
+        HashMap<String, String> requestBody = new HashMap<>();
+        requestBody.put("key", UserData[0]);
+        requestBody.put("keyId",UserData[1]);
+        ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
+        try {
+            ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
+            System.out.println(schedules.body().get(0).name);
+        } catch (Exception e ){
+            e.printStackTrace();
+        }
+
+        ServerRequest requestForBillboards = new ServerRequest(RequestType.BILLBOARD, "list billboards", requestBody);
+        try {
+            ServerResponse<ArrayList<Billboard>> billboards = requestForBillboards.getResponse();
+            System.out.println(billboards.body().get(0).name);
+            System.out.println(billboards.body().get(0).creatorId);
+        } catch (Exception e ){
+            e.printStackTrace();
+        }
         // The text options for the dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
         String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};

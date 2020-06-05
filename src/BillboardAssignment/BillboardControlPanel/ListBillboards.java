@@ -4,6 +4,7 @@ import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Services.User.User;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -59,6 +60,7 @@ public class ListBillboards extends JFrame {
     private JPanel boxLabel9;
     private JPanel boxLabel10;
     private JButton buttonRename;
+    private JButton buttonUnschedule;
     private String[] UserData;
     private String[][] billboardList;
     private int page;
@@ -215,6 +217,26 @@ public class ListBillboards extends JFrame {
                 BillboardPreviewer.create(billboardList[selection][3]);
             }
         });
+        buttonUnschedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Dialog for user confirmation that they really want to unschedule the billboard.
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to " +
+                                "unschedule ALL schedulings of this billboard?\n Billboard- " + billboardList[selection][2], "Warning",
+                        dialogButton);
+
+                //If user confirms, call function to unschedule
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    if (CheckScheduled() == true) {
+                        UnscheduleBillboard();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Billboard Successfully Unscheduled!");
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -244,16 +266,62 @@ public class ListBillboards extends JFrame {
                 }
                 //Otherwise, generic error.
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete billboard|" + response.status());
-            }
-            else {
+            } else {
                 //If Response is ok (no errors)
-                JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
-                dispose();
-                ListBillboards.create(UserData);
+                if (CheckScheduled() == (true)) {
+                    if (UnscheduleBillboard() == true) {
+                        JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
+                        dispose();
+                        ListBillboards.create(UserData);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
+                    dispose();
+                    ListBillboards.create(UserData);
+                }
             }
-        }
-        catch (Exception f) {
+        } catch (Exception f) {
             JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Delete Billboard |" + f.getMessage());
+        }
+    }
+
+    /**
+     * Sends a request to delete all schedulings of the selected billboard to server.
+     *
+     * @return boolean True - Success, False - Fail
+     */
+    private boolean UnscheduleBillboard() {
+        try {
+            //Sey up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("key", UserData[0]);
+            requestBody.put("billboardName", billboardList[selection][2]);
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "remove", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //Catch any error messages returned by server
+            if (!response.status().equals("ok")) {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (false);
+                }
+                //Otherwise, generic error.
+                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Unschedule billboard|" + response.status());
+                return (false);
+            } else {
+                //If Response is ok (no errors)
+                JOptionPane.showMessageDialog(null, "Billboard Successfully Unscheduled!");
+                return (true);
+            }
+        } catch (Exception f) {
+            JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Unschedule Billboard |" + f.getMessage());
+            return (false);
         }
     }
 
@@ -415,6 +483,11 @@ public class ListBillboards extends JFrame {
                 buttonRename.setVisible(false);
             }
         }
+        if (UserData[4].equals("1")) {
+            buttonUnschedule.setVisible(true);
+        } else {
+            buttonUnschedule.setVisible(false);
+        }
         pack();
     }
 
@@ -432,7 +505,7 @@ public class ListBillboards extends JFrame {
             requestBody.put("billboardName", billboardList[selection][2]);
 
             //Send Request
-            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "is schedueled", requestBody);
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "is scheduled", requestBody);
             ServerResponse response = request.getResponse();
 
             //Check if response is ok, else handle errors
@@ -496,6 +569,7 @@ public class ListBillboards extends JFrame {
         buttonDelete.setVisible(false);
         buttonPreview.setVisible(false);
         buttonRename.setVisible(false);
+        buttonUnschedule.setVisible(false);
 
 
         //Check if billboard exists to be displayed, if so display it, else display blank field.
@@ -757,7 +831,7 @@ public class ListBillboards extends JFrame {
         final Spacer spacer14 = new Spacer();
         panel1.add(spacer14, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(10, -1), null, null, 0, false));
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(11, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(13, 3, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(5, 6, 15, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$(null, Font.BOLD, 14, label1.getFont());
@@ -779,7 +853,7 @@ public class ListBillboards extends JFrame {
         buttonDelete = new JButton();
         buttonDelete.setForeground(new Color(-4517878));
         buttonDelete.setText("Delete");
-        panel3.add(buttonDelete, new GridConstraints(9, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(buttonDelete, new GridConstraints(11, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         labelSelectedName = new JLabel();
         labelSelectedName.setText("Please Select a Billboard");
         panel3.add(labelSelectedName, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -788,18 +862,23 @@ public class ListBillboards extends JFrame {
         final Spacer spacer19 = new Spacer();
         panel3.add(spacer19, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(3, 3), null, null, 0, false));
         final Spacer spacer20 = new Spacer();
-        panel3.add(spacer20, new GridConstraints(10, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        panel3.add(spacer20, new GridConstraints(12, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
         buttonRename = new JButton();
         buttonRename.setText("Rename");
         panel3.add(buttonRename, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer21 = new Spacer();
         panel3.add(spacer21, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        buttonUnschedule = new JButton();
+        buttonUnschedule.setText("Unchedule");
+        panel3.add(buttonUnschedule, new GridConstraints(9, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer22 = new Spacer();
-        panel1.add(spacer22, new GridConstraints(5, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(3, -1), null, null, 0, false));
+        panel3.add(spacer22, new GridConstraints(10, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
         final Spacer spacer23 = new Spacer();
-        panel1.add(spacer23, new GridConstraints(26, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        panel1.add(spacer23, new GridConstraints(5, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(3, -1), null, null, 0, false));
         final Spacer spacer24 = new Spacer();
-        panel1.add(spacer24, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 7), null, null, 0, false));
+        panel1.add(spacer24, new GridConstraints(26, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 3), null, null, 0, false));
+        final Spacer spacer25 = new Spacer();
+        panel1.add(spacer25, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 7), null, null, 0, false));
     }
 
     /**
