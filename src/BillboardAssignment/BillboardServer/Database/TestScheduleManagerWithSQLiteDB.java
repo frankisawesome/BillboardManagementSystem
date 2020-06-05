@@ -1,24 +1,17 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import BillboardAssignment.BillboardServer.Database.*;
-import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTester;
 import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTesterSQLite;
 import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
-import BillboardAssignment.BillboardServer.Services.User.User;
-import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 

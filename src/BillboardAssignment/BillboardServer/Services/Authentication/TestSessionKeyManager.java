@@ -1,7 +1,7 @@
 package BillboardAssignment.BillboardServer.Services.Authentication;
 
-import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 import BillboardAssignment.BillboardServer.Database.*;
+import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

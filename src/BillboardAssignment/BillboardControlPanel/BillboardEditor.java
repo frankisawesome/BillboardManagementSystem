@@ -13,11 +13,20 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,13 +34,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Base64;
 import java.util.HashMap;
-import javax.swing.border.Border;
-import javax.swing.BorderFactory;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {

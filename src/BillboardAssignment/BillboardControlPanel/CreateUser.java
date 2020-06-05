@@ -17,8 +17,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class CreateUser extends JFrame {
     private JLabel labelTitle;
     private JLabel labelName;

@@ -1,8 +1,8 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
-import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
 import java.util.HashMap;
 

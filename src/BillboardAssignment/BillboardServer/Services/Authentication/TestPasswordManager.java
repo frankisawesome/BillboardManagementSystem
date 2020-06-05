@@ -1,12 +1,12 @@
 package BillboardAssignment.BillboardServer.Services.Authentication;
 
+import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
+import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
+import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTester;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.User;
 import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
-import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
-import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
-import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
