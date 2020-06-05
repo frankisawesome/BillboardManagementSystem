@@ -1,15 +1,20 @@
 package BillboardAssignment.BillboardServer.Tests;
 
-import BillboardAssignment.BillboardServer.Server.*;
-import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTester;
-import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTesterSQLite;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.Server.UserData;
 import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashMap;
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test suite for all user related controllers, i.e RequestType.USER

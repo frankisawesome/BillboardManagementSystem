@@ -1,13 +1,13 @@
 package BillboardAssignment.BillboardServer.Services.User;
 
+import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
+import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
+import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTesterSQLite;
 import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectPasswordException;
 import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
-import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
-import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 

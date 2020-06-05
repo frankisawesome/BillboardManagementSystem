@@ -1,11 +1,11 @@
 package BillboardAssignment.BillboardServer.Services.Authentication;
 
-import BillboardAssignment.BillboardServer.Services.User.User;
-import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.BillboardServer.Database.Queryable;
+import BillboardAssignment.BillboardServer.Services.User.User;
+import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

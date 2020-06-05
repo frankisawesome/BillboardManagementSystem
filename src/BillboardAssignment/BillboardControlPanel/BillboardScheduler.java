@@ -7,8 +7,6 @@ import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
-
-import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;

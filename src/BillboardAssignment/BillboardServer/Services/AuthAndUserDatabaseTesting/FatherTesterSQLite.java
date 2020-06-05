@@ -1,12 +1,11 @@
 package BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting;
 
-import BillboardAssignment.BillboardServer.Server.BillboardServer;
+import BillboardAssignment.BillboardServer.Database.*;
 import BillboardAssignment.BillboardServer.Services.Authentication.*;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.User;
 import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 import BillboardAssignment.BillboardServer.Services.User.UserManager;
-import BillboardAssignment.BillboardServer.Database.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 

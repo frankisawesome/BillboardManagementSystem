@@ -4,7 +4,6 @@ import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
-import BillboardAssignment.BillboardServer.Services.User.User;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -15,8 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListBillboards extends JFrame {
     private JLabel labelTitle;

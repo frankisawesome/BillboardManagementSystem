@@ -3,14 +3,12 @@ package BillboardAssignment.BillboardServer.Tests;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
-import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTester;
-import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTesterSQLite;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
 import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBillboardControllers {
     @Test

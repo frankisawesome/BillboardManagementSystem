@@ -13,8 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class EditUser extends JFrame {
     private JLabel labelTitle;
     private JButton buttonAddAdmin;

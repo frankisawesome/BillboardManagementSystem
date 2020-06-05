@@ -1,6 +1,5 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
 import java.sql.PreparedStatement;

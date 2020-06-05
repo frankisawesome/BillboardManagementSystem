@@ -1,17 +1,17 @@
 package BillboardAssignment.BillboardServer.Server;
 
-import BillboardAssignment.BillboardServer.Database.*;
-import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
-import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
-import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Controllers.BillboardController;
+import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Controllers.TestController;
 import BillboardAssignment.BillboardServer.Controllers.UserController;
+import BillboardAssignment.BillboardServer.Database.*;
 import BillboardAssignment.BillboardServer.Services.Authentication.PasswordManager;
 import BillboardAssignment.BillboardServer.Services.Authentication.SessionKeyManager;
 import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.Services.Billboard.BillboardManager;
+import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
+import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Services.User.User;
 import BillboardAssignment.BillboardServer.Services.User.UserManager;
 

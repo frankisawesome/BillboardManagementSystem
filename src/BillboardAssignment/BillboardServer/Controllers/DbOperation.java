@@ -1,14 +1,14 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
+import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
+import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
+import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.RemoveOwnEditUsersPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.RemoveOwnUserException;
-import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
-import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
-import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
 /**
  * A interface only used with lambda functions that perform db operations

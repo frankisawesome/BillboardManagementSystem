@@ -1,7 +1,7 @@
 package BillboardAssignment.BillboardServer.Services.User;
 
-import BillboardAssignment.BillboardServer.Services.Authentication.*;
 import BillboardAssignment.BillboardServer.Database.*;
+import BillboardAssignment.BillboardServer.Services.Authentication.*;
 
 import java.util.ArrayList;
 
