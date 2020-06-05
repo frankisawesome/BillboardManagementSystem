@@ -40,6 +40,13 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     // String containing the XML representation of the billboard
     String xmlBillboard;
 
+    // Default billboard;
+    String defaultBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<billboard>\n" +
+            "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
+            "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
+            "</billboard>";
+
     // Contents of xmlBillboard
     String title;
     String image;
@@ -75,12 +82,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
     public BillboardViewer (String title) throws HeadlessException {
         super(title);
-
-        xmlBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<billboard>\n" +
-                "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
-                "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                "</billboard>";
     }
 
     /**
@@ -135,7 +136,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     private void SetComponents () throws ParserConfigurationException, IOException, SAXException {
 
         // Get billboard from server
-        ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "current");
+        ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "current");
 
         ServerResponse<Billboard> response;
         try {
@@ -143,6 +144,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             this.xmlBillboard = response.body().xml;
         } catch (Exception ex) {
             ex.printStackTrace();
+            xmlBillboard = defaultBillboard;
         }
 
         // Make document builder objects
