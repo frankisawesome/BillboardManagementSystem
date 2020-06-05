@@ -98,7 +98,6 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
             outputObject = mapResultSetToObject(singleRow);
             get.close();
         } catch (java.sql.SQLException e) {
-            e.printStackTrace();
             throw new DatabaseObjectNotFoundException(getEntityName(), ID);
         }
 
