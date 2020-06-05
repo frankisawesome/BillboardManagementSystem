@@ -75,13 +75,12 @@ public class ScheduleManager {
     }
 
     public boolean checkIfScheduled(String name) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
-
-        ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
-        if (schedules.size() == 0) {
+        try {
+            ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
+        } catch (DatabaseObjectNotFoundException e){
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     // Determine the billboard to be displayed at the current time
