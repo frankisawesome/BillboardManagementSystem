@@ -1,10 +1,5 @@
-package BillboardAssignment.BillboardViewer;
+package BillboardAssignment.BillboardControlPanel;
 
-import BillboardAssignment.BillboardControlPanel.Login;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
-import BillboardAssignment.BillboardServer.Server.RequestType;
-import BillboardAssignment.BillboardServer.Server.ServerRequest;
-import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,7 +8,6 @@ import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,20 +17,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
-
-public class BillboardViewer extends JFrame implements ActionListener, Runnable {
-    Dimension screenSize;
+public class BillboardPreviewer extends JFrame implements ActionListener, Runnable {
+    private int WIDTH = 800;
+    private int HEIGHT = 450;
 
     String xmlBillboard;
+    Dimension screenSize;
 
     // Contents of xmlBillboard
     String title;
@@ -57,46 +45,32 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     JPanel pnl3;
     JPanel pnl4;
     JPanel pnl5;
-    JSplitPane splitPane;
-
-    Timer timer;
 
     /**
-     * Constructor class for the BillboardViewer
+     * Billboard Previewer class constructor
      *
-     * @param title The title of the billboard viewer application
-     * @throws HeadlessException
+     * @param title - title of the Billboard Previewer application
+     * @param xmlBillboard - a string containing XML that stores information about the billboard for viewing
+     * @return n/a
      */
 
-    public BillboardViewer (String title) throws HeadlessException {
+    public BillboardPreviewer(String title, String xmlBillboard) throws HeadlessException {
         super(title);
-
-        xmlBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<billboard>\n" +
-                "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
-                "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                "</billboard>";
-
+        this.xmlBillboard = xmlBillboard;
     }
 
     /**
-     * Method that sets up preliminary operating values and listeners to add functionality to the viewer
+     * SetGUI method - initialises preliminaries required to ensure operability and function of the program
      *
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
+     * @return n/a
      */
 
     public void SetGUI() throws ParserConfigurationException, IOException, SAXException {
         // Set preliminaries
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
         setResizable(false);
         setVisible(true);
-
-        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(screenSize.width, screenSize.height);
-
-        SetComponents();
 
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
@@ -111,16 +85,13 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             }
         });
 
-        timer = new Timer(15000, this);
-        timer.start();
+        SetComponents();
     }
 
     /**
-     * Method that sets the components and panels that are needed to display the billboard on the JFrame
+     * Set Components method to parse XML file and set JPanel and JComponents appropriately on the JFrame.
      *
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
+     * @return n/a
      */
 
     private void SetComponents () throws ParserConfigurationException, IOException, SAXException {
@@ -233,8 +204,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
             addToPanel(this, pnl4, c, 1, 0, 1, 1);
             addToPanel(this, pnl3, c, 1, 1, 1, 2);
-
-            System.out.println("yes");
         } else if ((titleFlg == true) && (imageFlg == false) && (subtextFlg == true)) {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
@@ -287,9 +256,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             this.getContentPane().add(pnl3, BorderLayout.CENTER);
             this.getContentPane().add(pnl4, BorderLayout.NORTH);
             this.getContentPane().add(pnl5, BorderLayout.SOUTH);
-            System.out.println("no");
         }
-
 
         if (titleFlg == true) {
             // Set Top pane to title
@@ -382,7 +349,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         return panel;
     }
 
-
     /**
      * Overridden method from Runnable interface that sets GUI on default
      *
@@ -394,65 +360,36 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         try {
             SetGUI();
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ParserConfigurationException");
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "IOException");
         } catch (SAXException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "SAXException");
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "NullPointerException");
         }
     }
 
-
     /**
-     * Overridden method from ActionListener interface that gets XML file from server, resets components and
-     * displays them on the JFrame
+     * Overridden method from ActionListener interface that listens for an action event
      *
-     * @param e - Action event object
      * @return n/a
      */
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
 
-        if (source == timer) {
-            xmlBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<billboard>\n" +
-                    "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
-                    "    <picture \n" +
-                    "\tdata=\"iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAIAAAD4YuoOAAAAKXRFWHRDcmVhdGlvbiBUaW1lAJCFIDI1IDMgMjAyMCAwOTowMjoxNyArMDkwMHlQ1XMAAAAHdElNRQfkAxkAAyQ8nibjAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAAAS5JREFUeNq1kb9KxEAQxmcgcGhhJ4cnFwP6CIIiPoZwD+ALXGFxj6BgYeU7BO4tToSDFHYWZxFipeksbMf5s26WnAkJki2+/c03OzPZDRJNYcgVwfsU42cmKi5YjS1s4p4DCrkBPc0wTlkdX6bsG4hZQOj3HRDLHqh08U4Adb/zgEMtq5RuH3Axd45PbftdB2wO5OsWc7pOYaOeOk63wYfdFtL5qldB34W094ZfJ+4RlFldTrmW/ZNbn2g0of1vLHdZq77qSDCaSAsLf9kXh9w44PNoR/YSPHycEmbIOs5QzBJsmDHrWLPeF24ZkCe6ZxDCOqHcmxmsr+hsicahss+n8vYb8NHZPTJxi/RGC5IqbRwqH6uxVTX+5LvHtvT/V/R6PGh/iF4GHoBAwz7RD26spwq6Amh/AAAAAElFTkSuQmCC\"/>\n" +
-                    "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                    "</billboard>";
-            try {
-                SetComponents();
-            } catch (ParserConfigurationException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (SAXException ex) {
-                ex.printStackTrace();
-            }
-            revalidate();
-        }
     }
 
     /**
-     * Method to invoke the billboard viewer JFrame
+     * Create method that create the JFrame for the Billboard Previewer
      *
+     * @param billboard - xml string associated with the billboard that will be parsed
      * @return n/a
      */
 
-    public static void create() {
-        SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
-    }
-
-    /**
-     * Main method that invokes the billboard viewer JFrame
-     *
-     * @return n/a
-     */
-
-    public static void main(String[] args) {
-        create();
+    public static void create(String billboard) {
+        SwingUtilities.invokeLater(new BillboardPreviewer("Billboard Viewer", billboard));
     }
 }

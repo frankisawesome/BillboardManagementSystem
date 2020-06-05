@@ -16,6 +16,26 @@ import java.io.StringWriter;
 
 
 public class XMLBuilder {
+    /**
+     * Public method that takes required inputs for the fields that define a billboard in the editor and writes them
+     * embedded in an XML string
+     *
+     * @param title - a string that defines the title of the billboard
+     * @param titleR - a string containing an integer representation of the red value of the title colour in RGB integer format
+     * @param titleG - a string containing an integer representation of the green value of the title colour in RGB integer format
+     * @param titleB - a string containing an integer representation of the blue value of the title colour  in RGB integer format
+     * @param imagePath - a string containing the file path of the image or a Base64 byte representation
+     * @param URL - a boolean value that determines whether the imagePath content represents a URL or Data
+     * @param subtext - a string that defines the subtext of the billboard
+     * @param subtextR - a string containing an integer representation of the red value of the subtext colour in RGB integer format
+     * @param subtextG - a string containing an integer representation of the green value of the subtext colour in RGB integer format
+     * @param subtextB - a string containing an integer representation of the blue value of the subtext colour in RGB integer format
+     * @param backgroundR - a string containing an integer representation of the red value of the background colour in RGB integer format
+     * @param backgroundG - a string containing an integer representation of the green value of the background colour in RGB integer format
+     * @param backgroundB - a string containing an integer representation of the blue value of the background colour in RGB integer format     *
+     * @return n/a
+     */
+
     public static String WriteXML (String title, String titleR, String titleG, String titleB,
                               String imagePath, boolean URL,
                               String subtext, String subtextR, String subtextG, String subtextB,

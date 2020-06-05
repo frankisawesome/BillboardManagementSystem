@@ -10,9 +10,6 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
@@ -26,9 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import javax.swing.border.Border;
@@ -38,8 +32,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
-import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
     public static int WIDTH = 1200;
@@ -117,6 +109,16 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     String billboardName;
 
 
+    /**
+     * Billboard Editor Constructor Method. Initialises information about the billboards
+     *
+     * @param title - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @param billboard - String array containing information about the billboard to be displayed
+     * @param newBillboard - boolean flag to indicate whether the class is being called from the edit or create menus
+     * @return N/A
+     */
+
     public BillboardEditor (String title, String[] userDataInput, String[] billboard, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
@@ -126,12 +128,28 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         this.newBillboard = newBillboard;
     }
 
+    /**
+     * Billboard Editor Overloaded Constructor Method. Initialises information about the billboards upon creation
+     *
+     * @param title - Window Title
+     * @param userDataInput - Array containing session key and user ID for user performing the request
+     * @param billboardName - billboard title, passed in on creation
+     * @param newBillboard - boolean flag to indicate whether the class is being called from the edit or create menus
+     * @return N/A
+     */
+
     public BillboardEditor (String title, String[] userDataInput, String billboardName, Boolean newBillboard) throws HeadlessException {
         super(title);
         this.userData = userDataInput;
         this.billboardName = billboardName;
         this.newBillboard = newBillboard;
     }
+
+    /**
+     * Set GUI method, used to set preliminary fields defining the JFrame appearance and operation
+     *
+     * @return N/A
+     */
 
     public void SetGUI ()  {
         // Set preliminaries
@@ -280,6 +298,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     }
 
+    /**
+     * Method to prepopulate GUI fields if the user is editing an existing billboard
+     *
+     * @return N/A
+     */
+
     private void PrepopulateGUIFields () throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
 
@@ -362,6 +386,19 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
+    /**
+     * Add to panel helper method that adds a component to a JPanel
+     *
+     * @param jp - JPanel object to be added to
+     * @param c - component that is to be added to the JPanel
+     * @param constraints - constraints of the GridBagLayout
+     * @param x - integer defining which column of the grid the component will be added to
+     * @param x - integer defining which row of the grid the component will be added to
+     * @param w - integer defining how many columns the component will occupy
+     * @param h - integer defining how many rows the component will occupy
+     * @return N/A
+     */
+
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
                             int x, int y, int w, int h) {
         constraints.gridx = x;
@@ -371,6 +408,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         jp.add(c, constraints);
     }
 
+    /**
+     * Helper method to create a JTextArea component
+     *
+     * @param placeholder - Placeholder text that is initialised in the text area
+     * @return jtextarea - A JTextArea object
+     */
+
     private JTextArea createTextArea (String placeholder) {
         JTextArea jtextarea = new JTextArea(placeholder, 5, 20);
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
@@ -379,11 +423,29 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         jtextarea.setWrapStyleWord(true);
         return jtextarea;
     }
+
+
+    /**
+     * Helper method to create a JTextField component
+     *
+     * @param placeholder - Placeholder text that is initialised in the text field
+     * @return jtextfield - A JTextField object
+     */
+
     private JTextField createTextField(String placeholder) {
         JTextField jtextfield = new JTextField(placeholder);
         jtextfield.addActionListener(this);
         return jtextfield;
     }
+
+
+    /**
+     * Helper method to create a JButton component
+     *
+     * @param text - Text that the JButton will be shown with
+     * @return jbutton - A JButton object
+     */
+
     private JButton createButton(String text) {
         JButton jbutton = new JButton();
         jbutton.setText(text);
@@ -391,12 +453,27 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         return jbutton;
     }
 
+
+    /**
+     * Helper method to create a JPanel
+     *
+     * @param color - Color object that sets the background colour of the JPanel
+     * @return panel - A JPanel object
+     */
+
     private static JPanel createPanel(Color color) {
         JPanel panel = new JPanel();
         panel.setBackground(color);
         return panel;
     }
-    
+
+    /**
+     * Helper method to get the text currently residing in the text fields and update
+     * the local variables associated with them
+     *
+     * @return true/false - Return false if any of the fields are entered incorrectly
+     */
+
     private boolean GetTextFields() {
         titleBillboard = title.getText();
         titleRBillboard = titleColorR.getText();
@@ -513,11 +590,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     }
 
     /**
-     * Sends a request to create a new billboard to the server. All exceptions occuring as a result are handled in the method.
+     * Sends a request to create a new billboard to the server. All exceptions occurring as a result are handled in the method.
      * @param billboardName - name of the billboard to be created
      * @param xmlBillboard - xml string that stores billboard info
+     * @param userData - A string array that stores the user information
      * @return int 1 - Successful 0 - Fail
      */
+
     private int CreateBillboardRequest(String billboardName, String xmlBillboard, String[] userData) {
         try {
             HashMap<String, String> requestBody = new HashMap<>();
@@ -556,8 +635,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
      * Sends a request to edit an existing billboard in the server. All exceptions occuring as a result are handled in the method.
      * @param billboardID - name of the billboard to be created
      * @param xmlBillboard - xml string that stores billboard info
+     * @param userData - a string array containing the users data
      * @return int 1 - Successful 0 - Fail
      */
+
     private int EditBillboardRequest(String billboardID, String xmlBillboard, String[] userData) {
         try {
             HashMap<String, String> requestBody = new HashMap<>();
@@ -592,6 +673,12 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
+    /**
+     * Overridden method from Runnable interface that sets GUI on default and pre-populates fields
+     *
+     * @return n/a
+     */
+
     @Override
     public void run() {
         SetGUI();
@@ -608,6 +695,13 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             }
         }
     }
+
+    /**
+     * Overridden method from ActionListener interface that responds to JButton requests
+     *
+     * @param e - Action event object passed in when an event occurs
+     * @return n/a
+     */
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -640,7 +734,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             if (validFlag) {
                 JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
                         "Press Escape to Exit Preview");
-                BillboardViewer.create(xmlBillboard);
+                BillboardPreviewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
              FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpeg", "png", "bmp", "jpg");
@@ -695,10 +789,26 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         }
     }
 
+    /**
+     * Method to create the billboard editor from the edit billboard menu
+     *
+     * @params userData - String array containing the user data and associated session information
+     * @params billboardName - String array that contains information about the billboard being edited
+     * @return n/a
+     */
+
     public static void create(String[] userData, String[] billboard) {
         boolean newBillboard = false;
         SwingUtilities.invokeLater(new BillboardEditor("Billboard Editor", userData, billboard, newBillboard));
     }
+
+    /**
+     * Method to create the billboard editor from the create billboard menu
+     *
+     * @params userData - String array containing the user data and associated session information
+     * @params billboardName - String that contains the name of the billboard to be created
+     * @return n/a
+     */
 
     public static void create(String[] userData, String billboardName) {
         boolean newBillboard = true;
