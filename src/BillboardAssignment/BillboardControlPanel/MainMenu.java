@@ -112,7 +112,7 @@ public class MainMenu extends JFrame {
                 //Permission Check
                 if (userData[4].equals("1")) {
                     dispose();
-                    BillboardScheduler.create(null, userData);
+                    BillboardScheduler.create(userData);
                 } else {
                     JOptionPane.showMessageDialog(null, "You do not have the required permission to access this feature. " +
                             "\n If this is an error please retry, or contact system administrator.");
