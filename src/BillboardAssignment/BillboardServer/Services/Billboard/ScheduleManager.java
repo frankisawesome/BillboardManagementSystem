@@ -58,7 +58,7 @@ public class ScheduleManager {
         if (!checkIfScheduled("first")) {
             int ID = scheduleDatabase.getMaxID() + 1;
 
-            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("00:00"), LocalTime.parse("23:59"));
+            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("08:00"), LocalTime.parse("10:59"));
 
             scheduleDatabase.addObject(addBillboard);
         }
