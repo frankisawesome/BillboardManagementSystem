@@ -41,15 +41,16 @@ public class XMLBuilder {
                               String subtext, String subtextR, String subtextG, String subtextB,
                               String backgroundR, String backgroundG, String backgroundB) throws ParserConfigurationException, TransformerException {
 
+        // Construct document builder objects
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
-
         DocumentBuilder builder = factory.newDocumentBuilder();
-
         Document document = builder.newDocument();
 
+        // Read the billboard element
         Element billboardElement = document.createElement("billboard");
         document.appendChild(billboardElement);
 
+        // Get the colours of the billboard if they all exist
         if ((backgroundR.length() > 0) && (backgroundG.length() > 0) && (backgroundB.length() > 0)) {
             // Convert title colours to ints
             int backgroundRInt = Integer.parseInt(backgroundR);
@@ -61,6 +62,7 @@ public class XMLBuilder {
             String backgroundGHex = String.format("%02X", backgroundGInt);
             String backgroundBHex = String.format("%02X", backgroundBInt);
 
+            // Add combined hex string to document
             Attr colour = document.createAttribute("background");
             colour.setValue("#" + backgroundRHex + backgroundGHex + backgroundBHex);
             billboardElement.setAttributeNode(colour);
@@ -68,11 +70,13 @@ public class XMLBuilder {
 
         if (title.length() > 0) {
 
+            // Get the title element
             Element titleElement;
             titleElement = document.createElement("message");
             billboardElement.appendChild(titleElement);
             titleElement.appendChild(document.createTextNode(title));
 
+            // Check that the title colours are present
             if ((titleR.length() > 0) && (titleG.length() > 0) && (titleB.length() > 0)) {
                 // Convert title colours to ints
                 int titleRInt = Integer.parseInt(titleR);
@@ -84,37 +88,46 @@ public class XMLBuilder {
                 String titleGHex = String.format("%02X", titleGInt);
                 String titleBHex = String.format("%02X", titleBInt);
 
+                // Add hex colour to document
                 Attr colour = document.createAttribute("colour");
                 colour.setValue("#" + titleRHex + titleGHex + titleBHex);
                 titleElement.setAttributeNode(colour);
             }
         }
 
+        // Check that the image path is present
         if (imagePath.length() > 0) {
 
+            // Get the page element
             Element imagePathElement;
             imagePathElement = document.createElement("picture");
             billboardElement.appendChild(imagePathElement);
 
+            // Check that the image path is a url or data
             if (URL == true) {
 
+                // Create URL element in picture tag
                 Attr urlAttr = document.createAttribute("url");
                 urlAttr.setValue(imagePath);
                 imagePathElement.setAttributeNode(urlAttr);
             } else {
+                // Create data attribute in picture tag
                 Attr dataAttr = document.createAttribute("data");
                 dataAttr.setValue(imagePath);
                 imagePathElement.setAttributeNode(dataAttr);
             }
         }
 
+        // Check that the subtext exists
         if (subtext.length() > 0) {
 
+            // Create an information tag for the subtext
             Element subtextElement;
             subtextElement = document.createElement("information");
             billboardElement.appendChild(subtextElement);
             subtextElement.appendChild(document.createTextNode(subtext));
 
+            // Check that the subtext coloiurs exist
             if ((subtextR.length() > 0) && (subtextG.length() > 0) && (subtextB.length() > 0)) {
                 // Convert title colours to ints
                 int subtextRInt = Integer.parseInt(subtextR);
@@ -126,12 +139,14 @@ public class XMLBuilder {
                 String subtextGHex = String.format("%02X", subtextGInt);
                 String subtextBHex = String.format("%02X", subtextBInt);
 
+                // Set attribute of the information tag for the colour
                 Attr colour = document.createAttribute("colour");
                 colour.setValue("#" + subtextRHex + subtextGHex + subtextBHex);
                 subtextElement.setAttributeNode(colour);
             }
         }
 
+        // Build the XML document, then return it as a string
         DOMSource domSource = new DOMSource(document);
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
