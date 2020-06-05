@@ -35,12 +35,11 @@ import javax.xml.transform.TransformerException;
 
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
-    public static int WIDTH = 1200;
-    public static int HEIGHT = 700;
 
     // Boolean deciding if new billboard or existing
     Boolean newBillboard;
     Boolean validFlag;
+
     // Strings of text defining Billboard
     String billboardID;
     String titleBillboard;
@@ -65,36 +64,36 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JPanel pnl4;
     JPanel pnlBtn;
 
-    // Label for the header title
-    JLabel heading;
-
+    // Create primary buttons
     JButton btnCreateBillboard;
     JButton btnCancel;
     JButton btnPreview;
     JButton btnSave;
 
+    // Create a text field for the name of the billboard
     JTextField name;
-    JLabel nameLabel;
 
+    // Text fields to get the title elements
     JTextField title;
-    JLabel titleLabel;
     JTextField titleColorR;
     JTextField titleColorG;
     JTextField titleColorB;
 
+    // Text fields for the image path and associated checkboxes
     JTextField imagePath;
     JLabel imagePathLabel;
     JCheckBox imageUrlData;
     JCheckBox noImage;
     JButton searchComputer;
 
+    // Text aea for the subtext and associated text fields
     JTextArea subtext;
     JLabel subtextLabel;
-    JFormattedTextField subtextColor;
     JTextField subtextColorR;
     JTextField subtextColorG;
     JTextField subtextColorB;
 
+    // Get the colours for background and set colour field labels
     JLabel backgroundColorLabel;
     JTextField backgroundColorR;
     JTextField backgroundColorG;
@@ -105,6 +104,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     JLabel GLabel;
     JLabel BLabel;
 
+    // Miscellaneous variables
     JLabel editorTitle;
     private String[] userData;
     String billboardName;
@@ -122,6 +122,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     public BillboardEditor (String title, String[] userDataInput, String[] billboard, Boolean newBillboard) throws HeadlessException {
         super(title);
+
         this.userData = userDataInput;
         this.billboardID = billboard[0];
         this.billboardName = billboard[2];
@@ -141,6 +142,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     public BillboardEditor (String title, String[] userDataInput, String billboardName, Boolean newBillboard) throws HeadlessException {
         super(title);
+
         this.userData = userDataInput;
         this.billboardName = billboardName;
         this.newBillboard = newBillboard;
@@ -185,38 +187,40 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         this.getContentPane().add(pnlBtn, BorderLayout.SOUTH);
 
         // Set Layout of Buttons
-
         pnlBtn.setLayout(new GridBagLayout());
 
+        // Create the core buttons
         btnCreateBillboard = createButton("Save Billboard");
         btnCancel = createButton("Cancel");
         btnPreview = createButton("Preview");
         btnSave = createButton("Cache Billboard");
 
+        // Set the grid bag constraints
         GridBagConstraints constraints = new GridBagConstraints();
-
         constraints.fill = GridBagConstraints.NONE;
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.weightx = 100;
         constraints.weighty = 100;
 
+        // Add buttons to the panel
         addToPanel(pnlBtn, btnCreateBillboard, constraints,3, 0, 2, 1);
         addToPanel(pnlBtn, btnCancel, constraints, 3, 2, 2, 1);
         addToPanel(pnlBtn, btnPreview, constraints, 0, 0, 2, 1);
         addToPanel(pnlBtn, btnSave, constraints, 0, 2, 2, 1);
 
         // Set Layout of textfields
-
         pnl3.setLayout(new GridBagLayout());
         GridBagConstraints constraints1 = new GridBagConstraints();
         constraints1.anchor = GridBagConstraints.NORTHWEST;
         constraints1.insets = new Insets(6,3,6,3);
 
+        // Create the name text field
         name = createTextField(billboardName);
         name.setEnabled(false);
         name.setColumns(30);
         JLabel nameLabel = new JLabel("Name");
 
+        // Create the title textfield and the colours associated
         title = createTextField("Insert billboard title");
         title.setColumns(30);
         JLabel titleLabel = new JLabel("Title");
@@ -227,6 +231,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         titleColorB = createTextField("0");
         titleColorB.setColumns(3);
 
+        // Create the imagePath text field and associated checkboxes
         imagePath = createTextField("Specify the images path/ a byte representation");
         imagePath.setColumns(30);
         imagePathLabel = new JLabel("Image Path");
@@ -234,7 +239,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         noImage = new JCheckBox("No image?");
         searchComputer = createButton("Browse PC");
 
-
+        // Create the subtext fields and associated colour fields
         subtext = createTextArea("Billboard subtext");
         subtext.setColumns(30);
         subtextLabel = new JLabel("Billboard Subtext");
@@ -245,12 +250,14 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         subtextColorB = createTextField("0");
         subtextColorB.setColumns(3);
 
+        // Create the labels for the colours
         colorLabel = new JLabel("Color");
         colorLabel2 = new JLabel("(0-255)");
         RLabel = new JLabel("R");
         GLabel = new JLabel("G");
         BLabel = new JLabel("B");
 
+        // Create the background colour labels
         backgroundColorLabel = new JLabel("Background Color");
         backgroundColorR = createTextField("255");
         backgroundColorR.setColumns(3);
@@ -260,6 +267,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         backgroundColorB.setColumns(3);
 
 
+        // Add all the components to the panels they are associated with
         addToPanel(pnl3, name, constraints1,3, 1, 2, 1);
         addToPanel(pnl3, nameLabel, constraints1, 0, 1, 2, 1);
 
@@ -292,11 +300,11 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         addToPanel(pnl3, backgroundColorG, constraints1, 7, 7, 2, 1);
         addToPanel(pnl3, backgroundColorB, constraints1, 9, 7, 2, 1);
 
+        // Set a title for the editor
         editorTitle = new JLabel();
         editorTitle.setText("<html><h1>Billboard Editor</h1></html>");
         editorTitle.setBounds(0, 20, 200, 50);
         addToPanel(pnl4, editorTitle, constraints1, 9, 5, 2, 1);
-
     }
 
     /**
@@ -306,17 +314,20 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
      */
 
     private void PrepopulateGUIFields () throws ParserConfigurationException, IOException, SAXException {
+        // Create document builder objects
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
-
         DocumentBuilder builder = factory.newDocumentBuilder();
 
+        // Parse XML as bytes and convert to document object
         ByteArrayInputStream bais = new ByteArrayInputStream(xmlBillboard.getBytes());
         Document document = builder.parse(bais);
         bais.close();
 
+        // Root billboard element
         Element documentElement = document.getDocumentElement();
         String attributeValue = documentElement.getAttribute("background");
 
+        // Set background color to default to white if the element is empty
         if (attributeValue.isEmpty()) {
             backgroundRBillboard = "255";
             backgroundGBillboard = "255";
@@ -326,6 +337,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             backgroundColorG.setText(backgroundGBillboard);
             backgroundColorB.setText(backgroundBBillboard);
         } else {
+            // Parse the hex value as integers then strings
             backgroundRBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(1,3), 16));
             backgroundGBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(3,5), 16));
             backgroundBBillboard = String.valueOf(Integer.parseInt(attributeValue.substring(5,7), 16));
@@ -335,13 +347,16 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
             backgroundColorB.setText(backgroundBBillboard);
         }
 
+        // Get the child notes of the billboard root
         NodeList nl = documentElement.getChildNodes();
 
+        // Foreach child node
         for (int i =0; i < nl.getLength(); ++i) {
             Node node = nl.item(i);
             if (node instanceof Element) {
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
+                    // Set title fields according to the title tag
                     titleBillboard = element.getTextContent();
                     title.setText(titleBillboard);
                     String dummyTitleColor = element.getAttribute("colour");
@@ -353,7 +368,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                     titleColorG.setText(titleGBillboard);
                     titleColorB.setText(titleBBillboard);
                 } else if (element.getTagName() == "picture") {
+                    // Set the url fields
                     if ((element.hasAttribute("url")) && (!element.hasAttribute("data"))) {
+                        // Set the image fields according to the URL tag
                         imagePathBillboard = element.getAttribute("url");
                         imagePath.setText(imagePathBillboard);
                         imageUrlData.setSelected(false);
@@ -363,6 +380,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                             noImage.setSelected(false);
                         }
                     } else if ((element.hasAttribute("data")) && (!element.hasAttribute("url"))) {
+                        // Set the image fields according to the Data tag
                         imagePathBillboard = element.getAttribute("data");
                         imageUrlData.setSelected(true);
                         if (imagePathBillboard == "") {
@@ -372,6 +390,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                         }
                     }
                 } else if (element.getTagName() == "information") {
+                    // Set the subtext fields according to the information tags
                     subtextBillboard = element.getTextContent();
                     subtext.setText(subtextBillboard);
                     String dummySubtextColor = element.getAttribute("colour");
@@ -476,6 +495,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
      */
 
     private boolean GetTextFields() {
+        // Get the text fields and buttons and set the associated values accordingly
         titleBillboard = title.getText();
         titleRBillboard = titleColorR.getText();
         titleGBillboard = titleColorG.getText();
@@ -600,6 +620,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     private int CreateBillboardRequest(String billboardName, String xmlBillboard, String[] userData) {
         try {
+            // Initialise request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("keyId", userData[1]);
             requestBody.put("billboardName", billboardName);
@@ -642,6 +663,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     private int EditBillboardRequest(String billboardID, String xmlBillboard, String[] userData) {
         try {
+            // Initialise request
             HashMap<String, String> requestBody = new HashMap<>();
             requestBody.put("keyId", userData[1]);
             requestBody.put("billboardId", billboardID);
@@ -682,6 +704,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     @Override
     public void run() {
+        // Set GUI upon bootup
         SetGUI();
 
         if (newBillboard == false) {
@@ -708,7 +731,9 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
+        // Check for button objects
         if (source == btnCancel) {
+            // Return to main menu or the list billboards menu
             dispose();
             if(newBillboard == true) {
                 MainMenu.create(userData);
@@ -717,8 +742,10 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 ListBillboards.create(userData);
             }
         } else if (source == btnSave) {
+            // Cache the text that is entered
             validFlag = GetTextFields();
             try {
+                // Build XML string from fields
                 xmlBillboard = XMLBuilder.WriteXML(titleBillboard, titleRBillboard, titleGBillboard, titleBBillboard,
                         imagePathBillboard, urlBillboard,
                         subtextBillboard, subtextRBillboard, subtextGBillboard, subtextBBillboard,
@@ -729,15 +756,18 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                 ex.printStackTrace();
             }
         } else if (source == btnPreview) {
+            // Cache the billboard before preview
             ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
             actionPerformed(btnSaveSim);
 
+            // Check if the fields are valid
             if (validFlag) {
                 JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
                         "Press Escape to Exit Preview");
                 BillboardPreviewer.create(xmlBillboard);
             }
         } else if (source == searchComputer) {
+             // Set up file chooser object to return an image path as a byte array
              FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpeg", "png", "bmp", "jpg");
              JFileChooser j = new JFileChooser();
              j.setFileFilter(filter);
@@ -766,17 +796,21 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         } else if (source == btnCreateBillboard){
             JOptionPane.showMessageDialog(null, "Press ok to send billboard to server");
 
+            // Cache billboard first
             ActionEvent btnSaveSim = new ActionEvent(btnSave, 1234, "CommandToPerform");
             actionPerformed(btnSaveSim);
 
+            // Check if valid
             if (validFlag) {
                 if(newBillboard == true) {
+                    // Send new billboard to server and return to main menu if successful
                     int successful = CreateBillboardRequest(billboardName, xmlBillboard, userData);
                     dispose();
                     if (successful > 0) {
                         MainMenu.create(userData);
                     }
                 } else if (newBillboard == false) {
+                    // Send edited billboard to server and return to list billboards if successful
                     int successful = EditBillboardRequest(billboardID, xmlBillboard, userData);
                     dispose();
                     if (successful > 0) {
@@ -784,6 +818,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
                     }
                 }
                 else{
+                    // Return to list billboards if anything unaccounted for happens
                     ListBillboards.create(userData);
                 }
             }

@@ -121,7 +121,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         });
 
         // Start  a new timer that will cause an action event every 15 seconds
-        timer = new Timer(15000, this);
+        timer = new Timer(5000, this);
         timer.start();
     }
 
@@ -137,7 +137,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
         // Get billboard from server
         ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "current");
-
         ServerResponse<Billboard> response;
         try {
             response = request.getResponse();
@@ -156,37 +155,45 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         Document document = builder.parse(bais);
         bais.close();
 
+        // Get the first element that makes the XML string (should be billboard)
         Element documentElement = document.getDocumentElement();
         String attributeValue = documentElement.getAttribute("background");
 
+        // Set a default value if there is no associated colour
         if (attributeValue.isEmpty()) {
             backgroundColor = Color.WHITE;
         } else {
             backgroundColor = Color.decode(attributeValue);
         }
 
-
+        // Get the child nodes (message, picture, information)
         NodeList nl = documentElement.getChildNodes();
 
+        // Set fields based on the elements in the XML document
         for (int i =0; i < nl.getLength(); ++i) {
             Node node = nl.item(i);
             if (node instanceof Element) {
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
+                    // Set the title parameters
                     title = element.getTextContent();
                     titleColor = element.getAttribute("colour");
                     titleFlg = true;
                 } else if (element.getTagName() == "picture") {
+                    // Set the imagePath parameters
                     if ((element.hasAttribute("url")) && (!element.hasAttribute("data"))) {
+                        // Set that the image is a file path format
                         image = element.getAttribute("url");
                         imageUrlFlg = true;
                         imageFlg = true;
                     } else if ((element.hasAttribute("data")) && (!element.hasAttribute("url"))) {
+                        // Set that the image is a Base64 byte array format
                         image = element.getAttribute("data");
                         imageUrlFlg = false;
                         imageFlg = true;
                     }
                 } else if (element.getTagName() == "information") {
+                    // Set the subtext parameters
                     subtext = element.getTextContent();
                     subtextColor = element.getAttribute("colour");
                     subtextFlg = true;
@@ -194,15 +201,15 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             }
         }
 
+        // If the text fields are null just set them to empty strings
         if (title == null) {
             title = "";
         }
-
         if (subtext == null) {
             subtext = "";
         }
 
-        /*  ----------------------------------------------------------------------------- */
+        /*  --------------------------Create Layout From Fields----------------------------- */
 
         // Create panels that define the layout
         pnl1 = createPanel(backgroundColor);
@@ -211,16 +218,19 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         pnl4 = createPanel(backgroundColor);
         pnl5 = createPanel(backgroundColor);
         this.setBackground(backgroundColor);
-        // Set sizes of the panels
 
+        // Get the size of the screen and set the JFrame to full screen
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(screenSize.width, screenSize.height);
 
         if ((titleFlg == true) && (imageFlg == false) && (subtextFlg == false)) {
+            // Rule: title to occupy the center of the billboard if on its own
             setLayout(new BorderLayout());
             pnl4.setPreferredSize(new Dimension(screenSize.width, screenSize.height));
             this.getContentPane().add(pnl4, BorderLayout.CENTER);
         } else if ((titleFlg == false) && (imageFlg == true) && (subtextFlg == false)) {
+            // Rule: image to occupy the center scaled to half the screen width and
+            //       height if on its own
             setLayout(new BorderLayout());
             pnl1.setPreferredSize(new Dimension(screenSize.width / 4,screenSize.height));
             pnl2.setPreferredSize(new Dimension(screenSize.width / 4,screenSize.height));
@@ -234,6 +244,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             this.getContentPane().add(pnl4, BorderLayout.NORTH);
             this.getContentPane().add(pnl5, BorderLayout.SOUTH);
         } else if ((titleFlg == false) && (imageFlg == false) && (subtextFlg == true)) {
+            // Rule: if subtext is on its own set to occupy 75% of the width and 50% of the height (at maximum)
             setLayout(new BorderLayout());
             pnl1.setPreferredSize(new Dimension(screenSize.width / 8,screenSize.height));
             pnl2.setPreferredSize(new Dimension(screenSize.width / 8,screenSize.height));
@@ -247,6 +258,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             this.getContentPane().add(pnl4, BorderLayout.NORTH);
             this.getContentPane().add(pnl5, BorderLayout.SOUTH);
         } else if ((titleFlg == true) && (imageFlg == true) && (subtextFlg == false)) {
+            // Rule: if title and text are supplied set title to top 1/3rd and image to bottom 2/3rds of JFrame
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
 
@@ -258,6 +270,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
             System.out.println("yes");
         } else if ((titleFlg == true) && (imageFlg == false) && (subtextFlg == true)) {
+            // Rule: if title and subtext are supplied let each occupy the top and bottom halves of the screen
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.anchor = GridBagConstraints.CENTER;
@@ -269,6 +282,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             addToPanel(this, pnl5, c, 1, 1, 1, 1);
 
         } else if ((titleFlg == false) && (imageFlg == true) && (subtextFlg == true)) {
+            // Rule: if image and subtext fields are present let subtext occupy top 1/3rd of the screen and image occupy the bottom 2/3rds
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
 
@@ -278,6 +292,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             addToPanel(this, pnl3, c, 1, 0, 1, 1);
             addToPanel(this, pnl5, c, 1, 1, 1, 1);
         } else if ((titleFlg == true) && (imageFlg == true) && (subtextFlg == true)) {
+            // Rule: if all fields are present set each to occupy 1/3rd of the vertical dimension
             setLayout(new BorderLayout());
             pnl1.setPreferredSize(new Dimension(screenSize.width/3, screenSize.height));
             pnl2.setPreferredSize(new Dimension(screenSize.width/3,screenSize.height));
@@ -285,24 +300,19 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             pnl4.setPreferredSize(new Dimension(screenSize.width, screenSize.height / 3));
             pnl5.setPreferredSize(new Dimension(screenSize.width,screenSize.height / 3));
 
-
-            // Set where the panels are located
-
             this.getContentPane().add(pnl1, BorderLayout.WEST);
             this.getContentPane().add(pnl2, BorderLayout.EAST);
             this.getContentPane().add(pnl3, BorderLayout.CENTER);
             this.getContentPane().add(pnl4, BorderLayout.NORTH);
             this.getContentPane().add(pnl5, BorderLayout.SOUTH);
         } else {
+            // Set random layout if all these cases were to fail
             setLayout(new BorderLayout());
             pnl1.setPreferredSize(new Dimension(100,100));
             pnl2.setPreferredSize(new Dimension(100,100));
             pnl3.setPreferredSize(new Dimension(100, 100));
             pnl4.setPreferredSize(new Dimension(100, 200));
             pnl5.setPreferredSize(new Dimension(100,200));
-
-
-            // Set where the panels are located
 
             this.getContentPane().add(pnl1, BorderLayout.WEST);
             this.getContentPane().add(pnl2, BorderLayout.EAST);
@@ -314,7 +324,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
 
         if (titleFlg == true) {
-            // Set Top pane to title
+            // Set the title label and add to its associated JPanel
             JLabel htmlTitle = new JLabel();
             pnl4.setLayout(new GridBagLayout());
             htmlTitle.setText(String.format("<html><font size='12' color='%s'>%s</font></html>", titleColor, title));
@@ -325,6 +335,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         }
 
         if (subtextFlg == true) {
+            // Set the subtext label and add to its associated JPanel
             JLabel htmlTitle1 = new JLabel();
             pnl5.setLayout(new GridBagLayout());
             htmlTitle1.setText(String.format("<html><body style='width: 1000px; text-align:center'><font size='6' color='%s'>%s</font></html>", subtextColor, subtext));
@@ -335,9 +346,11 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         }
 
         if (imageFlg == true) {
+            // Begin to set the image path
             pnl3.setLayout(new GridBagLayout());
             if (imageUrlFlg != null) {
                 if (imageUrlFlg == true) {
+                    // Read the file path as a buffered image and add to JLabel, then JPanel
                     BufferedImage myPicture;
                     try {
                         myPicture = ImageIO.read(new File(image));
@@ -350,6 +363,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                     JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
                     pnl3.add(picLabel);
                 } else if (imageUrlFlg == false) {
+                    // Read the byte array as a buffered image and add to JLabel, then JPanel
                     byte[] imageByte = Base64.getDecoder().decode(image);
                     BufferedImage myPicture;
                     try {
@@ -383,6 +397,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
     private void addToPanel(JFrame jf, JPanel panel, GridBagConstraints constraints,
                             int x, int y, int w, int h) {
+        // Set the constraints to the parameters
         constraints.gridx = x;
         constraints.gridy = y;
         constraints.gridwidth = w;
@@ -414,6 +429,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     @Override
     public void run() {
         try {
+            // Set GUI rules on startup
             SetGUI();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -437,9 +453,11 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
+        // Sample for a timer action event
         if (source == timer) {
 
             try {
+                // Set the components every 15 seconds on timer event
                 SetComponents();
             } catch (ParserConfigurationException ex) {
                 ex.printStackTrace();
@@ -448,6 +466,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             } catch (SAXException ex) {
                 ex.printStackTrace();
             }
+            // Re paint the JFrame
             revalidate();
         }
     }
