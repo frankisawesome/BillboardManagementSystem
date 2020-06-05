@@ -472,15 +472,18 @@ public class ListBillboards extends JFrame {
                     buttonDelete.setVisible(true);
                     buttonEdit.setVisible(true);
                     buttonRename.setVisible(true);
+                    buttonUnschedule.setVisible(true);
                 } else {
                     buttonDelete.setVisible(false);
                     buttonEdit.setVisible(false);
                     buttonRename.setVisible(false);
+                    buttonUnschedule.setVisible(false);
                 }
             } else {
                 buttonDelete.setVisible(false);
                 buttonEdit.setVisible(false);
                 buttonRename.setVisible(false);
+                buttonUnschedule.setVisible(false);
             }
         }
         if (UserData[4].equals("1")) {
