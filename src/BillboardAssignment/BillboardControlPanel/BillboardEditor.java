@@ -39,7 +39,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import static BillboardAssignment.BillboardServer.Server.Tests.TestUserControllers.requestBodyWithKey;
+import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
     public static int WIDTH = 1200;

@@ -21,7 +21,7 @@ public class Schedule implements Identifiable {
 
     @Override
     public int getID() {
-        return 0;
+        return id;
     }
 
     @Override
