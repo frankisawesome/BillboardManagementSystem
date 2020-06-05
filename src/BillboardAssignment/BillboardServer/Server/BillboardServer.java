@@ -1,10 +1,9 @@
 package BillboardAssignment.BillboardServer.Server;
 
+import BillboardAssignment.BillboardServer.Database.*;
 import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
-import BillboardAssignment.BillboardServer.Database.BillboardSQLiteDatabase;
-import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
 import BillboardAssignment.BillboardServer.Controllers.BillboardController;
 import BillboardAssignment.BillboardServer.Controllers.TestController;
 import BillboardAssignment.BillboardServer.Controllers.UserController;
@@ -15,8 +14,6 @@ import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.Services.Billboard.BillboardManager;
 import BillboardAssignment.BillboardServer.Services.User.User;
 import BillboardAssignment.BillboardServer.Services.User.UserManager;
-import BillboardAssignment.BillboardServer.Database.DatabaseArray;
-import BillboardAssignment.BillboardServer.Database.Queryable;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -54,8 +51,8 @@ public class BillboardServer {
         try {
             //initialising the server with props read from file
             init(getPortFromProps());
-            setUpDbs();
-            //setUpSqlDbs();
+            //setUpDbs();
+            setUpSqlDbs();
         }
         //catch file not found before IO as there's only one possible cause
         catch (FileNotFoundException e) {
@@ -129,6 +126,10 @@ public class BillboardServer {
 
         Queryable<Billboard> billboardDb = new BillboardSQLiteDatabase();
         billboardDb.initialiseDatabase("Billboards");
+
+        Queryable<Schedule> scheduleDB = new ScheduleSQLiteDatabase();
+        scheduleDB.initialiseDatabase("Schedules");
+        scheduleManager = new ScheduleManager(scheduleDB, userManager);
 
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
         billboardManager = new BillboardManager(billboardDb, database2, database);

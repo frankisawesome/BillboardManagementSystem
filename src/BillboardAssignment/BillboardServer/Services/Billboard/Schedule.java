@@ -27,6 +27,6 @@ public class Schedule implements Identifiable, Serializable {
 
     @Override
     public void changeID(int newID) {
-
+        id = newID;
     }
 }
