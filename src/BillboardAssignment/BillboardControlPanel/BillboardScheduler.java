@@ -6,8 +6,6 @@ import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
-import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
-
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -60,6 +58,7 @@ public class BillboardScheduler {
     JFrame frame;
     JTable table;
     JScrollPane scrollPane;
+    String[] UserData;
 
     /**
      * A method which locates the index of a string within an array
@@ -232,7 +231,9 @@ public class BillboardScheduler {
         if (columnnum != -1 && rownum != -1){
             try {
                 // Send to schedule database
-                HashMap<String, String> requestBody = requestBodyWithKey();
+                HashMap<String, String> requestBody = new HashMap<>();
+                requestBody.put("keyId", UserData[1]);
+                requestBody.put("key", UserData[0]);
                 requestBody.put("billboardName", name);
                 requestBody.put("day", day);
                 requestBody.put("startTime", start_string + start_string_mins);
@@ -281,6 +282,7 @@ public class BillboardScheduler {
      */
     BillboardScheduler(String[] UserData)
     {
+        this.UserData = UserData;
         // Frame initialisation
         frame = new JFrame();
 
