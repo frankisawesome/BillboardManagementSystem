@@ -1,6 +1,5 @@
 package BillboardAssignment.BillboardServer.Services.Billboard;
 
-import BillboardAssignment.BillboardControlPanel.UserManage;
 import BillboardAssignment.BillboardServer.Services.Authentication.*;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Database.*;
@@ -13,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ScheduleManager {
-    private Queryable<Schedule> scheduleDatabase;
+    public Queryable<Schedule> scheduleDatabase;
     private UserManager userManager;
 
     public ScheduleManager(Queryable<Schedule> scheduleDatabase, UserManager userManager) {
@@ -47,6 +46,10 @@ public class ScheduleManager {
         }
 
         return scheduleDatabase;
+    }
+
+    public ArrayList<Schedule> getAllSchedules() throws DatabaseNotAccessibleException {
+        return scheduleDatabase.getAllObjects();
     }
 
     // Determine the billboard to be displayed at the current time
