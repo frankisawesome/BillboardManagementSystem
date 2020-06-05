@@ -48,11 +48,11 @@ public class ScheduleManager {
      * @throws OutOfDateSessionKeyException
      * @throws IncorrectSessionKeyException
      */
-    public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime, UserSessionKey key ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime, String creatorName, UserSessionKey key ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
         int ID = scheduleDatabase.getMaxID() + 1;
 
-        Schedule addBillboard = new Schedule (ID, billboardName, scheduleDay, LocalTime.parse(startTime), LocalTime.parse(endTime));
+        Schedule addBillboard = new Schedule (ID, billboardName, scheduleDay, LocalTime.parse(startTime), LocalTime.parse(endTime), creatorName);
 
         scheduleDatabase.addObject(addBillboard);
 
@@ -75,7 +75,7 @@ public class ScheduleManager {
     public Queryable<Schedule> removeFromSchedule(String billboardToRemove, UserSessionKey key) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException, OutOfDateSessionKeyException, InsufficentPrivilegeException, IncorrectSessionKeyException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
         LocalTime fakeTime = LocalTime.parse("00:00");
-        Schedule dummy = new Schedule(111, "name", "day", fakeTime, fakeTime);
+        Schedule dummy = new Schedule(111, "name", "day", fakeTime, fakeTime, "");
         // Remove all billboards where name == billboardToRemove
         ArrayList<Schedule> Remove = scheduleDatabase.getWhere("name", billboardToRemove, dummy);
         if (Remove.size() > 0) {
@@ -107,7 +107,7 @@ public class ScheduleManager {
         if (!checkIfScheduled("first")) {
             int ID = scheduleDatabase.getMaxID() + 1;
 
-            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("08:00"), LocalTime.parse("10:00"));
+            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("08:00"), LocalTime.parse("10:00"), "admin");
 
             scheduleDatabase.addObject(addBillboard);
         }
@@ -128,7 +128,7 @@ public class ScheduleManager {
     public boolean checkIfScheduled(String name, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, NoSuchFieldException {
         userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
 
-        ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
+        ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00"), ""));
         if (schedules.size() == 0) {
             return false;
         } else {
@@ -149,7 +149,7 @@ public class ScheduleManager {
      */
     public boolean checkIfScheduled(String name) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
         try {
-            ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
+            ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00"), ""));
         } catch (DatabaseObjectNotFoundException e){
             return false;
         }
