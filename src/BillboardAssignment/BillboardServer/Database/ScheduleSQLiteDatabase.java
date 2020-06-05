@@ -19,6 +19,7 @@ public class ScheduleSQLiteDatabase extends SQLiteDatabase<Schedule> {
         return "CREATE TABLE IF NOT EXISTS Schedules (" +
                 "id INTEGER PRIMARY KEY," +
                 "name TEXT NOT NULL," +
+                "creatorName TEXT NOT NULL," +
                 "day TEXT NOT NULL," +
                 "start TEXT NOT NULL," +
                 "end TEST NOT NULL);";
@@ -31,7 +32,7 @@ public class ScheduleSQLiteDatabase extends SQLiteDatabase<Schedule> {
      */
     @Override
     public String getAttributeNames() {
-        return "id, name, day, start, end";
+        return "id, name, creatorName, day, start, end";
     }
 
     /**
@@ -55,9 +56,10 @@ public class ScheduleSQLiteDatabase extends SQLiteDatabase<Schedule> {
     public void addValues(PreparedStatement statement, Schedule object) throws SQLException {
             statement.setInt(1, object.getID());
             statement.setString(2, object.name);
-            statement.setString(3, object.day);
-            statement.setString(4, object.start.format(DateTimeFormatter.ISO_LOCAL_TIME));
-            statement.setString(5, object.end.format(DateTimeFormatter.ISO_LOCAL_TIME));
+            statement.setString(3, object.creatorName);
+            statement.setString(4, object.day);
+            statement.setString(5, object.start.format(DateTimeFormatter.ISO_LOCAL_TIME));
+            statement.setString(6, object.end.format(DateTimeFormatter.ISO_LOCAL_TIME));
     }
 
     /**
@@ -70,11 +72,12 @@ public class ScheduleSQLiteDatabase extends SQLiteDatabase<Schedule> {
     public Schedule mapResultSetToObject(ResultSet results) throws SQLException {
         int id = results.getInt(1);
         String name = results.getString(2);
-        String day = results.getString(3);
-        String start = results.getString(4);
-        String end = results.getString(5);
+        String creatorName = results.getString(3);
+        String day = results.getString(4);
+        String start = results.getString(5);
+        String end = results.getString(6);
 
-        return new Schedule(id, name, day, LocalTime.parse(start), LocalTime.parse(end));
+        return new Schedule(id, name, day, LocalTime.parse(start), LocalTime.parse(end), creatorName);
     }
 
     /**
@@ -84,6 +87,6 @@ public class ScheduleSQLiteDatabase extends SQLiteDatabase<Schedule> {
      */
     @Override
     public String getQuestionMarks() {
-        return "?, ?, ?, ?, ?";
+        return "?, ?, ?, ?, ?, ?";
     }
 }
