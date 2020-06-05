@@ -425,17 +425,16 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         Object source = e.getSource();
 
         if (source == timer) {
-          /* TOFIX
             ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "current");
 
-            ServerResponse response;
+            ServerResponse<Billboard> response;
             try {
                 response = request.getResponse();
                 xmlBillboard = response.body().xml;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            */
+
 
             try {
                 SetComponents();
