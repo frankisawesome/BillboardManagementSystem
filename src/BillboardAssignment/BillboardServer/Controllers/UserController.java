@@ -2,12 +2,12 @@ package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Server.UserData;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
+import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectPasswordException;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.User.User;
+import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
+import BillboardAssignment.BillboardServer.Services.User.UserManager;
+import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
@@ -70,7 +70,7 @@ public class UserController extends Controller{
     }
 
     /**
-     * Static method for this singleton class, takes request stuff and returns response
+     * Static method for this singleton class, takes request information, handles the request and returns response
      * @param message request message
      * @param manager user manager
      * @param body request body
@@ -82,7 +82,10 @@ public class UserController extends Controller{
         return controller.response;
     }
 
-
+    /**
+     * gets the permissions in an array for a particular user
+     * @return server response containing array of privileges
+     */
     private ServerResponse getPermissions() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -92,6 +95,10 @@ public class UserController extends Controller{
         });
     }
 
+    /**
+     * Add a privilege for a given user
+     * @return success or error message
+     */
     private ServerResponse addPrivilege() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -110,6 +117,10 @@ public class UserController extends Controller{
         });
     }
 
+    /**
+     * Remove a privilege from a given user
+     * @return success or error message
+     */
     private ServerResponse removePrivilege() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -127,6 +138,10 @@ public class UserController extends Controller{
         });
     }
 
+    /**
+     * Change the password for a given user
+     * @return success or error message
+     */
     private ServerResponse changePassword() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -136,6 +151,10 @@ public class UserController extends Controller{
         });
     }
 
+    /**
+     * Log in with name and password(hashed by front end)
+     * @return session key
+     */
     private ServerResponse login() {
         try {
             int id = userManager.mapUsernameToID(body.get("username"));
@@ -148,6 +167,10 @@ public class UserController extends Controller{
         }
     }
 
+    /**
+     * Log out a session key
+     * @return boolean indicating success status
+     */
     private ServerResponse logout() {
         try {
             UserSessionKey parsedSessionKey = reconstructKey();
@@ -158,6 +181,10 @@ public class UserController extends Controller{
         }
     }
 
+    /**
+     * Create new user
+     * @return success or error message
+     */
     private ServerResponse create() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -167,6 +194,10 @@ public class UserController extends Controller{
         });
     }
 
+    /**
+     * Delete user from db
+     * @return success or error message
+     */
     private ServerResponse deleteUser() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -176,6 +207,10 @@ public class UserController extends Controller{
         });
     }
 
+    /**
+     * Get a list of all users
+     * @return array of userdata objects
+     */
     private ServerResponse listUsers() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();

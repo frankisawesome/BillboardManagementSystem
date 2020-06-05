@@ -1,8 +1,7 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Schedule;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
 import java.util.HashMap;
@@ -37,7 +36,8 @@ public class ScheduleController extends Controller {
 
     private ServerResponse set() {
         return useDbTryCatch(() -> {
-            scheduleManager.addToSchedule(body.get("billboardName"), body.get("day"), body.get("startTime"), body.get("endTime"));
+            UserSessionKey key = reconstructKey();
+            scheduleManager.addToSchedule(body.get("billboardName"), body.get("day"), body.get("startTime"), body.get("endTime"), key);
             return new ServerResponse("Schedule set", "ok");
         });
     }
@@ -48,7 +48,8 @@ public class ScheduleController extends Controller {
 
     private ServerResponse remove() {
         return useDbTryCatch(() -> {
-            scheduleManager.removeFromSchedule(body.get("billboardName"));
+            UserSessionKey key = reconstructKey();
+            scheduleManager.removeFromSchedule(body.get("billboardName"), key);
             return new ServerResponse("Schedule removed", "ok");
         });
     }

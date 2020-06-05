@@ -1,13 +1,13 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.RemoveOwnEditUsersPrivilegeException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.RemoveOwnUserException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
+import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.Services.User.RemoveOwnEditUsersPrivilegeException;
+import BillboardAssignment.BillboardServer.Services.User.RemoveOwnUserException;
+import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 
 import java.util.HashMap;

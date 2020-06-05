@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.User;
+package BillboardAssignment.BillboardServer.Services.User;
 
 import BillboardAssignment.BillboardServer.Database.Identifiable;
 

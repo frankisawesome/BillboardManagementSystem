@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
+package BillboardAssignment.BillboardServer.Services.Authentication;
 
 /**
  * Simple Exception for when a password doesn't match the one on file

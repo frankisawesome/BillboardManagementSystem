@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.User;
+package BillboardAssignment.BillboardServer.Services.User;
 
 /**
  * Enum for representing the 4 user privileges

@@ -1,7 +1,7 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
+import BillboardAssignment.BillboardServer.Services.User.User;
+import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

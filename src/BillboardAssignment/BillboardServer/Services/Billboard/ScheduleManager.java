@@ -1,10 +1,10 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Billboard;
+package BillboardAssignment.BillboardServer.Services.Billboard;
 
-import BillboardAssignment.BillboardControlPanel.Login;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.*;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
+import BillboardAssignment.BillboardServer.Services.Authentication.*;
+import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Database.*;
+import BillboardAssignment.BillboardServer.Services.User.UserManager;
+import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,14 +13,16 @@ import java.util.ArrayList;
 
 public class ScheduleManager {
     public Queryable<Schedule> scheduleDatabase;
+    private UserManager userManager;
 
-    public ScheduleManager(Queryable<Schedule> scheduleDatabase) {
+    public ScheduleManager(Queryable<Schedule> scheduleDatabase, UserManager userManager) {
         this.scheduleDatabase = scheduleDatabase;
+        this.userManager = userManager;
     }
 
     // Add a new instance of a billboard to the schedule
-    public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
-
+    public Schedule addToSchedule(String billboardName, String scheduleDay, String startTime, String endTime, UserSessionKey key ) throws DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, InsufficentPrivilegeException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+        userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
         int ID = scheduleDatabase.getMaxID() + 1;
 
         Schedule addBillboard = new Schedule (ID, billboardName, scheduleDay, LocalTime.parse(startTime), LocalTime.parse(endTime));
@@ -31,7 +33,8 @@ public class ScheduleManager {
     }
 
     // When a billboard is removed from the system, remove all instances of it from scheduling
-    public Queryable<Schedule> removeFromSchedule(String billboardToRemove) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException {
+    public Queryable<Schedule> removeFromSchedule(String billboardToRemove, UserSessionKey key) throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException, NoSuchFieldException, OutOfDateSessionKeyException, InsufficentPrivilegeException, IncorrectSessionKeyException {
+        userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
         LocalTime fakeTime = LocalTime.parse("00:00");
         Schedule dummy = new Schedule(111, "name", "day", fakeTime, fakeTime);
         // Remove all billboards where name == billboardToRemove
@@ -90,4 +93,6 @@ public class ScheduleManager {
             return currentBoard.name;
         }
     }
+
+
 }

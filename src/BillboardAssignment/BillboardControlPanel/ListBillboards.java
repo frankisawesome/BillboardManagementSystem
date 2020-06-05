@@ -3,7 +3,7 @@ package BillboardAssignment.BillboardControlPanel;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -212,7 +212,7 @@ public class ListBillboards extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
                         "Press Escape to Exit Preview");
-                BillboardViewer.create(billboardList[selection][3]);
+                BillboardPreviewer.create(billboardList[selection][3]);
             }
         });
     }

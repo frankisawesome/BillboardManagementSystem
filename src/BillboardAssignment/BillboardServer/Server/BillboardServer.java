@@ -1,20 +1,20 @@
 package BillboardAssignment.BillboardServer.Server;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Schedule;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
+import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
+import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Database.BillboardSQLiteDatabase;
 import BillboardAssignment.BillboardServer.Database.UserSQLiteDatabase;
 import BillboardAssignment.BillboardServer.Controllers.BillboardController;
 import BillboardAssignment.BillboardServer.Controllers.TestController;
 import BillboardAssignment.BillboardServer.Controllers.UserController;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.PasswordManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.SessionKeyManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
+import BillboardAssignment.BillboardServer.Services.Authentication.PasswordManager;
+import BillboardAssignment.BillboardServer.Services.Authentication.SessionKeyManager;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Services.Billboard.BillboardManager;
+import BillboardAssignment.BillboardServer.Services.User.User;
+import BillboardAssignment.BillboardServer.Services.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.DatabaseArray;
 import BillboardAssignment.BillboardServer.Database.Queryable;
 
@@ -110,7 +110,7 @@ public class BillboardServer {
 
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
         billboardManager = new BillboardManager(billboardDb, database2, database);
-        scheduleManager = new ScheduleManager(scheduleDb);
+        scheduleManager = new ScheduleManager(scheduleDb, userManager);
         userManager.createFirstUser();
         billboardManager.createFirstBillboard();
     }
