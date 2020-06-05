@@ -129,11 +129,11 @@ public class TestUserControllers {
 
     //Always have this test as the last one, since it changes the password of admin user
     @Test
-    @Order(9)
+    @Order(8)
     void checkChangePassword() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("idToFind", Integer.toString(key.getID()));
+        requestBody.put("idToFind", "0");
         requestBody.put("newPassword", "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ");
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
@@ -145,11 +145,11 @@ public class TestUserControllers {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     void checkDeleteUser() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("idToFind", "555");
+        requestBody.put("idToFind", "0");
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
         ServerRequest<String> request = new ServerRequest<>(RequestType.USER, "delete user", requestBody);

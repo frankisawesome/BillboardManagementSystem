@@ -50,7 +50,7 @@ public class ScheduleController extends Controller {
     private ServerResponse set() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
-            scheduleManager.addToSchedule(body.get("billboardName"), body.get("day"), body.get("startTime"), body.get("endTime"), key);
+            scheduleManager.addToSchedule(body.get("billboardName"), body.get("day"), body.get("startTime"), body.get("endTime"), body.get("creatorName"), key);
             return new ServerResponse("Schedule set", "ok");
         });
     }

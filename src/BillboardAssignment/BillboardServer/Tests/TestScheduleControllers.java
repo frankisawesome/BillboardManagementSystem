@@ -28,6 +28,8 @@ public class TestScheduleControllers {
 
         requestBody.put("endTime", "10:00");
 
+        requestBody.put("creatorName", "admin");
+
         ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "set", requestBody);
 
         ServerResponse response = request.getResponse();

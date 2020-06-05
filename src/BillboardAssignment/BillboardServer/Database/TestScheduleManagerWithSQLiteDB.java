@@ -31,8 +31,8 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
     @Test
     public void addToSchedule() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException {
-        scheduleManager.addToSchedule("first",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "00:01", "11:00", adminKey);
-        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:00", "11:00", adminKey);
+        scheduleManager.addToSchedule("first",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "00:01", "11:00", "admin", adminKey);
+        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:00", "11:00", "admin", adminKey);
 
         assertEquals(scheduleManager.getAllSchedules().get(0).name, "first");
         assertEquals(scheduleManager.getAllSchedules().get(1).name, "test");
@@ -41,9 +41,9 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
     @Test
     public void removeFromSchedule() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, NoSuchFieldException {
-        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:01", "11:00", adminKey);
-        scheduleManager.addToSchedule("first",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "00:01", "11:00", adminKey);
-        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:00", "11:00", adminKey);
+        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:01", "11:00", "admin", adminKey);
+        scheduleManager.addToSchedule("first",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "00:01", "11:00", "admin", adminKey);
+        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:00", "11:00", "admin", adminKey);
 
         scheduleManager.removeFromSchedule("test", adminKey);
 
@@ -66,9 +66,9 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
     @Test
     public void scheduledBillboard() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, NoSuchFieldException {
-        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "11:01", "23:59", adminKey);
-        scheduleManager.addToSchedule("first",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "00:01", "11:00", adminKey);
-        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:00", "11:00", adminKey);
+        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "11:01", "23:59", "admin", adminKey);
+        scheduleManager.addToSchedule("first",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "00:01", "11:00","admin", adminKey);
+        scheduleManager.addToSchedule("test",  LocalDate.now().getDayOfWeek().name().substring(0,1) + LocalDate.now().getDayOfWeek().name().substring(1).toLowerCase() , "10:00", "11:00", "admin", adminKey);
 
         assertEquals(scheduleManager.scheduledBillboard(), "test");
         scheduleManager.removeFromSchedule("test", adminKey);

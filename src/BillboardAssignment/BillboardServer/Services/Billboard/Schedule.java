@@ -14,13 +14,15 @@ public class Schedule implements Identifiable, Serializable {
     public String day;
     public LocalTime start;
     public LocalTime end;
+    public String creatorName;
 
-    public Schedule (int ID, String billboardName, String scheduledDay, LocalTime startTime, LocalTime endTime) {
+    public Schedule (int ID, String billboardName, String scheduledDay, LocalTime startTime, LocalTime endTime, String creatorName) {
         this.id = ID;
         this.name = billboardName;
         this.day = scheduledDay;
         this.start = startTime;
         this.end = endTime;
+        this.creatorName = creatorName;
     }
 
     @Override
