@@ -5,9 +5,11 @@ import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
 import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -15,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -279,8 +282,7 @@ public class BillboardScheduler {
      * @param UserData Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    BillboardScheduler(String[] UserData)
-    {
+    BillboardScheduler(String[] userData) {
         // Frame initialisation
         frame = new JFrame();
 
@@ -315,6 +317,17 @@ public class BillboardScheduler {
         // Add the table to a JScrollPane
         scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
+
+        HashMap<String, String> requestBody = new HashMap<>();
+        requestBody.put("key", userData[0]);
+        requestBody.put("keyId",userData[1]);
+        ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
+        try {
+            ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
+            System.out.println(schedules.body().get(0).name);
+        } catch (Exception e ){
+            e.printStackTrace();
+        }
 
         // The text options for the dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
@@ -414,7 +427,7 @@ public class BillboardScheduler {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                MainMenu.create(UserData);
+                MainMenu.create(userData);
             }
         });
 

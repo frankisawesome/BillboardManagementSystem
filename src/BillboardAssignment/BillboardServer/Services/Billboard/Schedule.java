@@ -2,9 +2,10 @@ package BillboardAssignment.BillboardServer.Services.Billboard;
 
 import BillboardAssignment.BillboardServer.Database.Identifiable;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
-public class Schedule implements Identifiable {
+public class Schedule implements Identifiable, Serializable {
     public int id;
     public String name;
     public String day;
