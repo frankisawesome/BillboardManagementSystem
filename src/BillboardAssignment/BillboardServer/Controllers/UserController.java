@@ -145,7 +145,7 @@ public class UserController extends Controller{
     private ServerResponse changePassword() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
-            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")), "");
+            UserDataInput user = new UserDataInput(Integer.parseInt(body.get("idToFind")), body.get("password"));
             userManager.setPassword(user, body.get("newPassword"), key);
             return new ServerResponse("Password changed!", "ok");
         });
