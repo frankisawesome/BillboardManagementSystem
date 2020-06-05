@@ -91,6 +91,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
 
     // Text aea for the subtext and associated text fields
     JTextArea subtext;
+    JScrollPane scroll;
     JLabel subtextLabel;
     JTextField subtextColorR;
     JTextField subtextColorG;
@@ -245,6 +246,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         // Create the subtext fields and associated colour fields
         subtext = createTextArea("Billboard subtext");
         subtext.setColumns(30);
+        scroll = new JScrollPane(subtext, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         subtextLabel = new JLabel("Billboard Subtext");
         subtextColorR = createTextField("0");
         subtextColorR.setColumns(3);
@@ -292,7 +294,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
         addToPanel(pnl3, noImage, constraints1, 0, 4, 2, 1);
         addToPanel(pnl3, searchComputer, constraints1, 3, 4, 2,1);
 
-        addToPanel(pnl3, subtext, constraints1, 3, 6, 2, 1);
+        addToPanel(pnl3, scroll, constraints1, 3, 6, 2, 1);
         addToPanel(pnl3, subtextLabel, constraints1, 0, 6, 2, 1);
         addToPanel(pnl3, subtextColorR, constraints1, 5, 6, 2, 1);
         addToPanel(pnl3, subtextColorG, constraints1, 7, 6, 2, 1);
@@ -780,7 +782,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
              if (approveVal == JFileChooser.APPROVE_OPTION) {
                  String fileName = j.getSelectedFile().getName();
                  String tempDirectory = j.getCurrentDirectory().toString();
-                 String tempImagePath = tempDirectory + "\\" + fileName;
+                 String tempImagePath = tempDirectory + File.separator + fileName;
 
                  try {
                      FileInputStream fis = new FileInputStream(tempImagePath);
