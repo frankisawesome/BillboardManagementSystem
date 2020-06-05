@@ -143,7 +143,7 @@ public class BillboardScheduler {
      * @return void
      */
     public void addToCalendar(int hours_int, int start_hour, int minutes_int, int add_minutes,
-                              String name, String day, String[] columnNames, String[] rowNames) throws Exception {
+                              String name, String day, String[] columnNames, String[] rowNames, String[] UserData) throws Exception {
         String am_or_pm;
 
         start_hour = changeTime(start_hour);
@@ -220,7 +220,7 @@ public class BillboardScheduler {
             start_string_mins = ":0" + minutes_int;
         }
 
-        schedule = name + " " + start_string + start_string_mins + am_or_pm;
+        schedule = UserData[6] + ": " + name + " " + start_string + start_string_mins + am_or_pm;
 
         // Add the ending time string to the starting time, separated by -
         // Add a 0 before the minutes if it's a single digit
@@ -239,6 +239,7 @@ public class BillboardScheduler {
             try {
                 // Send to schedule database
                 HashMap<String, String> requestBody = new HashMap<>();
+                requestBody.put("creatorName", UserData[6]);
                 requestBody.put("keyId", UserData[1]);
                 requestBody.put("key", UserData[0]);
                 requestBody.put("billboardName", name);
@@ -329,10 +330,10 @@ public class BillboardScheduler {
         requestBody.put("key", UserData[0]);
         requestBody.put("keyId",UserData[1]);
 
+        // Update schedule calendar with current scheduled billboards from the server
         ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
         try {
             ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
-            //System.out.println(schedules.body().get(0).name);
             if (schedules.status().equals("ok")) {
                 for (Schedule billboard : schedules.body()) {
                     int columnnum = findIndex(columnNames, billboard.day);
@@ -367,10 +368,12 @@ public class BillboardScheduler {
 
                     int rownum = findIndex(rowNames, hour_string + " " + am_pm);
 
-                    String schedule = billboard.name + " " + billboard.start + am_pm + " - " + billboard.end + am_pm2;
+                    // The full string object to add
+                    String schedule = billboard.creatorName + ": " + billboard.name + " " + billboard.start + am_pm +
+                            " - " + billboard.end + am_pm2;
 
                     String current = (String) table.getModel().getValueAt(rownum, columnnum);
-                    table.setValueAt(current+schedule, rownum, columnnum);
+                    table.setValueAt(current+" "+schedule, rownum, columnnum);
                 }
             }
         } catch (Exception e ){
@@ -378,12 +381,12 @@ public class BillboardScheduler {
         }
 
         String[] billboard_options = new String[0];
+        billboard_options[0] = "";
 
+        // Get the list of billboard names from the server to populate the dropdown options list
         ServerRequest requestForBillboards = new ServerRequest(RequestType.BILLBOARD, "list billboards", requestBody);
         try {
             ServerResponse<ArrayList<Billboard>> billboards = requestForBillboards.getResponse();
-            //System.out.println(billboards.body().get(0).name);
-            //System.out.println(billboards.body().get(0).creatorId);
 
             int size = billboards.body().size();
             billboard_options = new String[size];
@@ -394,9 +397,8 @@ public class BillboardScheduler {
             e.printStackTrace();
         }
 
-        // The text options for the dropdown menu
+        // The text options for the day dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
-        //String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};
 
         // The JLabels and their corresponding text entries and dropdown menus
         JLabel name = new JLabel("Billboard Name");
@@ -523,7 +525,7 @@ public class BillboardScheduler {
                             if (repeat[0].equals("")) {
                                 try {
                                     addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                            name, day, columnNames, rowNames);
+                                            name, day, columnNames, rowNames, UserData);
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -533,7 +535,7 @@ public class BillboardScheduler {
                                 while (day_index < 6) {
                                     try {
                                         addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                                name, columnNames[day_index], columnNames, rowNames);
+                                                name, columnNames[day_index], columnNames, rowNames, UserData);
                                     } catch (Exception ex) {
                                         ex.printStackTrace();
                                     }
@@ -553,7 +555,7 @@ public class BillboardScheduler {
                                     while (end_time < 1020) {
                                         try {
                                             addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                                    name, day, columnNames, rowNames);
+                                                    name, day, columnNames, rowNames, UserData);
                                         } catch (Exception ex) {
                                             ex.printStackTrace();
                                         }
