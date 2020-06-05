@@ -133,7 +133,7 @@ public class TestUserControllers {
     void checkChangePassword() throws Exception {
         UserSessionKey key = loginWithAdmin();
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("idToFind", "0");
+        requestBody.put("idToFind", "69420");
         requestBody.put("newPassword", "b\u0083¤$L\u0005\u0017SÉ(ÿÏ5\u008A!¬\u009E¡¥Î?ÊM½Òë9góa¯¯R¬ÊÀ\u0007\u001F\u0005\u0019ÛíG\u0086û\u0011Õ^úÔÃ.¸\u0086\u0088Çd_I\u00819Kwæ");
         requestBody.put("key", key.sessionKey);
         requestBody.put("keyId", Integer.toString(key.getID()));
