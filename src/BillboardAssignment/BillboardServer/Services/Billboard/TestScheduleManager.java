@@ -1,8 +1,8 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Billboard;
+package BillboardAssignment.BillboardServer.Services.Billboard;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Database.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

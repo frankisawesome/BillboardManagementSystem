@@ -1,9 +1,9 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
+package BillboardAssignment.BillboardServer.Services.Authentication;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.AuthAndUserDatabaseTesting.FatherTester;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
+import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTester;
+import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.Services.User.User;
+import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
