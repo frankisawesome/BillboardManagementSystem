@@ -2,6 +2,11 @@
 package BillboardAssignment.BillboardControlPanel;
 
 import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
+
+import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -10,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.util.HashMap;
 
 /**
  * A custom renderer to allow multiple lines in a table cell
@@ -138,7 +144,7 @@ public class BillboardScheduler {
      * @return void
      */
     public void addToCalendar(int hours_int, int start_hour, int minutes_int, int add_minutes,
-                              String name, String day, String[] columnNames, String[] rowNames) {
+                              String name, String day, String[] columnNames, String[] rowNames) throws Exception {
         String am_or_pm;
 
         start_hour = changeTime(start_hour);
@@ -191,6 +197,8 @@ public class BillboardScheduler {
         // Convert to 24 hour time and convert to a string
         String start_string = Integer.toString(start_24);
         String end_string = Integer.toString(end_24);
+        String start_string_mins;
+        String end_string_mins;
 
         if (start_24 < 10) {
             start_string = "0" + start_string;
@@ -203,27 +211,49 @@ public class BillboardScheduler {
         // Create the starting time string to be added to the table.
         // Add a 0 before the minutes if it's a single digit
         if (minutes_int >= 10) {
-            schedule = name + " " + start_string + ":" + minutes_int + am_or_pm;
+            start_string_mins = ":" + minutes_int;
         } else {
-            schedule = name + " " + start_string + ":0" + minutes_int + am_or_pm;
+            start_string_mins = ":0" + minutes_int;
         }
+
+        schedule = name + " " + start_string + start_string_mins + am_or_pm;
 
         // Add the ending time string to the starting time, separated by -
         // Add a 0 before the minutes if it's a single digit
         if (total_minutes >= 10) {
-            schedule = schedule + " - " + end_string + ":" + total_minutes + am_or_pm2;
+            end_string_mins = ":" + total_minutes;
         } else {
-            schedule = schedule + " - " + end_string + ":0" + total_minutes + am_or_pm2;
+            end_string_mins = ":0" + total_minutes;
+
         }
 
+        schedule = schedule + " - " + end_string + end_string_mins + am_or_pm2;
         schedule += " ";
 
         // If the day and time are valid, add the billboard to the table
         if (columnnum != -1 && rownum != -1){
-            String current = (String) table.getModel().getValueAt(rownum, columnnum);
-            table.setValueAt(current+schedule, rownum, columnnum);
+            try {
+                // Send to schedule database
+                HashMap<String, String> requestBody = requestBodyWithKey();
+                requestBody.put("billboardName", name);
+                requestBody.put("day", day);
+                requestBody.put("startTime", start_string + start_string_mins);
+                requestBody.put("endTime", end_string + end_string_mins);
+                ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "set", requestBody);
+                ServerResponse response = request.getResponse();
 
-            //scheduleManager.addToSchedule(name, day, start_string, end_string);
+                //Check that response is ok, if so add the billboard to the table
+                if (response.status().equals("ok")) {
+                    String current = (String) table.getModel().getValueAt(rownum, columnnum);
+                    table.setValueAt(current+schedule, rownum, columnnum);
+                } else {
+                    System.out.println(response.status());
+                    JOptionPane.showMessageDialog(null, "Error! Something went wrong scheduling" +
+                            " the billboard in the server.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -415,14 +445,22 @@ public class BillboardScheduler {
                     if (0 <= minutes_int && minutes_int <= 59) {
                         if (add_minutes > 0) {
                             if (repeat[0].equals("")) {
-                                addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                        name, day, columnNames, rowNames);
+                                try {
+                                    addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                            name, day, columnNames, rowNames);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
                             }
                             else if (repeat[0].equals("Daily")) {
                                 int day_index = findIndex(columnNames, day);
                                 while (day_index < 6) {
-                                    addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                            name, columnNames[day_index], columnNames, rowNames);
+                                    try {
+                                        addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                                name, columnNames[day_index], columnNames, rowNames);
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
                                     day_index++;
                                 }
                             }
@@ -437,8 +475,12 @@ public class BillboardScheduler {
                                     int end_time = hours_int*60 + minutes_int;
 
                                     while (end_time < 1020) {
-                                        addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
-                                                name, day, columnNames, rowNames);
+                                        try {
+                                            addToCalendar(hours_int, start_hour, minutes_int, add_minutes,
+                                                    name, day, columnNames, rowNames);
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        }
                                         end_time += repeat_int;
 
                                         minutes_int += repeat_int;
