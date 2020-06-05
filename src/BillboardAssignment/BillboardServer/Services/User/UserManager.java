@@ -97,6 +97,17 @@ public class UserManager {
         }
     }
 
+    /**
+     * Only ever used for tests, removes first user without checking session key or handling errror
+     */
+    public void deleteFirstUser() {
+        try {
+            userDatabase.removeObject(69420);
+        } catch (Exception e) {
+
+        }
+    }
+
 
     /**
      * Not for the API, just used interally and for debugging

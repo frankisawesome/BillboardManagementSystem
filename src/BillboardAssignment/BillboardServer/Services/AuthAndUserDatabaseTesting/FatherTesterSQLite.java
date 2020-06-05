@@ -1,5 +1,6 @@
 package BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting;
 
+import BillboardAssignment.BillboardServer.Server.BillboardServer;
 import BillboardAssignment.BillboardServer.Services.Authentication.*;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.User;
