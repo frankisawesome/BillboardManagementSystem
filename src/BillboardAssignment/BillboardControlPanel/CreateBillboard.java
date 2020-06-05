@@ -1,5 +1,8 @@
 package BillboardAssignment.BillboardControlPanel;
 
+import BillboardAssignment.BillboardServer.Server.RequestType;
+import BillboardAssignment.BillboardServer.Server.ServerRequest;
+import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -8,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class CreateBillboard extends JFrame {
     private JButton buttonBack;
@@ -20,7 +24,8 @@ public class CreateBillboard extends JFrame {
 
     /**
      * Change billboard window object constructor. Sets up GUI and also contains listeners
-     * @param titles - Window Title
+     *
+     * @param titles        - Window Title
      * @param userDataInput - Array containing session key and user ID for user performing the request
      * @return N/A
      */
@@ -61,16 +66,47 @@ public class CreateBillboard extends JFrame {
 
     /**
      * Function queries the server and checks if another billboard exists under the same name.
+     *
      * @param billboardName The name to be checked against the database.
      * @return Boolean True - Another billboard exists, False - No other billboard exists
      */
     private boolean CheckBillboardExists(String billboardName) {
-        JOptionPane.showMessageDialog(null, "PLEASE INTEGRATE A CHECK IF BILLBOARD NAME IS ALREADY IN USE");
-        return (false);
+        try {
+            //Sey up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("key", UserData[0]);
+            requestBody.put("name", fieldName.getText());
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "validate name", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //Catch any error messages returned by server
+            if (!response.status().equals("ok")) {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (true);
+                }
+                //Otherwise, generic error.
+                JOptionPane.showMessageDialog(null, "Error! Validate Name|" + response.status());
+                return (true);
+            } else {
+                //If Response is ok (no errors)
+                return (false);
+            }
+        } catch (Exception f) {
+            JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Validate Name |" + f.getMessage());
+            return (true);
+        }
     }
 
     /**
      * Create function. Creates instance of GUI
+     *
      * @param userDataInput The session key and user ID for the user logged in.
      * @return void
      */
