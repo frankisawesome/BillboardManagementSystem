@@ -286,7 +286,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             addToPanel(this, pnl4, c, 1, 0, 1, 1);
             addToPanel(this, pnl3, c, 1, 1, 1, 2);
 
-            System.out.println("yes");
         } else if ((titleFlg == true) && (imageFlg == false) && (subtextFlg == true)) {
             // Rule: if title and subtext are supplied let each occupy the top and bottom halves of the screen
             setLayout(new GridBagLayout());
@@ -535,13 +534,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
         // Sample for a timer action event
         if (source == timer) {
-            System.out.println(title);
-
             RemoveElements();
             GetServerResponse();
-            System.out.println(this.xmlBillboard);
-            System.out.println(title);
-            System.out.println(titleFlg);
             try {
                 // Set the components every 15 seconds on timer event
                 SetFields();
@@ -553,10 +547,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 ex.printStackTrace();
             }
             // Re paint the JFrame
-            System.out.println(title);
-            System.out.println(titleFlg);
-
-
             SetComponents();
             ReAddElements();
         }
