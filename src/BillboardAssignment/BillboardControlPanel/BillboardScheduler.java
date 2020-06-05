@@ -323,32 +323,61 @@ public class BillboardScheduler {
         scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
 
+
         HashMap<String, String> requestBody = new HashMap<>();
         requestBody.put("key", UserData[0]);
         requestBody.put("keyId",UserData[1]);
+        /*
         ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
         try {
             ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
-            System.out.println(schedules.body().get(0).name);
+            //System.out.println(schedules.body().get(0).name);
+            if (schedules.status().equals("ok")) {
+                for (Schedule billboard : schedules.body()) {
+                    int columnnum = findIndex(columnNames, billboard.day);
+                    String hour_string = billboard.start.toString().split(":")[0];
+                    if (hour_string.charAt(0) == '0') {
+                        hour_string.substring(1);
+                    }
+                    int convert_hour = changeTime(Integer.parseInt(hour_string));
+                    System.out.println(convert_hour);
+                    hour_string = Integer.toString(convert_hour);
+                    int rownum = findIndex(rowNames, hour_string);
+
+                    String schedule = billboard.name + " " + billboard.start + " - " + billboard.end;
+
+                    String current = (String) table.getModel().getValueAt(rownum, columnnum);
+                    table.setValueAt(current+schedule, rownum, columnnum);
+                }
+            }
         } catch (Exception e ){
             e.printStackTrace();
-        }
+        }*/
+
+        String[] billboard_options = new String[0];
 
         ServerRequest requestForBillboards = new ServerRequest(RequestType.BILLBOARD, "list billboards", requestBody);
         try {
             ServerResponse<ArrayList<Billboard>> billboards = requestForBillboards.getResponse();
-            System.out.println(billboards.body().get(0).name);
-            System.out.println(billboards.body().get(0).creatorId);
+            //System.out.println(billboards.body().get(0).name);
+            //System.out.println(billboards.body().get(0).creatorId);
+
+            int size = billboards.body().size();
+            billboard_options = new String[size];
+            for (int i = 0; i < size; i++) {
+                billboard_options[i] = billboards.body().get(i).name;
+            }
         } catch (Exception e ){
             e.printStackTrace();
         }
+
         // The text options for the dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
-        String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};
+        //String placeholder_names[]={"Billboard 1","Billboard 2","Billboard 3","Billboard 4","Billboard 5"};
 
         // The JLabels and their corresponding text entries and dropdown menus
         JLabel name = new JLabel("Billboard Name");
-        JComboBox dropdown = new JComboBox(placeholder_names);
+        JComboBox dropdown = new JComboBox(billboard_options);
         JLabel day = new JLabel("Scheduled Day");
         JComboBox dropdown2 = new JComboBox(days);
         JLabel start_hour = new JLabel("Desired Start Hour");
