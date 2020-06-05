@@ -203,7 +203,7 @@ public class ChangePassword extends JFrame {
      */
     protected int checkPassword(String password) {
         String[] loginReturn;
-        loginReturn = LoginRequest(UserData[1], password);
+        loginReturn = LoginRequest(UserData[6], password);
         //If Dummy Login Successful
         if (loginReturn[0] == "1") {
             //Change to new Session Key
@@ -333,10 +333,11 @@ public class ChangePassword extends JFrame {
         // Set Up Request
         HashMap<String, String> requestBody = new HashMap<String, String>();
         //Hash the new password according to a generic salt
+
         String saltString = "mahna mahna";
         pwd = hashPassword(pwd, saltString);
 
-        requestBody.put("id", id);
+        requestBody.put("username", id);
         requestBody.put("password", pwd);
         //Send Request
         ServerRequest<UserSessionKey> request = new ServerRequest<UserSessionKey>(RequestType.USER, "login", requestBody);
