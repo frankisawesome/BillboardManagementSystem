@@ -8,6 +8,7 @@ import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSess
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.User;
 import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
     private ScheduleManager scheduleManager;
-
+    private Queryable<Schedule> database;
     @BeforeEach
     void setupScheduleManager() {
         Queryable<Schedule> scheduleDatabase = new ScheduleSQLiteDatabase();
@@ -33,6 +34,11 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
         scheduleManager = new ScheduleManager(scheduleDatabase, userManager);
 
+    }
+
+    @AfterEach
+    void cleanup() throws DatabaseNotAccessibleException {
+        database.removeAllData();
     }
 
     @Test

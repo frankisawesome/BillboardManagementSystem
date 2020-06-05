@@ -44,7 +44,6 @@ public class TestScheduleControllers {
 
 
     @Test
-
     void getCurrentSchedule() throws Exception {
 
         HashMap<String, String> requestBody = requestBodyWithKey();

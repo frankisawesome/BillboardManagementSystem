@@ -40,7 +40,7 @@ public class BillboardServer {
         }
         catch (Exception e) {
             //if you see booger my code broke :(( solly
-            System.out.print("Booger");
+            e.printStackTrace();
         }
     }
 
