@@ -48,7 +48,7 @@ public class ScheduleController extends Controller {
 
     private ServerResponse getSchedule() {
         return useDbTryCatch(() -> {
-            Schedule schedule = scheduleManager.scheduledBillboard();
+            String schedule = scheduleManager.scheduledBillboard();
             return new ServerResponse(schedule, "ok");
         });
     }
