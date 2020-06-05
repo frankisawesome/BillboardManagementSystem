@@ -6,6 +6,7 @@ import BillboardAssignment.BillboardServer.Database.*;
 import BillboardAssignment.BillboardServer.Services.User.UserManager;
 import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -55,7 +56,7 @@ public class ScheduleManager {
     public void scheduleFirstBillboard() throws DatabaseNotAccessibleException, DatabaseLogicException {
         int ID = scheduleDatabase.getMaxID() + 1;
 
-        Schedule addBillboard = new Schedule (ID, "first", "Friday", LocalTime.parse("00:00"), LocalTime.parse("23:59"));
+        Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("00:00"), LocalTime.parse("23:59"));
 
         scheduleDatabase.addObject(addBillboard);
     }
