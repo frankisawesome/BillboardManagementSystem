@@ -452,6 +452,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
             try {
                 // Set the components every 15 seconds on timer event
+                removeAll();
                 SetComponents();
             } catch (ParserConfigurationException ex) {
                 ex.printStackTrace();
@@ -461,6 +462,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 ex.printStackTrace();
             }
             // Re paint the JFrame
+
             revalidate();
         }
     }
