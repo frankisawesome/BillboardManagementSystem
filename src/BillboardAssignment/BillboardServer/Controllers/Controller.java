@@ -1,5 +1,6 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
+import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
@@ -100,6 +101,8 @@ public abstract class Controller {
             return errorResponse("You appear to be trying to remove your own EditUser privilege, that's a no-op");
         } catch (NoSuchFieldException e) {
             return errorResponse("Billboard not set for schedule yet");
+        } catch (DatabaseLogicException e) {
+            return errorResponse("User already exists");
         }
         catch (Exception e) {
             return errorResponse(e.getMessage());
