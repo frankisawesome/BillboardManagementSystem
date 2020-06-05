@@ -354,6 +354,8 @@ public class BillboardScheduler {
                         am_pm = "am";
                     }
 
+                    convert_hour = changeTime(convert_hour);
+
                     String hour_string2 = billboard.end.toString().split(":")[0];
                     if (hour_string2.charAt(0) == '0') {
                         hour_string2.substring(1);
@@ -366,7 +368,7 @@ public class BillboardScheduler {
                         am_pm2 = "am";
                     }
 
-                    int rownum = findIndex(rowNames, hour_string + " " + am_pm);
+                    int rownum = findIndex(rowNames, convert_hour + " " + am_pm);
 
                     // The full string object to add
                     String schedule = billboard.creatorName + ": " + billboard.name + " " + billboard.start + am_pm +
@@ -381,7 +383,7 @@ public class BillboardScheduler {
         }
 
         String[] billboard_options = new String[0];
-        billboard_options[0] = "";
+        //billboard_options[0] = "";
 
         // Get the list of billboard names from the server to populate the dropdown options list
         ServerRequest requestForBillboards = new ServerRequest(RequestType.BILLBOARD, "list billboards", requestBody);
