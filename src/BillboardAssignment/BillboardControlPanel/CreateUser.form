@@ -53,7 +53,7 @@
           <foreground color="-11578538"/>
           <horizontalAlignment value="0"/>
           <horizontalTextPosition value="0"/>
-          <text value="User Name (Must be Numeric)"/>
+          <text value="User Name"/>
         </properties>
       </component>
       <component id="b5698" class="javax.swing.JPasswordField" binding="passwordNew1">

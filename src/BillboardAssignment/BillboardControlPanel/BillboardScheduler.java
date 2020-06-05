@@ -7,7 +7,6 @@ import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
-import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
 
 import javax.sound.midi.SysexMessage;
 import javax.swing.*;
@@ -63,6 +62,7 @@ public class BillboardScheduler {
     JFrame frame;
     JTable table;
     JScrollPane scrollPane;
+    String[] UserData;
 
     /**
      * A method which locates the index of a string within an array
@@ -235,7 +235,9 @@ public class BillboardScheduler {
         if (columnnum != -1 && rownum != -1){
             try {
                 // Send to schedule database
-                HashMap<String, String> requestBody = requestBodyWithKey();
+                HashMap<String, String> requestBody = new HashMap<>();
+                requestBody.put("keyId", UserData[1]);
+                requestBody.put("key", UserData[0]);
                 requestBody.put("billboardName", name);
                 requestBody.put("day", day);
                 requestBody.put("startTime", start_string + start_string_mins);
@@ -282,7 +284,9 @@ public class BillboardScheduler {
      * @param UserData Array containing session key and user ID for user performing the request
      * @return N/A
      */
-    BillboardScheduler(String[] userData) {
+    BillboardScheduler(String[] UserData)
+    {
+        this.UserData = UserData;
         // Frame initialisation
         frame = new JFrame();
 
@@ -319,8 +323,8 @@ public class BillboardScheduler {
         frame.add(scrollPane, BorderLayout.CENTER);
 
         HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("key", userData[0]);
-        requestBody.put("keyId",userData[1]);
+        requestBody.put("key", UserData[0]);
+        requestBody.put("keyId",UserData[1]);
         ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
         try {
             ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
@@ -427,7 +431,7 @@ public class BillboardScheduler {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                MainMenu.create(userData);
+                MainMenu.create(UserData);
             }
         });
 

@@ -244,16 +244,61 @@ public class ListBillboards extends JFrame {
                 }
                 //Otherwise, generic error.
                 JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Delete billboard|" + response.status());
-            }
-            else {
+            } else {
                 //If Response is ok (no errors)
-                JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
-                dispose();
-                ListBillboards.create(UserData);
+                if (CheckScheduled() == (true)) {
+                    if (UnscheduleBillboard() == true) {
+                        JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
+                        dispose();
+                        ListBillboards.create(UserData);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Billboard Successfully Deleted!");
+                    dispose();
+                    ListBillboards.create(UserData);
+                }
             }
-        }
-        catch (Exception f) {
+        } catch (Exception f) {
             JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Delete Billboard |" + f.getMessage());
+        }
+    }
+
+    /**
+     * Sends a request to delete all schedulings of the selected billboard to server.
+     *
+     * @return boolean True - Success, False - Fail
+     */
+    private boolean UnscheduleBillboard() {
+        try {
+            //Sey up Request
+            HashMap<String, String> requestBody = new HashMap<>();
+            requestBody.put("keyId", UserData[1]);
+            requestBody.put("key", UserData[0]);
+            requestBody.put("billboardName", billboardList[selection][2]);
+
+            //Send Request
+            ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "remove", requestBody);
+            ServerResponse response = request.getResponse();
+
+            //Catch any error messages returned by server
+            if (!response.status().equals("ok")) {
+                //If error is an invalid session key, dispose and return to login screen
+                if (response.status().equals("Session key invalid")) {
+                    dispose();
+                    Login.create();
+                    JOptionPane.showMessageDialog(null, "Your session has expired, please log in again!");
+                    return (false);
+                }
+                //Otherwise, generic error.
+                JOptionPane.showMessageDialog(null, "Error! Please Contact IT Support and Quote the Following: \n Unschedule billboard|" + response.status());
+                return (false);
+            } else {
+                //If Response is ok (no errors)
+                return (true);
+            }
+        } catch (Exception f) {
+            JOptionPane.showMessageDialog(null, "Error! Please Try Again or Contact IT Support and Quote the Following: \n Unschedule Billboard |" + f.getMessage());
+            return (false);
         }
     }
 
