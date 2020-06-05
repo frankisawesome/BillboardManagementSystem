@@ -212,7 +212,7 @@ public class ListBillboards extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Previewer Will Launch in Fullscreen Mode.\n" +
                         "Press Escape to Exit Preview");
-                BillboardViewer.create(billboardList[selection][3]);
+                BillboardPreviewer.create(billboardList[selection][3]);
             }
         });
     }

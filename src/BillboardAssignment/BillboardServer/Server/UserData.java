@@ -11,6 +11,13 @@ public class UserData implements Serializable {
     public int id;
     public String userName;
     public UserPrivilege[] privileges;
+
+    /**
+     * Constructs user data with necessary information
+     * @param id
+     * @param name
+     * @param privileges
+     */
     public UserData(int id, String name, UserPrivilege[] privileges) {
         this.id = id;
         userName = name;
