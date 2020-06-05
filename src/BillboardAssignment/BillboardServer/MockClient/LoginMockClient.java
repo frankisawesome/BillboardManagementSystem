@@ -3,7 +3,7 @@ package BillboardAssignment.BillboardServer.MockClient;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
 
 import java.util.HashMap;
 

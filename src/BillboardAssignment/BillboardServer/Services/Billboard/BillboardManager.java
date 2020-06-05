@@ -1,10 +1,10 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Billboard;
+package BillboardAssignment.BillboardServer.Services.Billboard;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.*;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.User;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
+import BillboardAssignment.BillboardServer.Services.Authentication.*;
+import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.Services.User.User;
+import BillboardAssignment.BillboardServer.Services.User.UserManager;
+import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 import BillboardAssignment.BillboardServer.Database.*;
 
 import java.util.ArrayList;

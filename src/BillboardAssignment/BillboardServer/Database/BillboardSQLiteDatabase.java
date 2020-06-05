@@ -1,6 +1,6 @@
 package BillboardAssignment.BillboardServer.Database;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
