@@ -24,10 +24,11 @@ import java.util.Properties;
  * Containing server setup and running methods
  */
 public class BillboardServer {
-    ServerSocket server;
-    UserManager userManager;
-    BillboardManager billboardManager;
-    ScheduleManager scheduleManager;
+    private ServerSocket server;
+    //These are public for test suites
+    public UserManager userManager;
+    public BillboardManager billboardManager;
+    public ScheduleManager scheduleManager;
 
     /**
      * A main method for creating a server instance and running it

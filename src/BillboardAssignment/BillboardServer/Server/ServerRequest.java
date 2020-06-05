@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.rmi.UnknownHostException;
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * A server request for data of type T
@@ -37,7 +38,12 @@ public class ServerRequest<T> implements Serializable {
      * @throws Exception Many things could go wrong here, see the exact error by using e.getMessage()
      */
     public ServerResponse<T> getResponse() throws Exception {
-        try (Socket socket = new Socket("localhost", 3005)) {
+        Properties props = new Properties();
+        FileInputStream in = null;
+        in = new FileInputStream("./server.props");
+        props.load(in);
+        in.close();
+        try (Socket socket = new Socket(props.getProperty("address"), Integer.parseInt(props.getProperty("port")))) {
             // get the output stream from the socket.
             OutputStream outputStream = socket.getOutputStream();
             // create an object output stream from the output stream so we can send an object through it
