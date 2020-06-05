@@ -60,6 +60,17 @@ public class ScheduleManager {
         scheduleDatabase.addObject(addBillboard);
     }
 
+    public boolean checkIfScheduled(String name, UserSessionKey key) throws OutOfDateSessionKeyException, DatabaseNotAccessibleException, InsufficentPrivilegeException, IncorrectSessionKeyException, DatabaseObjectNotFoundException, NoSuchFieldException {
+        userManager.checkSessionKeyPrivileges(key, UserPrivilege.ScheduleBillboards);
+
+        ArrayList<Schedule> schedules = scheduleDatabase.getWhere("name", name, new Schedule(0, "", "", LocalTime.parse("00:00"), LocalTime.parse("00:00")));
+        if (schedules.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     // Determine the billboard to be displayed at the current time
     public String scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         LocalDateTime currentDayTime = LocalDateTime.now();
