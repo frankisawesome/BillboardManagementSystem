@@ -152,7 +152,12 @@ public class BillboardScheduler {
         start_hour = changeTime(start_hour);
 
         if (start_hour == hours_int) {
-            am_or_pm = "am";
+            if (start_hour == 12) {
+                am_or_pm = "pm";
+            }
+            else {
+                am_or_pm = "am";
+            }
         } else {
             am_or_pm = "pm";
         }
