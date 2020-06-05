@@ -782,7 +782,7 @@ public class BillboardEditor extends JFrame implements Runnable, ActionListener 
              if (approveVal == JFileChooser.APPROVE_OPTION) {
                  String fileName = j.getSelectedFile().getName();
                  String tempDirectory = j.getCurrentDirectory().toString();
-                 String tempImagePath = tempDirectory + "\\" + fileName;
+                 String tempImagePath = tempDirectory + File.separator + fileName;
 
                  try {
                      FileInputStream fis = new FileInputStream(tempImagePath);
