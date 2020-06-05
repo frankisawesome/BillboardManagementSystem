@@ -36,8 +36,10 @@ public class ScheduleManager {
         Schedule dummy = new Schedule(111, "name", "day", fakeTime, fakeTime);
         // Remove all billboards where name == billboardToRemove
         ArrayList<Schedule> Remove = scheduleDatabase.getWhere("name", billboardToRemove, dummy);
-        for (Schedule billboard : Remove) {
-            scheduleDatabase.removeObject(billboard.id);
+        if (Remove.size() > 0) {
+            for (Schedule billboard : Remove) {
+                scheduleDatabase.removeObject(billboard.id);
+            }
         }
 
         return scheduleDatabase;
@@ -48,7 +50,7 @@ public class ScheduleManager {
     }
 
     // Determine the billboard to be displayed at the current time
-    public Schedule scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
+    public String scheduledBillboard() throws DatabaseNotAccessibleException, DatabaseObjectNotFoundException {
         LocalDateTime currentDayTime = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("EEEE HH:mm");
         String formattedDate = currentDayTime.format(myFormatObj);
@@ -70,20 +72,22 @@ public class ScheduleManager {
             }
         }
 
-        /* If there are no databases at this time then throw error */
+        /* If there are no billboards at this time then return an empty string */
         if (schedulesToShowShortlist.size() == 0){
-            throw new DatabaseObjectNotFoundException("DatabaseSchedule", 1);
+            return "";
         }
+        else {
+            // Get the billboard with the latest starting time
 
-        // Get the billboard with the latest starting time
-        Schedule currentBoard = schedulesToShowShortlist.get(0);
+            Schedule currentBoard = schedulesToShowShortlist.get(0);
 
-        for (Schedule billboard : schedulesToShowShortlist) {
-            if (billboard.start.isAfter(currentBoard.start) || billboard.start.equals(currentBoard.start)) {
-                currentBoard = billboard;
+            for (Schedule billboard : schedulesToShowShortlist) {
+                if (billboard.start.isAfter(currentBoard.start) || billboard.start.equals(currentBoard.start)) {
+                    currentBoard = billboard;
+                }
             }
-        }
 
-        return currentBoard;
+            return currentBoard.name;
+        }
     }
 }

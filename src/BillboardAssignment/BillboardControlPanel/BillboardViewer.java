@@ -81,7 +81,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         if (attributeValue.isEmpty()) {
             backgroundColor = Color.WHITE;
         } else {
-            System.out.println(attributeValue);
             backgroundColor = Color.decode(attributeValue);
         }
 
@@ -93,9 +92,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 Element element = (Element) node;
                 if (element.getTagName() == "message") {
                     title = element.getTextContent();
-                    System.out.println(title);
                     titleColor = element.getAttribute("colour");
-                    System.out.println(titleColor);
                 } else if (element.getTagName() == "picture") {
                     if ((element.hasAttribute("url")) && (!element.hasAttribute("data"))) {
                         image = element.getAttribute("url");
@@ -107,10 +104,11 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 } else if (element.getTagName() == "information") {
                     subtext = element.getTextContent();
                     subtextColor = element.getAttribute("colour");
-                    System.out.println(subtextColor);
                 }
             }
         }
+
+
 
         if (title == null) {
             title = "";
@@ -120,7 +118,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             subtext = "";
         }
 
-        System.out.println(title);
+
         /*  ----------------------------------------------------------------------------- */
 
         // Create panels that define the layout
@@ -166,38 +164,37 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         htmlTitle1.setVerticalAlignment(JLabel.CENTER);
         pnl5.add(htmlTitle1);
 
-        if (imageUrlFlg == true) {
-            BufferedImage myPicture;
-            try {
-                myPicture = ImageIO.read(new File(image));
-            } catch (IOException e){
-                dispose();
-                JOptionPane.showMessageDialog(this, "Invalid Url.");
-                return;
+        if (imageUrlFlg != null) {
+            if (imageUrlFlg == true) {
+                BufferedImage myPicture;
+                try {
+                    myPicture = ImageIO.read(new File(image));
+                } catch (IOException e){
+                    dispose();
+                    JOptionPane.showMessageDialog(this, "Invalid Url.");
+                    return;
+                }
+                Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
+                JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+                pnl3.add(picLabel);
+            } else if (imageUrlFlg == false) {
+                byte[] imageByte = Base64.getDecoder().decode(image);
+                BufferedImage myPicture;
+                try {
+                    myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
+                } catch (IOException e){
+                    dispose();
+                    JOptionPane.showMessageDialog(this, "Invalid Byte Array.");
+                    return;
+                }
+                Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
+                JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+                pnl3.add(picLabel);
             }
-            Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
-            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-            pnl3.add(picLabel);
-        } else if (imageUrlFlg == false) {
-            byte[] imageByte = Base64.getDecoder().decode(image);
-            BufferedImage myPicture;
-            try {
-                myPicture = ImageIO.read(new ByteArrayInputStream(imageByte));
-            } catch (IOException e){
-                dispose();
-                JOptionPane.showMessageDialog(this, "Invalid Byte Array.");
-                return;
-            }
-            Image scaledImage = myPicture.getScaledInstance(500,400, Image.SCALE_SMOOTH);
-            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-            pnl3.add(picLabel);
         }
 
 
     }
-
-
-
 
     private void addToPanel(JPanel jp, Component c, GridBagConstraints constraints,
                             int x, int y, int w, int h) {
@@ -219,11 +216,13 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         try {
             SetGUI();
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ParserConfigurationException");
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "IOException");
         } catch (SAXException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "SAXException");
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "NullPointerException");
         }
     }
 
