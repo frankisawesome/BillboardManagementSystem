@@ -109,12 +109,17 @@ public class BillboardServer {
         scheduleDb.initialiseDatabase("Schedules");
 
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
-        billboardManager = new BillboardManager(billboardDb, database2, database);
         scheduleManager = new ScheduleManager(scheduleDb, userManager);
+        billboardManager = new BillboardManager(billboardDb, database2, database);
         userManager.createFirstUser();
         billboardManager.createFirstBillboard();
+        scheduleManager.scheduleFirstBillboard();
     }
 
+    /**
+     * Set up sqlite dbs, used in prod
+     * @throws Exception
+     */
     private void setUpSqlDbs() throws Exception {
         Queryable<User> database = new UserSQLiteDatabase();
         database.initialiseDatabase("Users");
@@ -152,7 +157,7 @@ public class BillboardServer {
                     response = UserController.use(request.requestMessage, userManager, request.requestBody);
                     break;
                 case BILLBOARD:
-                    response = BillboardController.use(request.requestMessage, request.requestBody, billboardManager);
+                    response = BillboardController.use(request.requestMessage, request.requestBody, billboardManager, scheduleManager);
                     break;
                 case SCHEDUELE:
                     response = ScheduleController.use(request.requestMessage, request.requestBody, scheduleManager);

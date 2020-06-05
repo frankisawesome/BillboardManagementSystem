@@ -4,6 +4,7 @@ import BillboardAssignment.BillboardServer.Server.ServerResponse;
 import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
 import BillboardAssignment.BillboardServer.Services.Billboard.BillboardManager;
+import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class BillboardController extends Controller {
      * Manages all db logic required
      */
     private BillboardManager billboardManager;
+    private ScheduleManager scheduleManager;
 
     /**
      * Child constructor
@@ -23,8 +25,9 @@ public class BillboardController extends Controller {
      * @param body request body
      * @param billboardManager billboard manager
      */
-    private BillboardController(String message, HashMap<String, String> body, BillboardManager billboardManager) {
+    private BillboardController(String message, HashMap<String, String> body, BillboardManager billboardManager, ScheduleManager scheduleManager) {
         super(message, body);
+        this.scheduleManager = scheduleManager;
         this.billboardManager = billboardManager;
     }
 
@@ -65,7 +68,11 @@ public class BillboardController extends Controller {
      * @return response with Billboard body or error
      */
     private ServerResponse getCurrent() {
-        return useDbTryCatch(() -> new ServerResponse(billboardManager.get("first"), "ok"));
+        return useDbTryCatch(() -> {
+            String billboardName = scheduleManager.scheduledBillboard();
+            Billboard billboard = billboardManager.get(billboardName);
+            return new ServerResponse(billboard, "ok");
+        });
     }
 
     /**
@@ -152,8 +159,8 @@ public class BillboardController extends Controller {
      * @param billboardManager billboard manager
      * @return corresponding server response
      */
-    public static ServerResponse use(String message, HashMap<String, String> body, BillboardManager billboardManager) {
-        BillboardController controller = new BillboardController(message, body, billboardManager);
+    public static ServerResponse use(String message, HashMap<String, String> body, BillboardManager billboardManager, ScheduleManager scheduleManager) {
+        BillboardController controller = new BillboardController(message, body, billboardManager, scheduleManager);
         controller.handle();
         return controller.response;
     }

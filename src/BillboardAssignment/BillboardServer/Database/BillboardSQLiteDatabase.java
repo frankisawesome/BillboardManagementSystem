@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * child class that handles SQLite connection for billboard
+ */
 public class BillboardSQLiteDatabase extends SQLiteDatabase<Billboard> {
     @Override
     public String getDBCreationString() {
