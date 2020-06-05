@@ -30,9 +30,9 @@ public class TestScheduleControllers {
 
         requestBody.put("day", "Thursday");
 
-        requestBody.put("startTime", "00:00");
+        requestBody.put("startTime", "08:00");
 
-        requestBody.put("endTime", "23:59");
+        requestBody.put("endTime", "10:00");
 
         ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "set", requestBody);
 

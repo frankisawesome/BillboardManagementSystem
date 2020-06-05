@@ -6,6 +6,7 @@ import BillboardAssignment.BillboardServer.Database.*;
 import BillboardAssignment.BillboardServer.Services.User.UserManager;
 import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,7 +58,7 @@ public class ScheduleManager {
         if (!checkIfScheduled("first")) {
             int ID = scheduleDatabase.getMaxID() + 1;
 
-            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("00:00"), LocalTime.parse("23:59"));
+            Schedule addBillboard = new Schedule (ID, "first", LocalDate.now().getDayOfWeek().name(), LocalTime.parse("08:00"), LocalTime.parse("10:59"));
 
             scheduleDatabase.addObject(addBillboard);
         }

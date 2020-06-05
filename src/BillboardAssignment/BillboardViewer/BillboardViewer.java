@@ -38,7 +38,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     String defaultBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<billboard>\n" +
             "    <message colour=\"#60B9FF\">Thankyou for viewing a Billboard Enterprises Billboard</message>\n" +
-            "    <information colour=\"#FF0000\">Please stand by while we schedule a billboard</information>\n" +
+            "    <picture \n" +
+            "\tdata=\"iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAIAAAD4YuoOAAAAKXRFWHRDcmVhdGlvbiBUaW1lAJCFIDI1IDMgMjAyMCAwOTowMjoxNyArMDkwMHlQ1XMAAAAHdElNRQfkAxkAAyQ8nibjAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAAAS5JREFUeNq1kb9KxEAQxmcgcGhhJ4cnFwP6CIIiPoZwD+ALXGFxj6BgYeU7BO4tToSDFHYWZxFipeksbMf5s26WnAkJki2+/c03OzPZDRJNYcgVwfsU42cmKi5YjS1s4p4DCrkBPc0wTlkdX6bsG4hZQOj3HRDLHqh08U4Adb/zgEMtq5RuH3Axd45PbftdB2wO5OsWc7pOYaOeOk63wYfdFtL5qldB34W094ZfJ+4RlFldTrmW/ZNbn2g0of1vLHdZq77qSDCaSAsLf9kXh9w44PNoR/YSPHycEmbIOs5QzBJsmDHrWLPeF24ZkCe6ZxDCOqHcmxmsr+hsicahss+n8vYb8NHZPTJxi/RGC5IqbRwqH6uxVTX+5LvHtvT/V/R6PGh/iF4GHoBAwz7RD26spwq6Amh/AAAAAElFTkSuQmCC\"/>\n" +
             "</billboard>";
 
     // Contents of xmlBillboard
@@ -97,6 +98,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         this.setSize(screenSize.width, screenSize.height);
 
         // Call set components function to populate JFrame
+        GetServerResponse();
+        SetFields();
         SetComponents();
 
         // Add a key listener to close the application on ESC key press
@@ -115,7 +118,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         });
 
         // Start  a new timer that will cause an action event every 15 seconds
-        timer = new Timer(5000, this);
+        timer = new Timer(15000, this);
         timer.start();
     }
 
@@ -127,8 +130,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
      * @throws SAXException
      */
 
-    private void SetComponents () throws ParserConfigurationException, IOException, SAXException {
-
+    private void GetServerResponse () {
         // Get billboard from server
         ServerRequest request = new ServerRequest(RequestType.BILLBOARD, "current");
         ServerResponse<Billboard> response;
@@ -137,9 +139,17 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             this.xmlBillboard = response.body().xml;
         } catch (Exception ex) {
             ex.printStackTrace();
-            xmlBillboard = defaultBillboard;
+            this.xmlBillboard = defaultBillboard;
         }
+    }
 
+    /**
+     * Method to set the variable fields based on the XML document
+     *
+     * @return n/a
+     */
+
+    private void SetFields () throws ParserConfigurationException, IOException, SAXException {
         // Make document builder objects
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -202,10 +212,24 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         if (subtext == null) {
             subtext = "";
         }
+    }
 
+    /**
+     * Method to set the component elements to the JPanel
+     *
+     * @return n/a
+     */
+
+    private void SetComponents ()  {
         /*  --------------------------Create Layout From Fields----------------------------- */
 
         // Create panels that define the layout
+        pnl1 = null;
+        pnl2 = null;
+        pnl3 = null;
+        pnl4 = null;
+        pnl5 = null;
+
         pnl1 = createPanel(backgroundColor);
         pnl2 = createPanel(backgroundColor);
         pnl3 = createPanel(backgroundColor);
@@ -267,7 +291,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             // Rule: if title and subtext are supplied let each occupy the top and bottom halves of the screen
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
-            c.anchor = GridBagConstraints.CENTER;
 
             pnl4.setPreferredSize(new Dimension(screenSize.width,screenSize.height / 2));
             pnl5.setPreferredSize(new Dimension(screenSize.width,screenSize.height / 2));
@@ -313,7 +336,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             this.getContentPane().add(pnl3, BorderLayout.CENTER);
             this.getContentPane().add(pnl4, BorderLayout.NORTH);
             this.getContentPane().add(pnl5, BorderLayout.SOUTH);
-            System.out.println("no");
         }
 
 
@@ -373,6 +395,70 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 }
             }
         }
+    }
+
+    /**
+     * Method to remove elements to the JPanel
+     *
+     * @return n/a
+     */
+    private void RemoveElements () {
+        // JPanels that are added to the JFrame
+
+        pnl3.removeAll();
+        pnl4.removeAll();
+        pnl5.removeAll();
+        this.remove(pnl3);
+        this.remove(pnl4);
+        this.remove(pnl5);
+        this.getContentPane().removeAll();
+
+        this.setLayout(null);
+        this.getContentPane().setLayout(null);
+        pnl3.setLayout(null);
+        pnl4.setLayout(null);
+        pnl5.setLayout(null);
+
+        // Contents of xmlBillboard
+        title = null;
+        image = null;
+        imageUrlFlg = null;
+        subtext = null;
+
+        // Flags to check whether these fields are contained in the XML file
+        titleFlg = false;
+        imageFlg = false;
+        subtextFlg = false;
+
+        // Colour of background and text to be displayed
+        backgroundColor = null;
+        titleColor = null;
+        subtextColor = null;
+
+    }
+
+    /**
+     * Method to readd elements to the JPanel
+     *
+     * @return n/a
+     */
+
+    private void ReAddElements () {
+        this.revalidate();
+        this.getContentPane().revalidate();
+        pnl1.revalidate();
+        pnl2.revalidate();
+        pnl3.revalidate();
+        pnl4.revalidate();
+        pnl5.revalidate();
+
+        this.getContentPane().repaint();
+        this.repaint();
+        pnl1.repaint();
+        pnl2.repaint();
+        pnl3.repaint();
+        pnl4.repaint();
+        pnl5.repaint();
     }
 
     /**
@@ -449,11 +535,16 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
         // Sample for a timer action event
         if (source == timer) {
+            System.out.println(title);
 
+            RemoveElements();
+            GetServerResponse();
+            System.out.println(this.xmlBillboard);
+            System.out.println(title);
+            System.out.println(titleFlg);
             try {
                 // Set the components every 15 seconds on timer event
-                removeAll();
-                SetComponents();
+                SetFields();
             } catch (ParserConfigurationException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -462,8 +553,12 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 ex.printStackTrace();
             }
             // Re paint the JFrame
+            System.out.println(title);
+            System.out.println(titleFlg);
 
-            revalidate();
+
+            SetComponents();
+            ReAddElements();
         }
     }
 
