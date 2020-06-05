@@ -228,7 +228,12 @@ public class ListBillboards extends JFrame {
 
                 //If user confirms, call function to unschedule
                 if (dialogResult == JOptionPane.YES_OPTION) {
-                    UnscheduleBillboard();
+                    if (CheckScheduled() == true) {
+                        UnscheduleBillboard();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Billboard Successfully Unscheduled!");
+                    }
                 }
             }
         });
@@ -311,6 +316,7 @@ public class ListBillboards extends JFrame {
                 return (false);
             } else {
                 //If Response is ok (no errors)
+                JOptionPane.showMessageDialog(null, "Billboard Successfully Unscheduled!");
                 return (true);
             }
         } catch (Exception f) {
