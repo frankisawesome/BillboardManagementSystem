@@ -3,6 +3,7 @@ package BillboardAssignment.BillboardServer.BusinessLogic.Billboard;
 import BillboardAssignment.BillboardControlPanel.Login;
 import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.*;
 import BillboardAssignment.BillboardServer.BusinessLogic.User.InsufficentPrivilegeException;
+import BillboardAssignment.BillboardServer.BusinessLogic.User.UserManager;
 import BillboardAssignment.BillboardServer.Database.*;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,10 @@ public class ScheduleManager {
         }
 
         return scheduleDatabase;
+    }
+
+    public ArrayList<Schedule> getAllSchedules() throws DatabaseNotAccessibleException {
+        return scheduleDatabase.getAllObjects();
     }
 
     // Determine the billboard to be displayed at the current time

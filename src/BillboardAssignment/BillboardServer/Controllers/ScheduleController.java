@@ -27,6 +27,9 @@ public class ScheduleController extends Controller {
             case "get schedule":
                 response = getSchedule();
                 break;
+            case "schedule list":
+                response = scheduleList();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
@@ -37,6 +40,10 @@ public class ScheduleController extends Controller {
             scheduleManager.addToSchedule(body.get("billboardName"), body.get("day"), body.get("startTime"), body.get("endTime"));
             return new ServerResponse("Schedule set", "ok");
         });
+    }
+
+    private ServerResponse scheduleList() {
+        return useDbTryCatch(() -> new ServerResponse(scheduleManager.getAllSchedules(), "ok"));
     }
 
     private ServerResponse remove() {
