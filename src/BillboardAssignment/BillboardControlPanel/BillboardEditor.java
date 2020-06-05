@@ -36,6 +36,9 @@ import javax.xml.transform.TransformerException;
 
 public class BillboardEditor extends JFrame implements Runnable, ActionListener {
 
+    int WIDTH = 1200;
+    int HEIGHT = 700;
+
     // Boolean deciding if new billboard or existing
     Boolean newBillboard;
     Boolean validFlag;

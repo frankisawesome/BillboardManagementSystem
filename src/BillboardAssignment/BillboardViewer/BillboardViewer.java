@@ -37,8 +37,8 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     // Default billboard;
     String defaultBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<billboard>\n" +
-            "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
-            "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
+            "    <message colour=\"#60B9FF\">Thankyou for viewing a Billboard Enterprises Billboard</message>\n" +
+            "    <information colour=\"#FF0000\">Please stand by while we schedule a billboard</information>\n" +
             "</billboard>";
 
     // Contents of xmlBillboard
