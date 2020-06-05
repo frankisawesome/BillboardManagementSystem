@@ -39,7 +39,6 @@ public class BillboardServer {
             server.run();
         }
         catch (Exception e) {
-            System.out.print("Unexpected server level exception");
             e.printStackTrace();
         }
     }

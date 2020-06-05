@@ -204,7 +204,8 @@ public abstract class SQLiteDatabase<E extends Identifiable> implements Queryabl
         }
 
         try {
-            PreparedStatement get = connection.prepareStatement(String.format("SELECT % FROM %s", getEntityName())); /* No need for sql injection projection when just using ID */
+            String entityName = getEntityName();
+            PreparedStatement get = connection.prepareStatement(String.format("SELECT * FROM %s", getEntityName())); /* No need for sql injection projection when just using ID */
             ResultSet rows = get.executeQuery(); /* Yes I'm aware that I could just use a select max here, but this is simpler and produces more consistent errors imo*/
             while (rows.next()) {
                 maxID = Math.max(mapResultSetToObject(rows).getID(), maxID);

@@ -19,7 +19,7 @@ public class ScheduleSQLiteDatabase extends SQLiteDatabase<Schedule> {
     public String getDBCreationString() {
         return "CREATE TABLE IF NOT EXISTS Schedules (" +
                 "id INTEGER PRIMARY KEY," +
-                "name TEXT UNIQUE NOT NULL," +
+                "name TEXT NOT NULL," +
                 "day TEXT NOT NULL," +
                 "start TEXT NOT NULL," +
                 "end TEST NOT NULL);";

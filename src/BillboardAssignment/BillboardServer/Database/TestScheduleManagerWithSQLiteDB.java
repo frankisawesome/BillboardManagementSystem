@@ -1,13 +1,16 @@
-package BillboardAssignment.BillboardServer.Services.Billboard;
+package BillboardAssignment.BillboardServer.Database;
 
 import BillboardAssignment.BillboardServer.Database.*;
 import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTester;
 import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTesterSQLite;
 import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
 import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
+import BillboardAssignment.BillboardServer.Services.Billboard.ScheduleManager;
 import BillboardAssignment.BillboardServer.Services.User.InsufficentPrivilegeException;
 import BillboardAssignment.BillboardServer.Services.User.User;
 import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,20 +23,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
     private ScheduleManager scheduleManager;
+    public Queryable<Schedule> scheduleDatabase;
 
     @BeforeEach
-    void setupScheduleManager() {
-        Queryable<Schedule> scheduleDatabase = new ScheduleSQLiteDatabase();
-        try {
+    void setupScheduleManager() throws DatabaseNotAccessibleException{
+         scheduleDatabase = new ScheduleSQLiteDatabase();
             scheduleDatabase.initialiseDatabase("Schedules");
-        }
-        catch (Exception e){
 
-        }
 
         scheduleManager = new ScheduleManager(scheduleDatabase, userManager);
 
     }
+
 
     @Test
     public void addToSchedule() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException {
@@ -42,6 +43,7 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
         assertEquals(scheduleManager.getAllSchedules().get(0).name, "first");
         assertEquals(scheduleManager.getAllSchedules().get(1).name, "test");
+        scheduleDatabase.removeAllData();
     }
 
     @Test
@@ -57,6 +59,7 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
         scheduleManager.removeFromSchedule("first", adminKey);
         assertEquals(scheduleManager.getAllSchedules().size(), 0);
+        scheduleDatabase.removeAllData();
     }
 
     @Test
@@ -65,6 +68,7 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
 
         assertEquals(scheduleManager.getAllSchedules().size(), 1);
         assertEquals(scheduleManager.getAllSchedules().get(0).name, "first");
+        scheduleDatabase.removeAllData();
     }
 
     @Test
@@ -77,6 +81,7 @@ public class TestScheduleManagerWithSQLiteDB extends FatherTesterSQLite {
         scheduleManager.removeFromSchedule("test", adminKey);
         scheduleManager.removeFromSchedule("first", adminKey);
         assertEquals(scheduleManager.scheduledBillboard(), "");
+        scheduleDatabase.removeAllData();
     }
 
 
