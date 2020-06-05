@@ -39,8 +39,8 @@ public class BillboardServer {
             server.run();
         }
         catch (Exception e) {
-            //if you see booger my code broke :(( solly
-            System.out.print("Booger");
+            System.out.print("Unexpected server level exception");
+            e.printStackTrace();
         }
     }
 
@@ -129,9 +129,8 @@ public class BillboardServer {
 
         Queryable<Schedule> scheduleDB = new ScheduleSQLiteDatabase();
         scheduleDB.initialiseDatabase("Schedules");
-        scheduleManager = new ScheduleManager(scheduleDB, userManager);
-
         userManager = new UserManager(new PasswordManager(database), new SessionKeyManager(database2), database);
+        scheduleManager = new ScheduleManager(scheduleDB, userManager);
         billboardManager = new BillboardManager(billboardDb, database2, database);
         userManager.createFirstUser();
         billboardManager.createFirstBillboard();
