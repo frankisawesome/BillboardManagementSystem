@@ -42,8 +42,8 @@ public class BillboardServer {
             server.run();
         }
         catch (Exception e) {
-            //if you see booger my code broke :(( solly
-            System.out.print("Booger");
+            System.out.print("Unexpected server level exception");
+            e.printStackTrace();
         }
     }
 

@@ -55,7 +55,6 @@ public class ScheduleManager {
 
     public void scheduleFirstBillboard() throws DatabaseNotAccessibleException, DatabaseLogicException {
         int ID = scheduleDatabase.getMaxID() + 1;
-
         LocalDateTime now = LocalDateTime.now();
         DayOfWeek day = now.getDayOfWeek();
         String dayString = day.toString();
