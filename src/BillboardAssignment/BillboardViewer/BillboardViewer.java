@@ -31,11 +31,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static BillboardAssignment.BillboardServer.Tests.TestUserControllers.requestBodyWithKey;
+import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
 
 public class BillboardViewer extends JFrame implements ActionListener, Runnable {
+    // Screen size dimensions
     Dimension screenSize;
 
+    // String containing the XML representation of the billboard
     String xmlBillboard;
 
     // Contents of xmlBillboard
@@ -44,6 +46,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     Boolean imageUrlFlg;
     String subtext;
 
+    //
     boolean titleFlg = false;
     boolean imageFlg = false;
     boolean subtextFlg = false;
@@ -416,13 +419,16 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         Object source = e.getSource();
 
         if (source == timer) {
-            xmlBillboard = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<billboard>\n" +
-                    "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
-                    "    <picture \n" +
-                    "\tdata=\"iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAIAAAD4YuoOAAAAKXRFWHRDcmVhdGlvbiBUaW1lAJCFIDI1IDMgMjAyMCAwOTowMjoxNyArMDkwMHlQ1XMAAAAHdElNRQfkAxkAAyQ8nibjAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAAAS5JREFUeNq1kb9KxEAQxmcgcGhhJ4cnFwP6CIIiPoZwD+ALXGFxj6BgYeU7BO4tToSDFHYWZxFipeksbMf5s26WnAkJki2+/c03OzPZDRJNYcgVwfsU42cmKi5YjS1s4p4DCrkBPc0wTlkdX6bsG4hZQOj3HRDLHqh08U4Adb/zgEMtq5RuH3Axd45PbftdB2wO5OsWc7pOYaOeOk63wYfdFtL5qldB34W094ZfJ+4RlFldTrmW/ZNbn2g0of1vLHdZq77qSDCaSAsLf9kXh9w44PNoR/YSPHycEmbIOs5QzBJsmDHrWLPeF24ZkCe6ZxDCOqHcmxmsr+hsicahss+n8vYb8NHZPTJxi/RGC5IqbRwqH6uxVTX+5LvHtvT/V/R6PGh/iF4GHoBAwz7RD26spwq6Amh/AAAAAElFTkSuQmCC\"/>\n" +
-                    "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
-                    "</billboard>";
+            ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "current");
+            ServerResponse response;
+            try {
+                response = request.getResponse();
+              //  xmlBillboard = response.body().xml;
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
             try {
                 SetComponents();
             } catch (ParserConfigurationException ex) {
