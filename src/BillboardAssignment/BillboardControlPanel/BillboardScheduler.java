@@ -1,7 +1,7 @@
 
 package BillboardAssignment.BillboardControlPanel;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.ScheduleManager;
+import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
@@ -60,8 +60,6 @@ public class BillboardScheduler {
     JFrame frame;
     JTable table;
     JScrollPane scrollPane;
-
-    ScheduleManager scheduleManager;
 
     /**
      * A method which locates the index of a string within an array
