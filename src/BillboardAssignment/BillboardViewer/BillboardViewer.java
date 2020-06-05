@@ -134,6 +134,17 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
     private void SetComponents () throws ParserConfigurationException, IOException, SAXException {
 
+        // Get billboard from server
+        ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "current");
+
+        ServerResponse<Billboard> response;
+        try {
+            response = request.getResponse();
+            this.xmlBillboard = response.body().xml;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         // Make document builder objects
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -425,16 +436,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         Object source = e.getSource();
 
         if (source == timer) {
-            ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "current");
-
-            ServerResponse<Billboard> response;
-            try {
-                response = request.getResponse();
-                xmlBillboard = response.body().xml;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
 
             try {
                 SetComponents();
