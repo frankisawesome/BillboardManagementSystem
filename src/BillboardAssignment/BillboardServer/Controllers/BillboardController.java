@@ -58,6 +58,9 @@ public class BillboardController extends Controller {
             case "validate name":
                 response = validateName();
                 break;
+            case "is scheduled":
+                response = isScheduled();
+                break;
             default:
                 response = new ServerResponse("", "Request message invalid");
         }
@@ -72,6 +75,13 @@ public class BillboardController extends Controller {
             String billboardName = scheduleManager.scheduledBillboard();
             Billboard billboard = billboardManager.get(billboardName);
             return new ServerResponse(billboard, "ok");
+        });
+    }
+
+    private ServerResponse isScheduled() {
+        return useDbTryCatch(() -> {
+            UserSessionKey key = reconstructKey();
+            return new ServerResponse(scheduleManager.checkIfScheduled(body.get("billboardName"), key), "ok");
         });
     }
 
