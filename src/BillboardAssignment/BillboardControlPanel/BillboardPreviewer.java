@@ -224,7 +224,6 @@ public class BillboardPreviewer extends JFrame implements ActionListener, Runnab
             addToPanel(this, pnl4, c, 1, 0, 1, 1);
             addToPanel(this, pnl3, c, 1, 1, 1, 2);
 
-            System.out.println("yes");
         } else if ((titleFlg == true) && (imageFlg == false) && (subtextFlg == true)) {
             // Rule: if title and subtext are supplied let each occupy the top and bottom halves of the screen
             setLayout(new GridBagLayout());
