@@ -46,22 +46,24 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
     Boolean imageUrlFlg;
     String subtext;
 
-    //
+    // Flags to check whether these fields are contained in the XML file
     boolean titleFlg = false;
     boolean imageFlg = false;
     boolean subtextFlg = false;
 
+    // Colour of background and text to be displayed
     Color backgroundColor;
     String titleColor;
     String subtextColor;
 
+    // JPanels that are added to the JFrame
     JPanel pnl1;
     JPanel pnl2;
     JPanel pnl3;
     JPanel pnl4;
     JPanel pnl5;
-    JSplitPane splitPane;
 
+    // Timer object
     Timer timer;
 
     /**
@@ -79,7 +81,6 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 "    <message colour=\"#60B9FF\">Billboard with message, GIF and information</message>\n" +
                 "    <information colour=\"#FF0000\">This billboard has a message tag, a picture tag (linking to a URL with a GIF image) and an information tag. The picture is drawn in the centre and the message and information text are centred in the space between the top of the image and the top of the page, and the space between the bottom of the image and the bottom of the page, respectively.</information>\n" +
                 "</billboard>";
-
     }
 
     /**
@@ -96,11 +97,14 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
         setResizable(false);
         setVisible(true);
 
+        // Get the size of the screen and set the JFrame to fullscreen
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(screenSize.width, screenSize.height);
 
+        // Call set components function to populate JFrame
         SetComponents();
 
+        // Add a key listener to close the application on ESC key press
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
@@ -108,12 +112,14 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
             }
         });
 
+        // Add a mouse listener to close the application on mouse click
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 dispose();
             }
         });
 
+        // Start  a new timer that will cause an action event every 15 seconds
         timer = new Timer(15000, this);
         timer.start();
     }
@@ -128,11 +134,11 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
 
     private void SetComponents () throws ParserConfigurationException, IOException, SAXException {
 
-
+        // Make document builder objects
         DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
-
         DocumentBuilder builder = factory.newDocumentBuilder();
 
+        // Get the bytes of the xmlBillboard string and parse as a document object
         ByteArrayInputStream bais = new ByteArrayInputStream(xmlBillboard.getBytes());
         Document document = builder.parse(bais);
         bais.close();
@@ -430,7 +436,7 @@ public class BillboardViewer extends JFrame implements ActionListener, Runnable 
                 ex.printStackTrace();
             }
             */
-          
+
             try {
                 SetComponents();
             } catch (ParserConfigurationException ex) {
