@@ -1,9 +1,9 @@
 package BillboardAssignment.BillboardServer.Controllers;
 
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.Billboard;
-import BillboardAssignment.BillboardServer.BusinessLogic.Billboard.BillboardManager;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.Billboard.Billboard;
+import BillboardAssignment.BillboardServer.Services.Billboard.BillboardManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

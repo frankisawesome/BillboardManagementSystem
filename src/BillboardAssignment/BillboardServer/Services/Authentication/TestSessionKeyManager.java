@@ -1,6 +1,6 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
+package BillboardAssignment.BillboardServer.Services.Authentication;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserDataInput;
+import BillboardAssignment.BillboardServer.Services.User.UserDataInput;
 import BillboardAssignment.BillboardServer.Database.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

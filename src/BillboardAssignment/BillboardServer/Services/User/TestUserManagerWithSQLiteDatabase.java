@@ -1,19 +1,22 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.User;
+package BillboardAssignment.BillboardServer.Services.User;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.AuthAndUserDatabaseTesting.FatherTester;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectPasswordException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.IncorrectSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.OutOfDateSessionKeyException;
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.UserSessionKey;
+import BillboardAssignment.BillboardServer.Services.AuthAndUserDatabaseTesting.FatherTesterSQLite;
+import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectPasswordException;
+import BillboardAssignment.BillboardServer.Services.Authentication.IncorrectSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.Authentication.OutOfDateSessionKeyException;
+import BillboardAssignment.BillboardServer.Services.Authentication.UserSessionKey;
 import BillboardAssignment.BillboardServer.Database.DatabaseLogicException;
 import BillboardAssignment.BillboardServer.Database.DatabaseNotAccessibleException;
 import BillboardAssignment.BillboardServer.Database.DatabaseObjectNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestUserManager extends FatherTester {
+
+public class TestUserManagerWithSQLiteDatabase extends FatherTesterSQLite {
 
     @AfterEach
     void tearDown() {
@@ -35,7 +38,7 @@ public class TestUserManager extends FatherTester {
 
     @Test
     void createUser() throws OutOfDateSessionKeyException, IncorrectSessionKeyException, IncorrectPasswordException, DatabaseLogicException, DatabaseNotAccessibleException, DatabaseObjectNotFoundException, InsufficentPrivilegeException {
-        UserDataInput user = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
+        UserDataInput user = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "22");
 
         userManager.createUser(user, adminKey);
 
@@ -51,7 +54,7 @@ public class TestUserManager extends FatherTester {
             userManager.login(new UserDataInput(2, "This_is_the_hashed_password"));
         });
 
-        UserDataInput user2 = new UserDataInput(123, "This_is_the_hashed_password", new UserPrivilege[]{}, "");
+        UserDataInput user2 = new UserDataInput(123, "This_is_the_hashed_password", new UserPrivilege[]{}, "33");
 
         userManager.createUser(user2, adminKey);
 
@@ -67,9 +70,9 @@ public class TestUserManager extends FatherTester {
         User adminUser = userManager.getUser(UserManager.defaultAdminUserID);
         assertArrayEquals(new User[]{adminUser}, userManager.listUsers(adminKey));
 
-        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "");
-        UserDataInput user2 = new UserDataInput(2, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
-        UserDataInput user3 = new UserDataInput(3, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "");
+        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "1");
+        UserDataInput user2 = new UserDataInput(2, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "2");
+        UserDataInput user3 = new UserDataInput(3, "This_is_the_hashed_password", new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards, UserPrivilege.ScheduleBillboards, UserPrivilege.CreateBillboards}, "3");
 
         UserDataInput[] userArray = new UserDataInput[]{user1, user2, user3};
         User[] userOut = new User[4];
@@ -81,7 +84,8 @@ public class TestUserManager extends FatherTester {
         }
 
         User[] outputUsers = userManager.listUsers(adminKey);
-
+        Arrays.sort(outputUsers);
+        Arrays.sort(userOut);
         assertArrayEquals(userOut, outputUsers);
 
         UserSessionKey nonAdminKey = userManager.login(new UserDataInput(1, "This_is_the_hashed_password"));
@@ -121,7 +125,7 @@ public class TestUserManager extends FatherTester {
         userManager.setPermissions(adminUser, new UserPrivilege[]{UserPrivilege.EditUsers}, adminKey); /* Nothrow */
         userManager.setPermissions(adminUser, new UserPrivilege[]{UserPrivilege.EditUsers, UserPrivilege.EditAllBillboards}, adminKey); /* Nothrow */
 
-        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "");
+        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "aslkdjf");
         userManager.createUser(user1, adminKey);
         UserSessionKey user1Key = userManager.login(user1);
 
@@ -139,7 +143,7 @@ public class TestUserManager extends FatherTester {
     void setPassword() throws InsufficentPrivilegeException, IncorrectSessionKeyException, OutOfDateSessionKeyException, DatabaseNotAccessibleException, DatabaseLogicException, DatabaseObjectNotFoundException, IncorrectPasswordException {
         userManager.setPassword(adminUser, "pwd123", adminKey); /* Nothrow */
 
-        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "");
+        UserDataInput user1 = new UserDataInput(1, "This_is_the_hashed_password", new UserPrivilege[]{}, "1234");
         userManager.createUser(user1, adminKey);
         UserSessionKey user1Key = userManager.login(user1);
 

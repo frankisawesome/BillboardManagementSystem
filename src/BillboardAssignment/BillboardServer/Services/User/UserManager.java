@@ -1,6 +1,6 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.User;
+package BillboardAssignment.BillboardServer.Services.User;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.Authentication.*;
+import BillboardAssignment.BillboardServer.Services.Authentication.*;
 import BillboardAssignment.BillboardServer.Database.*;
 
 import java.util.ArrayList;
@@ -243,7 +243,7 @@ public class UserManager {
         sessionKeys.removeSessionKey(userToDelete);
     }
 
-    protected User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege[] privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         User adminUser = null;
 
         if (sessionKeys.checkSessionKeyStatus(key)) {
@@ -255,7 +255,7 @@ public class UserManager {
         return adminUser;
     }
 
-    protected User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
+    public User checkSessionKeyPrivileges(UserSessionKey key, UserPrivilege privileges) throws InsufficentPrivilegeException, DatabaseObjectNotFoundException, DatabaseNotAccessibleException, OutOfDateSessionKeyException, IncorrectSessionKeyException {
         User adminUser = null;
 
         if (sessionKeys.checkSessionKeyStatus(key)) {

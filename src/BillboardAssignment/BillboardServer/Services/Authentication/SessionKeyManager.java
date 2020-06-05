@@ -1,4 +1,4 @@
-package BillboardAssignment.BillboardServer.BusinessLogic.Authentication;
+package BillboardAssignment.BillboardServer.Services.Authentication;
 
 import BillboardAssignment.BillboardServer.Database.*;
 

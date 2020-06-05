@@ -1,6 +1,6 @@
 package BillboardAssignment.BillboardServer.Server;
 
-import BillboardAssignment.BillboardServer.BusinessLogic.User.UserPrivilege;
+import BillboardAssignment.BillboardServer.Services.User.UserPrivilege;
 
 import java.io.Serializable;
 
