@@ -6,10 +6,19 @@ import BillboardAssignment.BillboardServer.Server.ServerResponse;
 
 import java.util.HashMap;
 
+/**
+ * Schedulinbg controller
+ */
 public class ScheduleController extends Controller {
     private ScheduleManager scheduleManager;
     private ServerResponse response;
 
+    /**
+     * Take in shcedule manager
+     * @param message request message
+     * @param body request body
+     * @param scheduleManager schedule manager
+     */
     private ScheduleController (String message, HashMap<String, String> body, ScheduleManager scheduleManager) {
         super(message, body);
         this.scheduleManager = scheduleManager;
@@ -34,6 +43,10 @@ public class ScheduleController extends Controller {
         }
     }
 
+    /**
+     * Set a schedule for a database
+     * @return success or error message
+     */
     private ServerResponse set() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -42,10 +55,18 @@ public class ScheduleController extends Controller {
         });
     }
 
+    /**
+     * Get al schedules
+     * @return list of schedules
+     */
     private ServerResponse scheduleList() {
         return useDbTryCatch(() -> new ServerResponse(scheduleManager.getAllSchedules(), "ok"));
     }
 
+    /**
+     * Removes schedule
+     * @return success or error message
+     */
     private ServerResponse remove() {
         return useDbTryCatch(() -> {
             UserSessionKey key = reconstructKey();
@@ -54,6 +75,10 @@ public class ScheduleController extends Controller {
         });
     }
 
+    /**
+     * Get scheduled billboard
+     * @return
+     */
     private ServerResponse getSchedule() {
         return useDbTryCatch(() -> {
             String schedule = scheduleManager.scheduledBillboard();
@@ -61,6 +86,13 @@ public class ScheduleController extends Controller {
         });
     }
 
+    /**
+     * Uses the class by instantiating a controller, handles request and returns response
+     * @param message request message
+     * @param body request body
+     * @param scheduleManager schedule manager
+     * @return response
+     */
     public static ServerResponse use(String message, HashMap<String, String> body, ScheduleManager scheduleManager) {
         ScheduleController controller = new ScheduleController(message, body, scheduleManager);
         controller.handle();

@@ -115,6 +115,10 @@ public class BillboardServer {
         billboardManager.createFirstBillboard();
     }
 
+    /**
+     * Set up sqlite dbs, used in prod
+     * @throws Exception
+     */
     private void setUpSqlDbs() throws Exception {
         Queryable<User> database = new UserSQLiteDatabase();
         database.initialiseDatabase("Users");
