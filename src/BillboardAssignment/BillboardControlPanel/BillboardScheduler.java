@@ -5,7 +5,10 @@ import BillboardAssignment.BillboardServer.Controllers.ScheduleController;
 import BillboardAssignment.BillboardServer.Server.RequestType;
 import BillboardAssignment.BillboardServer.Server.ServerRequest;
 import BillboardAssignment.BillboardServer.Server.ServerResponse;
+import BillboardAssignment.BillboardServer.Services.Billboard.Schedule;
 
+
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -13,6 +16,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -317,6 +321,17 @@ public class BillboardScheduler {
         // Add the table to a JScrollPane
         scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
+
+        HashMap<String, String> requestBody = new HashMap<>();
+        requestBody.put("key", UserData[0]);
+        requestBody.put("keyId",UserData[1]);
+        ServerRequest request = new ServerRequest(RequestType.SCHEDUELE, "schedule list", requestBody);
+        try {
+            ServerResponse<ArrayList<Schedule>> schedules = request.getResponse();
+            System.out.println(schedules.body().get(0).name);
+        } catch (Exception e ){
+            e.printStackTrace();
+        }
 
         // The text options for the dropdown menu
         String days[]={"Monday","Tuesday","Wednesday","Thursday","Friday"};
